@@ -1,0 +1,33 @@
+:root {
+  /* ── Color Tokens ── */
+  --color-surface: #FFFFFF;
+  --color-surface-dark: #0a0a0a;
+  --color-text-primary: #111111;
+  --color-text-muted: #6b7280;
+  /* gray-500 */
+  --color-text-subtle: rgba(17, 17, 17, 0.5);
+  --color-border: #f3f4f6;
+  /* gray-100 */
+  --color-overlay: rgba(0, 0, 0, 0.9);
+  --color-overlay-hover: rgba(0, 0, 0, 0.1);
+
+  /* ── Typography Tokens ── */
+  --font-display: 'Instrument Serif', serif;
+  --font-sans: 'Inter', sans-serif;
+
+  /* ── Spacing Tokens ── */
+  --space-section: 8rem;
+  /* 32 in tw = 128px */
+  --space-block: 2rem;
+  --space-inline: 1rem;
+
+  /* ── Motion Tokens ── */
+  --duration-fast: 300ms;
+  --duration-medium: 500ms;
+  --duration-slow: 700ms;
+  --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* ── Layout Tokens ── */
+  --content-max-width: 90%;
+  --radius-card: 0.5rem;
+}

@@ -1,0 +1,58 @@
+---
+import { getSiteSettings } from '../lib/queries';
+
+const settings = await getSiteSettings();
+const links = settings?.navLinks || [
+  { label: 'Archive', href: '/archive' },
+  { label: 'Contact', href: '/contact' },
+];
+const siteName = settings?.siteName || 'AE.1 Portfolio';
+---
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-primary transition-transform duration-300">
+  <div class="flex items-center justify-between w-full">
+    <!-- Left: Logo/Name -->
+    <div class="flex items-center gap-4">
+      <div class="flex gap-1">
+        <span class="w-8 h-[1px] bg-current"></span>
+        <span class="w-4 h-[1px] bg-current"></span>
+      </div>
+      <span class="text-[10px] uppercase tracking-[0.2em] font-medium">{siteName}</span>
+    </div>
+
+    <!-- Center: Icons (Stars) -->
+    <div class="absolute left-1/2 -translate-x-1/2 flex gap-1">
+      <span class="material-icons text-sm">auto_awesome</span>
+      <span class="material-icons text-sm transform scale-x-[-1]">auto_awesome</span>
+    </div>
+
+    <!-- Right: Navigation Links -->
+    <div class="flex items-center gap-8">
+      {links.map(link => (
+        <a href={link.href}
+           class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">
+          {link.label}
+        </a>
+      ))}
+    </div>
+  </div>
+</nav>
+
+<script>
+  let lastScrollY = window.scrollY;
+  const navbar = document.getElementById("navbar");
+  
+  if (navbar) {
+    window.addEventListener("scroll", () => {
+      const currentScrollY = window.scrollY;
+      
+      // Handle Navbar based on scroll direction
+      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+        navbar.classList.add("-translate-y-full");
+      } else {
+        navbar.classList.remove("-translate-y-full");
+      }
+      
+      lastScrollY = currentScrollY;
+    });
+  }
+</script>

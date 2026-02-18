@@ -1,0 +1,62 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { getSiteSettings } from '../lib/queries';
+
+const settings = await getSiteSettings();
+const email = settings?.footer?.socialLinks?.email || 'studio@ae1.com';
+const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram.com/ae1.studio';
+---
+
+<BaseLayout title="Contact | AE.1 Portfolio">
+  <div class="pt-32 pb-20 px-8 max-w-5xl mx-auto min-h-[80vh] flex flex-col justify-center">
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+      
+      <!-- Left Column: Big Statement -->
+      <div>
+        <h1 class="text-5xl md:text-7xl font-display leading-[0.9] mb-12">
+          Let's create<br/>some noise.
+        </h1>
+        <p class="text-muted text-lg max-w-sm leading-relaxed mb-12">
+          Available for commissions, architectural shoots, and editorial features worldwide.
+        </p>
+        
+        <div class="space-y-4">
+           <a href={`mailto:${email}`} class="inline-block text-xl border-b border-current pb-1 hover:opacity-50 transition-opacity">
+             {email}
+           </a>
+           <br/>
+           <a href={instagram} target="_blank" class="inline-block text-xl border-b border-current pb-1 hover:opacity-50 transition-opacity">
+             Instagram ↗
+           </a>
+        </div>
+      </div>
+
+      <!-- Right Column: Simple Form -->
+      <div class="bg-gray-50 dark:bg-white/5 p-8 md:p-12 rounded-lg">
+        <form class="space-y-8" action="#" method="POST">
+           <div class="space-y-2">
+             <label for="name" class="text-xs uppercase tracking-widest opacity-50 font-bold block">Name</label>
+             <input type="text" id="name" name="name" required class="w-full bg-transparent border-b border-border-color-DEFAULT py-2 focus:outline-none focus:border-black dark:focus:border-white transition-colors" placeholder="John Doe" />
+           </div>
+
+           <div class="space-y-2">
+             <label for="email" class="text-xs uppercase tracking-widest opacity-50 font-bold block">Email</label>
+             <input type="email" id="email" name="email" required class="w-full bg-transparent border-b border-border-color-DEFAULT py-2 focus:outline-none focus:border-black dark:focus:border-white transition-colors" placeholder="john@example.com" />
+           </div>
+
+           <div class="space-y-2">
+             <label for="message" class="text-xs uppercase tracking-widest opacity-50 font-bold block">Message</label>
+             <textarea id="message" name="message" rows="4" required class="w-full bg-transparent border-b border-border-color-DEFAULT py-2 focus:outline-none focus:border-black dark:focus:border-white transition-colors resize-none" placeholder="Tell me about your project..."></textarea>
+           </div>
+
+           <button type="submit" class="w-full bg-black dark:bg-white text-white dark:text-black py-4 uppercase tracking-[0.2em] text-xs font-bold hover:opacity-90 transition-opacity mt-8">
+             Send Inquiry
+           </button>
+        </form>
+      </div>
+
+    </div>
+
+  </div>
+</BaseLayout>

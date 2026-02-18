@@ -1,0 +1,88 @@
+import { client } from './sanity';
+
+export async function getSiteSettings() {
+  const query = `*[_type == "siteSettings"][0]{
+    siteName,
+    navLinks,
+    footer
+  }`;
+  return await client.fetch(query);
+}
+
+export async function getHomePage() {
+  const query = `*[_type == "page" && slug.current == "/"][0]{
+    heroHeading,
+    heroImages,
+    "featuredCollections": featuredCollections[]->{
+      title,
+      subtitle,
+      description,
+      "slug": slug.current,
+      "image": coverPhoto->image,
+      "alt": coverPhoto->alt
+    }
+  }`;
+  return await client.fetch(query);
+}
+
+// Get all collection slugs for static paths
+export async function getCollectionPaths() {
+  const query = `*[_type == "collection" && defined(slug.current)][].slug.current`;
+  return await client.fetch(query);
+}
+
+// Get data for a specific collection
+export async function getCollectionData(slug: string) {
+  const query = `*[_type == "collection" && slug.current == $slug][0]{
+    title,
+    subtitle,
+    description,
+    "slug": slug.current,
+    "photos": photos[]->{
+      title,
+      "image": image,
+      "alt": image.alt,
+      "slug": slug.current, // For linking to individual photo page later
+      dateTaken,
+      location
+    }
+  }`;
+  return await client.fetch(query, { slug });
+}
+// Get all photo slugs for static paths
+export async function getPhotoPaths() {
+  const query = `*[_type == "photo" && defined(slug.current)][].slug.current`;
+  return await client.fetch(query);
+}
+
+// Get data for a specific photo
+export async function getPhotoData(slug: string) {
+  const query = `*[_type == "photo" && slug.current == $slug][0]{
+    title,
+    "slug": slug.current,
+    "image": image,
+    "alt": image.alt,
+    caption,
+    location,
+    dateTaken,
+    tags,
+    "relatedCollections": *[_type == "collection" && references(^._id)]{
+      title,
+      "slug": slug.current
+    }
+  }`;
+  return await client.fetch(query, { slug });
+}
+
+// Get all photos for the archive page
+export async function getArchivePhotos() {
+  const query = `*[_type == "photo"] | order(dateTaken desc) {
+    title,
+    "slug": slug.current,
+    "image": image,
+    "alt": image.alt,
+    dateTaken,
+    location
+  }`;
+  return await client.fetch(query);
+}

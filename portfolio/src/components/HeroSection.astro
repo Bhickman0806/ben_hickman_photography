@@ -1,0 +1,136 @@
+---
+import { urlFor, getResponsiveProps } from '../lib/sanity';
+
+interface Props {
+  headingHtml?: string;
+  images?: any[];
+}
+
+const { headingHtml, images } = Astro.props;
+
+// Helper to get props or fallback
+function getHeroImageProps(index: number) {
+  if (images && images[index]) {
+    // 25vw is roughly the size used in CSS
+    return getResponsiveProps(images[index], { width: 600, aspectRatio: 4/5, sizes: '25vw' });
+  }
+  // Fallback defaults
+  const defaults = [
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuBngMAxKa30TUYm_OYmD8GEG3mKWUuBCLA40ovQbCOVMUj4SAEyCq5sgiVU5mHEazlQ6ti0Rj6SVjrz5Ye7GYe5yraZpPjxskdI-R8j8U6hJitIt7NbDIPot0OYC2eRXdWke2GPNNpmdY82vk0j8JzSfMXcP-FSvljZQArYsmVrBFy9z2J3NtG32tfpkURNlmP8452_gWfNC8-fkO1cDKXtngcAqJjZbVXwQ6VmLzHAUNAQcNmPIOhBHVsfpOWf_KWR4EZ_bLAnBo5x",
+    "https://lh3.googleusercontent.com/aida-public/AB6AXuD_blwz2RPl6QLCl7cV-ArfeVpf_da81ClDbzaspOhAaa6SUxyCbXQJCljWPhjJxTka_yV7kLPmP2hsnR47DG9QnFaOiQZ05SeLcngdKHHDsibd53ckibYe5Ga6DyETJoY97bN3zaLTJoLT7pG-UuSfiWbUuNiyisrzowq2qelgMHiLNMXD2XihA_1SVk7B8cgQ75nXzCMxIpKevz7lAK3gUM31aOeME6k8Q0G4h4fZEJHlTsTZSR9WxAGtHbnT9JlSXJYJ_D0qcmNc"
+  ];
+  return { src: defaults[index], srcset: '', sizes: '' };
+}
+
+const img1Props = getHeroImageProps(0);
+const img2Props = getHeroImageProps(1);
+---
+
+
+<section class="min-h-screen relative flex flex-col pt-32 pb-20 items-center overflow-x-hidden">
+
+    <!-- Intro Heading -->
+    <div class="text-center z-10 mb-[-5vh]">
+        <h2 class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight" set:html={headingHtml || `Cinematic, architectural and <br /> <span class="italic">unapologetically bold.</span>`}>
+        </h2>
+    </div>
+
+    <!-- Main Graphic: Massive Text interleaved with Images -->
+    <div class="relative w-full flex-1 flex flex-col items-center justify-center pointer-events-none select-none my-20">
+
+        <!-- Image 1 -->
+        <div class="absolute hero-image-1 opacity-80 z-0">
+            <img 
+                src={img1Props.src}
+                srcset={img1Props.srcset}
+                sizes={img1Props.sizes}
+                alt="Mountain landscape" class="w-full h-auto object-cover grayscale opacity-50 block mix-blend-multiply" />
+        </div>
+
+        <!-- Image 2 -->
+        <div class="absolute hero-image-2 opacity-80 z-0 translate-y-20">
+            <img 
+                src={img2Props.src}
+                srcset={img2Props.srcset}
+                sizes={img2Props.sizes}
+                alt="Canyon vista" class="w-full h-auto object-cover grayscale opacity-50 block mix-blend-multiply" />
+        </div>
+
+        <!-- Massive Title Text -->
+        <h1 class="massive-text font-display text-primary text-center uppercase relative z-10 leading-[0.85] px-12 md:px-24">
+            Photography<br />Portfolio.
+        </h1>
+
+    </div>
+
+    <!-- Bottom Left: Scroll Indicator -->
+    <button id="scroll-indicator"
+        class="absolute bottom-12 left-12 flex items-center gap-4 z-50 hover:opacity-80 transition-opacity duration-500 text-left">
+        <span class="material-icons text-sm opacity-50 animate-bounce">south</span>
+        <span class="text-[10px] uppercase tracking-[0.2em] opacity-50 font-medium">Scroll to explore</span>
+    </button>
+
+    <!-- Bottom Right: Chat Button -->
+    <div class="absolute bottom-12 right-12 z-50">
+        <button
+            class="w-12 h-12 bg-black text-white rounded-lg flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
+            <span class="material-icons text-lg">chat_bubble_outline</span>
+        </button>
+    </div>
+</section>
+
+<style>
+    .hero-image-1 {
+        top: 20%;
+        left: 15%;
+        width: 25vw;
+    }
+
+    .hero-image-2 {
+        top: 15%;
+        right: 15%;
+        width: 25vw;
+    }
+</style>
+
+<script>
+    const scrollIndicator = document.getElementById("scroll-indicator");
+
+    function smoothScrollTo(distance: number, duration: number) {
+        const start = window.scrollY;
+        const startTime = performance.now();
+
+        function easeInOutCubic(t: number) {
+            return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+        }
+
+        function animation(currentTime: number) {
+            const elapsed = currentTime - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            const ease = easeInOutCubic(progress);
+
+            window.scrollTo(0, start + ((distance || 600) * ease));
+
+            if (elapsed < duration) {
+                requestAnimationFrame(animation);
+            }
+        }
+
+        requestAnimationFrame(animation);
+    }
+    
+    if (scrollIndicator) {
+        scrollIndicator.addEventListener('click', () => {
+             smoothScrollTo(window.innerHeight, 1200);
+        });
+        
+        // Hide scroll indicator on scroll
+        window.addEventListener("scroll", () => {
+             if (window.scrollY > 10) {
+                 scrollIndicator.classList.add("opacity-0", "pointer-events-none");
+             } else {
+                 scrollIndicator.classList.remove("opacity-0", "pointer-events-none");
+             }
+        });
+    }
+</script>

@@ -1,0 +1,11 @@
+---
+import { getSiteSettings } from '../lib/queries';
+
+const settings = await getSiteSettings();
+const copyright = settings?.footer?.copyright || `© ${new Date().getFullYear()} AE.1 Studio. All rights reserved.`;
+---
+<footer class="py-20 text-center border-t border-border-color-DEFAULT mt-20">
+  <p class="text-[10px] uppercase tracking-[0.4em] text-subtle">
+    {copyright}
+  </p>
+</footer>

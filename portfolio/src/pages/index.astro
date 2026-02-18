@@ -1,0 +1,39 @@
+---
+import { getHomePage } from '../lib/queries';
+import { urlFor, getResponsiveProps } from '../lib/sanity';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import HeroSection from '../components/HeroSection.astro';
+import PhotoCard from '../components/PhotoCard.astro';
+import Lightbox from '../components/Lightbox.astro';
+
+const homeData = await getHomePage();
+
+const projects = homeData?.featuredCollections?.map((collection: any) => ({
+  subtitle: collection.subtitle || "Collection",
+  title: collection.title,
+  description: collection.description,
+  image: collection.image ? urlFor(collection.image).width(1600).url() : "",
+  ...getResponsiveProps(collection.image, { width: 800, aspectRatio: 16/10, sizes: '(min-width: 768px) 66vw, 100vw' }),
+  alt: collection.alt || collection.title,
+  linkHref: `/collection/${collection.slug}`,
+  linkLabel: "Explore Collection",
+  reverse: false 
+})) || [];
+
+---
+
+<BaseLayout>
+  <HeroSection 
+    headingHtml={homeData?.heroHeading} 
+    images={homeData?.heroImages}
+  />
+
+  <!-- Content Section: List of Project Rows -->
+  <section class="max-w-[90%] mx-auto pt-16 pb-32 space-y-32">
+    {projects.map(project => (
+      <PhotoCard {...project} />
+    ))}
+  </section>
+
+  <Lightbox />
+</BaseLayout>

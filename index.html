@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html class="scroll-smooth overflow-x-hidden" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Selected Work | Photography Portfolio</title>
+
+    <!-- Fonts: Inter (text) and Instrument Serif (headings) -->
+    <link href="https://fonts.googleapis.com" rel="preconnect" />
+    <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;family=Instrument+Serif:ital@0;1&amp;display=swap"
+        rel="stylesheet" />
+    <!-- Material Icons for UI elements like arrows and stars -->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <!-- Tailwind CSS CDN for styling -->
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+        // Tailwind Configuration
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        primary: "#111111", // Dark almost black
+                        "background-light": "#FFFFFF",
+                        "background-dark": "#0a0a0a",
+                    },
+                    fontFamily: {
+                        display: ["Instrument Serif", "serif"], // For elegant headings
+                        sans: ["Inter", "sans-serif"], // For clean body text
+                    },
+                    fontSize: {
+                        'massive': '16vw', // Custom size for the main "Photography Portfolio" text
+                    }
+                },
+            },
+        };
+    </script>
+
+    <!-- Custom CSS for specific layout needs not covered by Tailwind utilities -->
+    <style>
+        .massive-text {
+            font-size: 15vw;
+            /* Smaller on mobile to fit "Wonderland" */
+            line-height: 0.75;
+            letter-spacing: -0.04em;
+        }
+
+        @media (min-width: 768px) {
+            .massive-text {
+                font-size: 19vw;
+            }
+        }
+
+        /* 
+           Absolute positioning for hero images to overlap with text.
+           Values are relative to the view width (vw) for responsiveness.
+        */
+        .hero-image-1 {
+            top: 20%;
+            left: 15%;
+            width: 25vw;
+        }
+
+        .hero-image-2 {
+            top: 15%;
+            right: 15%;
+            width: 25vw;
+        }
+    </style>
+</head>
+
+<body class="bg-background-light text-primary transition-colors duration-500 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar: Fixed with slide transition -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-black transition-transform duration-300">
+        <div class="flex items-center justify-between w-full">
+            <!-- Left: Logo/Name -->
+            <div class="flex items-center gap-4">
+                <div class="flex gap-1">
+                    <span class="w-8 h-[1px] bg-current"></span>
+                    <span class="w-4 h-[1px] bg-current"></span>
+                </div>
+                <span class="text-[10px] uppercase tracking-[0.2em] font-medium">AE.1 Portfolio</span>
+            </div>
+
+            <!-- Center: Icons (Stars) -->
+            <div class="absolute left-1/2 -translate-x-1/2 flex gap-1">
+                <span class="material-icons text-sm">auto_awesome</span>
+                <span class="material-icons text-sm transform scale-x-[-1]">auto_awesome</span>
+            </div>
+
+            <!-- Right: Navigation Links -->
+            <div class="flex items-center gap-8">
+                <a href="#"
+                    class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">Archive</a>
+                <a href="#"
+                    class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">Contact</a>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <main>
+        <!-- Hero Section: Full screen height, centered content -->
+        <section class="min-h-screen relative flex flex-col pt-32 pb-20 items-center">
+
+            <!-- Intro Heading -->
+            <div class="text-center z-10 mb-[-5vh]">
+                <h2 class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight">
+                    Cinematic, architectural and <br />
+                    <span class="italic">unapologetically bold.</span>
+                </h2>
+            </div>
+
+            <!-- Main Graphic: Massive Text interleaved with Images -->
+            <div
+                class="relative w-full flex-1 flex flex-col items-center justify-center pointer-events-none select-none my-20">
+
+                <!-- Image 1 (Positioned via CSS class .hero-image-1) -->
+                <div class="absolute hero-image-1 opacity-80 z-0">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBngMAxKa30TUYm_OYmD8GEG3mKWUuBCLA40ovQbCOVMUj4SAEyCq5sgiVU5mHEazlQ6ti0Rj6SVjrz5Ye7GYe5yraZpPjxskdI-R8j8U6hJitIt7NbDIPot0OYC2eRXdWke2GPNNpmdY82vk0j8JzSfMXcP-FSvljZQArYsmVrBFy9z2J3NtG32tfpkURNlmP8452_gWfNC8-fkO1cDKXtngcAqJjZbVXwQ6VmLzHAUNAQcNmPIOhBHVsfpOWf_KWR4EZ_bLAnBo5x"
+                        alt="Mountain landscape" class="w-full h-auto object-cover grayscale opacity-50 block"
+                        style="mix-blend-mode: multiply;">
+                </div>
+
+                <!-- Image 2 (Positioned via CSS class .hero-image-2) -->
+                <div class="absolute hero-image-2 opacity-80 z-0 translate-y-20">
+                    <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_blwz2RPl6QLCl7cV-ArfeVpf_da81ClDbzaspOhAaa6SUxyCbXQJCljWPhjJxTka_yV7kLPmP2hsnR47DG9QnFaOiQZ05SeLcngdKHHDsibd53ckibYe5Ga6DyETJoY97bN3zaLTJoLT7pG-UuSfiWbUuNiyisrzowq2qelgMHiLNMXD2XihA_1SVk7B8cgQ75nXzCMxIpKevz7lAK3gUM31aOeME6k8Q0G4h4fZEJHlTsTZSR9WxAGtHbnT9JlSXJYJ_D0qcmNc"
+                        alt="Canyon vista" class="w-full h-auto object-cover grayscale opacity-50 block"
+                        style="mix-blend-mode: multiply;">
+                </div>
+
+                <!-- Massive Title Text -->
+                <!-- z-10 ensures it sits above the images, leading-[0.85] adjusts line spacing -->
+                <h1
+                    class="massive-text font-display text-primary text-center uppercase relative z-10 leading-[0.85] px-12 md:px-24">
+                    Photography<br />Portfolio.
+                </h1>
+
+            </div>
+
+            <!-- Bottom Left: Scroll Indicator -->
+            <!-- Calls smoothScrollTo function defined in script below -->
+            <button id="scroll-indicator" onclick="smoothScrollTo(window.innerHeight, 1200)"
+                class="absolute bottom-12 left-12 flex items-center gap-4 z-50 hover:opacity-80 transition-opacity duration-500 text-left">
+                <span class="material-icons text-sm opacity-50 animate-bounce">south</span>
+                <span class="text-[10px] uppercase tracking-[0.2em] opacity-50 font-medium">Scroll to explore</span>
+            </button>
+
+            <!-- Custom Smooth Scroll Script -->
+            <script>
+                /**
+                 * Smoothly scrolls the window by a specific distance over a duration.
+                 * @param {number} distance - How many pixels to scroll down
+                 * @param {number} duration - Animation duration in milliseconds
+                 */
+                function smoothScrollTo(distance, duration) {
+                    const start = window.scrollY;
+                    const startTime = performance.now();
+
+                    // Easing function for smooth start and end
+                    function easeInOutCubic(t) {
+                        return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
+                    }
+
+                    function animation(currentTime) {
+                        const elapsed = currentTime - startTime;
+                        const progress = Math.min(elapsed / duration, 1);
+                        const ease = easeInOutCubic(progress);
+
+                        window.scrollTo(0, start + (distance * ease));
+
+                        if (elapsed < duration) {
+                            requestAnimationFrame(animation);
+                        }
+                    }
+
+                    requestAnimationFrame(animation);
+                }
+            </script>
+
+            <!-- Bottom Right: Chat Button -->
+            <div class="absolute bottom-12 right-12 z-50">
+                <button
+                    class="w-12 h-12 bg-black text-white rounded-lg flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
+                    <span class="material-icons text-lg">chat_bubble_outline</span>
+                </button>
+            </div>
+        </section>
+
+        <!-- Content Section: List of Project Rows -->
+        <!-- Each .project-row is self-contained and ready to be turned into a component -->
+        <section class="max-w-[90%] mx-auto pt-16 pb-32 space-y-32">
+
+            <!-- Project 1: Journeys (Original) -->
+            <article class="project-row grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 items-center">
+
+                <!-- Text Column -->
+                <div class="md:col-span-4 space-y-8">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 block mb-6">Current
+                            Series</span>
+                        <h3 class="text-4xl font-display mb-6">For journeys near and far.</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed max-w-sm">
+                            Each capture is a study of light, geometry, and the silent narratives of the natural world.
+                            Exploring the intersection of human presence and untouched landscapes.
+                        </p>
+                    </div>
+
+                    <div class="pt-8 border-t border-gray-100">
+                        <a class="inline-flex items-center gap-4 group text-xs font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity"
+                            href="#">
+                            Explore Collection
+                            <span
+                                class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Image Column -->
+                <div class="md:col-span-8 md:pl-24">
+                    <div class="w-full group cursor-pointer">
+                        <div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 relative">
+                            <img alt="Arid desert landscape"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtvHzrnxGNAkE6IokwFaww-uvsLRnTw6PtNAx5rBy0qzdtOIGbnSEW-bqtARGAglA5FXk0t60fxsSupWk8N3DFOpUAEvptJ-EZh4KqY1Rn_18Sw8qKm3ucd-ytdPXOQsLAzXxEJLK771ntcvfj8BqY6XDniKzhj_obQGghQUTY8rT_FEEfEer4dTfIjdoO_ibqDdE7N6WzMcwx31gZPEypudJoEKclKgVxlOPEgEUEyBee8Qzvj8FEbFDftn2Fiio8YNNEPIRz5zLg"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                            <!-- Hover Overlay -->
+                            <div
+                                class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Project 2: Placeholder (Duplicate Structure) -->
+            <article class="project-row grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 items-center">
+
+                <!-- Text Column -->
+                <div class="md:col-span-4 space-y-8">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 block mb-6">Archive
+                            2023</span>
+                        <h3 class="text-4xl font-display mb-6">Silent Narratives.</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed max-w-sm">
+                            A collection focusing on the quiet moments between the chaos.
+                            Where shadows lengthen and time seems to stand still in the afternoon light.
+                        </p>
+                    </div>
+
+                    <div class="pt-8 border-t border-gray-100">
+                        <a class="inline-flex items-center gap-4 group text-xs font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity"
+                            href="#">
+                            View Series
+                            <span
+                                class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Image Column -->
+                <div class="md:col-span-8 md:pl-24">
+                    <div class="w-full group cursor-pointer">
+                        <div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 relative">
+                            <!-- Placeholder Image (Misty Valley) used for now -->
+                            <img alt="Misty valley placeholder"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgPvXZVsb3fkAVDWLvVFHFd1G7UM9JAmMga-5kIzMS--WTrr88QOI6Uj-diZTtHxZ8hbgPEZY0pMK_TCBF-Zep6iu4X3sxWpA3EtMtxEUvPaJ4KfYYxHL_yPqu8TznAEKZ50YtQhjQ9o4mH7dIUNHYwbyXkZMfedPmEeZr-V1koIRrpbUaMB7lvCGVVV2NfgqJsqhXqp7E3iQTGaUAJhkNRbpxiRpJVK35YyUqudExpr1B2FlCy3-rBg7KAwgHlpbK21iThBTAaKNW"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+            <!-- Project 3: Placeholder (Duplicate Structure) -->
+            <article class="project-row grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 items-center">
+
+                <!-- Text Column -->
+                <div class="md:col-span-4 space-y-8">
+                    <div>
+                        <span class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 block mb-6">Selected
+                            Works</span>
+                        <h3 class="text-4xl font-display mb-6">Urban Geometry.</h3>
+                        <p class="text-gray-500 text-sm leading-relaxed max-w-sm">
+                            Finding the unintended patterns in our built environment.
+                            Concrete, glass, and steel forming the backdrop of modern solitude.
+                        </p>
+                    </div>
+
+                    <div class="pt-8 border-t border-gray-100">
+                        <a class="inline-flex items-center gap-4 group text-xs font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity"
+                            href="#">
+                            Discover More
+                            <span
+                                class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Image Column -->
+                <div class="md:col-span-8 md:pl-24">
+                    <div class="w-full group cursor-pointer">
+                        <div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 relative">
+                            <!-- Reusing the first image as placeholder for now -->
+                            <img alt="Urban geometry placeholder"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtvHzrnxGNAkE6IokwFaww-uvsLRnTw6PtNAx5rBy0qzdtOIGbnSEW-bqtARGAglA5FXk0t60fxsSupWk8N3DFOpUAEvptJ-EZh4KqY1Rn_18Sw8qKm3ucd-ytdPXOQsLAzXxEJLK771ntcvfj8BqY6XDniKzhj_obQGghQUTY8rT_FEEfEer4dTfIjdoO_ibqDdE7N6WzMcwx31gZPEypudJoEKclKgVxlOPEgEUEyBee8Qzvj8FEbFDftn2Fiio8YNNEPIRz5zLg"
+                                class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                        </div>
+                    </div>
+                </div>
+            </article>
+
+        </section>
+    </main>
+
+    <footer class="py-20 text-center border-t border-gray-100 mt-20">
+        <p class="text-[10px] uppercase tracking-[0.4em] opacity-40">© 2024 AE.1 Studio. All rights reserved.</p>
+    </footer>
+
+    <!-- Lightbox Modal -->
+    <div id="lightbox"
+        class="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4">
+
+
+        <!-- Image Container -->
+        <img id="lightbox-img" src="" alt="Full screen view"
+            class="max-w-full max-h-screen object-contain shadow-2xl scale-95 transition-transform duration-300">
+    </div>
+
+    <script>
+        // Navbar & Scroll Logic
+        let lastScrollY = window.scrollY;
+        const navbar = document.getElementById("navbar");
+        const scrollIndicator = document.getElementById("scroll-indicator");
+
+        window.addEventListener("scroll", () => {
+            const currentScrollY = window.scrollY;
+
+            // Handle Navbar
+            if (currentScrollY > lastScrollY && currentScrollY > 50) {
+                navbar.classList.add("-translate-y-full");
+            } else {
+                navbar.classList.remove("-translate-y-full");
+            }
+
+            lastScrollY = currentScrollY;
+
+            // Handle Scroll Indicator
+            if (scrollIndicator) {
+                if (currentScrollY > 10) {
+                    scrollIndicator.classList.add("opacity-0", "pointer-events-none");
+                } else {
+                    scrollIndicator.classList.remove("opacity-0", "pointer-events-none");
+                }
+            }
+        });
+
+        // Lightbox Logic
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+
+
+        // Open Lightbox
+        document.querySelectorAll('.project-row img').forEach(img => {
+            img.style.cursor = 'zoom-in'; // Add zoom cursor via JS or class
+            img.addEventListener('click', (e) => {
+                e.stopPropagation(); // Prevent bubbling if needed
+                lightboxImg.src = img.src;
+                lightbox.classList.remove('opacity-0', 'pointer-events-none');
+                lightboxImg.classList.remove('scale-95');
+                lightboxImg.classList.add('scale-100');
+                document.body.style.overflow = 'hidden'; // Lock scrolling
+            });
+        });
+
+        // Close Lightbox Function
+        function closeLightbox() {
+            lightbox.classList.add('opacity-0', 'pointer-events-none');
+            lightboxImg.classList.add('scale-95');
+            lightboxImg.classList.remove('scale-100');
+            document.body.style.overflow = ''; // Unlock scrolling
+        }
+
+
+
+        // Close on Background Click
+        lightbox.addEventListener('click', (e) => {
+            if (e.target === lightbox) {
+                closeLightbox();
+            }
+        });
+
+        // Close on Escape Key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && !lightbox.classList.contains('opacity-0')) {
+                closeLightbox();
+            }
+        });
+    </script>
+
+</body>
+
+</html>

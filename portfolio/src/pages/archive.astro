@@ -1,0 +1,75 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Lightbox from '../components/Lightbox.astro';
+import { getArchivePhotos } from '../lib/queries';
+import { urlFor } from '../lib/sanity';
+
+const photos = await getArchivePhotos();
+
+// Group photos by year for a nicer timeline view
+const photosByYear = photos.reduce((acc: any, photo: any) => {
+  const year = photo.dateTaken ? new Date(photo.dateTaken).getFullYear() : 'Undated';
+  if (!acc[year]) acc[year] = [];
+  acc[year].push(photo);
+  return acc;
+}, {});
+
+// Sort years descending
+const years = Object.keys(photosByYear).sort((a, b) => {
+    if(a === 'Undated') return 1;
+    if(b === 'Undated') return -1;
+    return Number(b) - Number(a);
+});
+---
+
+<BaseLayout title="Archive | AE.1 Portfolio">
+  <div class="pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto min-h-screen">
+    
+    <header class="mb-20">
+      <h1 class="text-4xl md:text-6xl font-display mb-4">Archive.</h1>
+      <p class="text-muted text-lg max-w-lg">A chronological index of all works.</p>
+    </header>
+
+    <div class="space-y-24">
+      {years.map(year => (
+        <section>
+          <div class="flex flex-col md:flex-row gap-8 md:gap-16 items-start">
+            
+            <!-- Year Label -->
+            <div class="md:w-32 md:sticky md:top-32 shrink-0">
+              <span class="text-xs uppercase tracking-[0.25em] opacity-40 font-bold block pb-2 border-b border-border-color-DEFAULT">
+                {year}
+              </span>
+            </div>
+
+            <!-- Photos Grid -->
+            <div class="flex-1 grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-8">
+              {photosByYear[year].map((photo: any) => (
+                <div 
+                  class="aspect-[2/3] md:aspect-square bg-gray-100 group relative overflow-hidden cursor-pointer rounded-sm"
+                  data-lightbox
+                  data-full-src={urlFor(photo.image).width(1600).url()}
+                  data-caption={`${photo.title}${photo.location ? ` — ${photo.location}` : ''}`}
+                >
+                  <img 
+                    src={urlFor(photo.image).width(600).height(600).fit('crop').url()} 
+                    alt={photo.alt || photo.title}
+                    loading="lazy"
+                    class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
+                  />
+                  <div class="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-black/50 to-transparent">
+                     <span class="text-white text-xs uppercase tracking-widest truncate block">
+                       {photo.title}
+                     </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ))}
+    </div>
+
+  </div>
+  <Lightbox />
+</BaseLayout>

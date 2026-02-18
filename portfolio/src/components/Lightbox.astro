@@ -1,0 +1,125 @@
+---
+---
+<div id="lightbox"
+     class="fixed inset-0 z-[60] bg-black/90 backdrop-blur-sm opacity-0 pointer-events-none transition-opacity duration-300 flex items-center justify-center p-4"
+     role="dialog"
+     aria-modal="true"
+     aria-label="Image lightbox">
+
+  <!-- Navigation buttons -->
+  <button id="lb-prev" class="absolute left-4 text-white/70 hover:text-white transition-colors z-10 p-2"
+          aria-label="Previous image">
+    <span class="material-icons text-3xl">chevron_left</span>
+  </button>
+
+  <img id="lightbox-img" src="" alt=""
+       class="max-w-full max-h-[90vh] object-contain shadow-2xl scale-95 transition-transform duration-300 select-none" />
+
+  <button id="lb-next" class="absolute right-4 text-white/70 hover:text-white transition-colors z-10 p-2"
+          aria-label="Next image">
+    <span class="material-icons text-3xl">chevron_right</span>
+  </button>
+
+  <button id="lb-close" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2"
+          aria-label="Close lightbox">
+    <span class="material-icons text-2xl">close</span>
+  </button>
+
+  <!-- Caption -->
+  <div id="lb-caption" class="absolute bottom-6 left-6 text-white/70 text-sm font-sans tracking-wide"></div>
+</div>
+
+<script>
+  // Lightbox logic: open, close, navigate, keyboard support
+  // Runs as a client-side island in Astro
+  const lightbox = document.getElementById('lightbox');
+  const img = document.getElementById('lightbox-img');
+  const caption = document.getElementById('lb-caption');
+  
+  // Need to cast to HTMLElement for TS checks if stricter settings are on
+  const lightboxEl = lightbox as HTMLElement;
+  const imgEl = img as HTMLImageElement;
+  const captionEl = caption as HTMLElement;
+
+  let images: HTMLElement[] = [];
+  let currentIndex = 0;
+
+  function open(index: number) {
+    if (!lightboxEl || !imgEl) return;
+    
+    currentIndex = index;
+    const target = images[index];
+    
+    // Get full src from data attribute
+    const src = target.getAttribute('data-full-src');
+    const cap = target.getAttribute('data-caption');
+    const imgTag = target.querySelector('img');
+    
+    if (src) {
+        imgEl.src = src;
+    } else if (imgTag) {
+        imgEl.src = imgTag.src;
+    }
+
+    if (imgTag) {
+        imgEl.alt = imgTag.alt;
+    }
+    
+    if (captionEl) {
+        captionEl.textContent = cap || '';
+    }
+
+    lightboxEl.classList.remove('opacity-0', 'pointer-events-none');
+    imgEl.classList.replace('scale-95', 'scale-100');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    if (!lightboxEl || !imgEl) return;
+    lightboxEl.classList.add('opacity-0', 'pointer-events-none');
+    imgEl.classList.replace('scale-100', 'scale-95');
+    document.body.style.overflow = '';
+  }
+
+  function navigate(dir: -1 | 1) {
+    if (images.length === 0) return;
+    currentIndex = (currentIndex + dir + images.length) % images.length;
+    open(currentIndex);
+  }
+
+  // Init: collect all gallery images
+  // We use data-lightbox attribute on the container
+  document.addEventListener('DOMContentLoaded', () => {
+    images = Array.from(document.querySelectorAll('[data-lightbox]')) as HTMLElement[];
+    
+    images.forEach((el, i) => {
+      el.style.cursor = 'zoom-in';
+      el.addEventListener('click', (e) => {
+          e.stopPropagation();
+          open(i);
+      });
+    });
+    
+    const closeBtn = document.getElementById('lb-close');
+    const prevBtn = document.getElementById('lb-prev');
+    const nextBtn = document.getElementById('lb-next');
+
+    if (closeBtn) closeBtn.addEventListener('click', close);
+    if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
+    if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
+    
+    if (lightboxEl) {
+        lightboxEl.addEventListener('click', (e) => { 
+            if (e.target === lightboxEl) close(); 
+        });
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (lightboxEl && lightboxEl.classList.contains('opacity-0')) return;
+      
+      if (e.key === 'Escape') close();
+      if (e.key === 'ArrowLeft') navigate(-1);
+      if (e.key === 'ArrowRight') navigate(1);
+    });
+  });
+</script>
