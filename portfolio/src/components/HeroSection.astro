@@ -2,11 +2,10 @@
 import { urlFor, getResponsiveProps } from '../lib/sanity';
 
 interface Props {
-  headingHtml?: string;
   images?: any[];
 }
 
-const { headingHtml, images } = Astro.props;
+const { images } = Astro.props;
 
 // Helper to get props or fallback
 function getHeroImageProps(index: number) {
@@ -31,7 +30,8 @@ const img2Props = getHeroImageProps(1);
 
     <!-- Intro Heading -->
     <div class="text-center z-10 mb-[-5vh]">
-        <h2 id="hero-heading" class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight" set:html={headingHtml || `Cinematic, architectural and <br /> <span class="italic">unapologetically bold.</span>`}>
+        <h2 id="hero-heading" class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight">
+            Where the light <br /><span class="italic">settles</span>
         </h2>
     </div>
 
@@ -57,8 +57,8 @@ const img2Props = getHeroImageProps(1);
         </div>
 
         <!-- Massive Title Text -->
-        <h1 class="massive-text font-display text-primary text-center relative z-10 leading-[1] px-12 md:px-24">
-            Photography<br />Portfolio.
+        <h1 class="massive-text font-display text-primary text-center relative z-10 leading-[1.15] px-12 md:px-24">
+            Photographs<br />of family
         </h1>
 
     </div>

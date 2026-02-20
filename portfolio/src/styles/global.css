@@ -42,7 +42,7 @@
 @layer utilities {
     .massive-text {
         font-size: 15vw;
-        line-height: 0.75;
+        line-height: 1.1;
         letter-spacing: -0.04em;
     }
 
