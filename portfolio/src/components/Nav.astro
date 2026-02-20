@@ -8,7 +8,7 @@ const links = settings?.navLinks || [
 ];
 const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 ---
-<nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-primary transition-transform duration-300">
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-black transition-transform duration-300">
   <div class="flex items-center justify-between w-full">
     <!-- Left: Logo/Name -->
     <div class="flex items-center gap-4">
@@ -16,13 +16,15 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
         <span class="w-8 h-[1px] bg-current"></span>
         <span class="w-4 h-[1px] bg-current"></span>
       </div>
-      <span class="text-[10px] uppercase tracking-[0.2em] font-medium">{siteName}</span>
+      <span class="text-[10px] uppercase tracking-[0.2em] font-medium">Ben Hickman</span>
     </div>
 
-    <!-- Center: Icons (Stars) -->
-    <div class="absolute left-1/2 -translate-x-1/2 flex gap-1">
-      <span class="material-icons text-sm">auto_awesome</span>
-      <span class="material-icons text-sm transform scale-x-[-1]">auto_awesome</span>
+    <!-- Center: Brand Logo -->
+    <div class="absolute left-1/2 -translate-x-1/2">
+      <a href="http://localhost:3051/">
+        <img src="/abstract_Letterform_Logo.svg"
+            alt="Ben Hickman Photography" class="h-[4.2rem] w-auto mt-2">
+      </a>
     </div>
 
     <!-- Right: Navigation Links -->

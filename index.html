@@ -6,6 +6,14 @@
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
     <title>Ben Hickman | Photography Portfolio</title>
 
+    <!-- Favicons -->
+    <link rel="icon" href="favicon.ico" sizes="48x48">
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <link rel="manifest" href="site.webmanifest">
+
     <!-- Fonts: Inter (text) and Instrument Serif (headings) -->
     <link href="https://fonts.googleapis.com" rel="preconnect" />
     <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect" />
@@ -70,6 +78,26 @@
             right: 15%;
             width: 25vw;
         }
+
+        /* Page transition */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        body {
+            animation: fadeIn 0.6s ease-out forwards;
+        }
+
+        body.fade-out {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
     </style>
 </head>
 
@@ -89,8 +117,10 @@
 
             <!-- Center: Brand Logo -->
             <div class="absolute left-1/2 -translate-x-1/2">
-                <img src="images/logos_ben_hickman_photography_brand/abstract_Letterform_Logo.svg"
-                    alt="Ben Hickman Photography" class="h-[4.2rem] w-auto mt-2">
+                <a href="/">
+                    <img src="images/logos_ben_hickman_photography_brand/abstract_Letterform_Logo.svg"
+                        alt="Ben Hickman Photography" class="h-[4.2rem] w-auto mt-2">
+                </a>
             </div>
 
             <!-- Right: Navigation Links -->
@@ -224,7 +254,7 @@
 
                 <!-- Image Column -->
                 <div class="md:col-span-8 md:pl-24">
-                    <div class="w-full group cursor-pointer">
+                    <a href="http://localhost:3052/collection/journeys" class="w-full group cursor-pointer block">
                         <div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 relative">
                             <img alt="Arid desert landscape"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtvHzrnxGNAkE6IokwFaww-uvsLRnTw6PtNAx5rBy0qzdtOIGbnSEW-bqtARGAglA5FXk0t60fxsSupWk8N3DFOpUAEvptJ-EZh4KqY1Rn_18Sw8qKm3ucd-ytdPXOQsLAzXxEJLK771ntcvfj8BqY6XDniKzhj_obQGghQUTY8rT_FEEfEer4dTfIjdoO_ibqDdE7N6WzMcwx31gZPEypudJoEKclKgVxlOPEgEUEyBee8Qzvj8FEbFDftn2Fiio8YNNEPIRz5zLg"
@@ -234,7 +264,7 @@
                                 class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
                             </div>
                         </div>
-                    </div>
+                    </a>
                 </div>
             </article>
 
@@ -265,14 +295,14 @@
 
                 <!-- Image Column -->
                 <div class="md:col-span-8 md:pl-24">
-                    <div class="w-full group cursor-pointer">
+                    <a href="http://localhost:3052/collection/archive-2023" class="w-full group cursor-pointer block">
                         <div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 relative">
                             <!-- Placeholder Image (Misty Valley) used for now -->
                             <img alt="Misty valley placeholder"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuBgPvXZVsb3fkAVDWLvVFHFd1G7UM9JAmMga-5kIzMS--WTrr88QOI6Uj-diZTtHxZ8hbgPEZY0pMK_TCBF-Zep6iu4X3sxWpA3EtMtxEUvPaJ4KfYYxHL_yPqu8TznAEKZ50YtQhjQ9o4mH7dIUNHYwbyXkZMfedPmEeZr-V1koIRrpbUaMB7lvCGVVV2NfgqJsqhXqp7E3iQTGaUAJhkNRbpxiRpJVK35YyUqudExpr1B2FlCy3-rBg7KAwgHlpbK21iThBTAaKNW"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         </div>
-                    </div>
+                    </a>
                 </div>
             </article>
 
@@ -303,14 +333,14 @@
 
                 <!-- Image Column -->
                 <div class="md:col-span-8 md:pl-24">
-                    <div class="w-full group cursor-pointer">
+                    <a href="http://localhost:3052/collection/urban-geometry" class="w-full group cursor-pointer block">
                         <div class="aspect-[16/10] overflow-hidden rounded-lg bg-gray-100 relative">
                             <!-- Reusing the first image as placeholder for now -->
                             <img alt="Urban geometry placeholder"
                                 src="https://lh3.googleusercontent.com/aida-public/AB6AXuAtvHzrnxGNAkE6IokwFaww-uvsLRnTw6PtNAx5rBy0qzdtOIGbnSEW-bqtARGAglA5FXk0t60fxsSupWk8N3DFOpUAEvptJ-EZh4KqY1Rn_18Sw8qKm3ucd-ytdPXOQsLAzXxEJLK771ntcvfj8BqY6XDniKzhj_obQGghQUTY8rT_FEEfEer4dTfIjdoO_ibqDdE7N6WzMcwx31gZPEypudJoEKclKgVxlOPEgEUEyBee8Qzvj8FEbFDftn2Fiio8YNNEPIRz5zLg"
                                 class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
                         </div>
-                    </div>
+                    </a>
                 </div>
             </article>
 
@@ -436,18 +466,6 @@
         const lightboxImg = document.getElementById('lightbox-img');
 
 
-        // Open Lightbox
-        document.querySelectorAll('.project-row img').forEach(img => {
-            img.style.cursor = 'zoom-in'; // Add zoom cursor via JS or class
-            img.addEventListener('click', (e) => {
-                e.stopPropagation(); // Prevent bubbling if needed
-                lightboxImg.src = img.src;
-                lightbox.classList.remove('opacity-0', 'pointer-events-none');
-                lightboxImg.classList.remove('scale-95');
-                lightboxImg.classList.add('scale-100');
-                document.body.style.overflow = 'hidden'; // Lock scrolling
-            });
-        });
 
         // Close Lightbox Function
         function closeLightbox() {
@@ -471,6 +489,22 @@
             if (e.key === 'Escape' && !lightbox.classList.contains('opacity-0')) {
                 closeLightbox();
             }
+        });
+    </script>
+
+    <!-- Page transition script -->
+    <script>
+        document.addEventListener('click', function (e) {
+            const link = e.target.closest('a');
+            if (!link) return;
+            const href = link.getAttribute('href');
+            // Skip anchors, javascript:, and external links opened in new tabs
+            if (!href || href.startsWith('#') || href.startsWith('javascript:') || link.target === '_blank') return;
+            e.preventDefault();
+            document.body.classList.add('fade-out');
+            setTimeout(function () {
+                window.location.href = href;
+            }, 500);
         });
     </script>
 

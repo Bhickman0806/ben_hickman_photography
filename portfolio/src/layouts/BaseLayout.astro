@@ -40,6 +40,21 @@ const {
         rel="stylesheet" />
     <!-- Material Icons for UI elements like arrows and stars -->
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" />
+
+    <!-- Page transition -->
+    <style>
+      @keyframes fadeIn {
+        from { opacity: 0; }
+        to { opacity: 1; }
+      }
+      body {
+        animation: fadeIn 0.6s ease-out forwards;
+      }
+      body.fade-out {
+        opacity: 0;
+        transition: opacity 0.5s ease-in-out;
+      }
+    </style>
   </head>
   <body class="bg-surface text-primary transition-colors duration-500 font-sans antialiased overflow-x-hidden">
     <Nav />
@@ -53,11 +68,26 @@ const {
     <!-- Optional: Global scripts/islands -->
   
     <!-- Global Chat Button -->
-    <div id="global-chat-btn" class="fixed bottom-12 left-12 z-50">
+    <div id="global-chat-btn" class="fixed bottom-12 right-12 z-50">
         <button
             class="w-12 h-12 bg-black text-white rounded-lg flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
             <span class="material-icons text-lg">chat_bubble_outline</span>
         </button>
     </div>
+
+    <!-- Page transition script -->
+    <script>
+      document.addEventListener('click', function(e) {
+        const link = e.target.closest('a');
+        if (!link) return;
+        const href = link.getAttribute('href');
+        if (!href || href.startsWith('#') || href.startsWith('javascript:') || link.target === '_blank') return;
+        e.preventDefault();
+        document.body.classList.add('fade-out');
+        setTimeout(function() {
+          window.location.href = href;
+        }, 500);
+      });
+    </script>
   </body>
 </html>
