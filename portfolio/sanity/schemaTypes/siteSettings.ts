@@ -9,7 +9,7 @@ export const siteSettings = defineType({
             name: 'siteName',
             title: 'Site Name',
             type: 'string',
-            initialValue: 'AE.1 Studio',
+            initialValue: 'Ben Hickman Photography Portfolio',
         }),
         defineField({
             name: 'navLinks',
