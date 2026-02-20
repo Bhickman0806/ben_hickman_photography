@@ -3,8 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSiteSettings } from '../lib/queries';
 
 const settings = await getSiteSettings();
-const email = settings?.footer?.socialLinks?.email || 'studio@ae1.com';
-const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram.com/ae1.studio';
+const email = settings?.footer?.socialLinks?.email || 'hello@benhickman.photography';
+const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram.com/benhickman';
 ---
 
 <BaseLayout title="Contact | Ben Hickman Photography Portfolio">

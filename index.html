@@ -60,7 +60,7 @@
            Values are relative to the view width (vw) for responsiveness.
         */
         .hero-image-1 {
-            top: 20%;
+            top: 5%;
             left: 15%;
             width: 25vw;
         }
@@ -87,17 +87,17 @@
                 <span class="text-[10px] uppercase tracking-[0.2em] font-medium">Ben Hickman</span>
             </div>
 
-            <!-- Center: Icons (Stars) -->
-            <div class="absolute left-1/2 -translate-x-1/2 flex gap-1">
-                <span class="material-icons text-sm">auto_awesome</span>
-                <span class="material-icons text-sm transform scale-x-[-1]">auto_awesome</span>
+            <!-- Center: Brand Logo -->
+            <div class="absolute left-1/2 -translate-x-1/2">
+                <img src="images/logos_ben_hickman_photography_brand/abstract_Letterform_Logo.svg"
+                    alt="Ben Hickman Photography" class="h-[4.2rem] w-auto mt-2">
             </div>
 
             <!-- Right: Navigation Links -->
             <div class="flex items-center gap-8">
-                <a href="#"
+                <a href="http://localhost:3052/archive"
                     class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">Archive</a>
-                <a href="#"
+                <a href="http://localhost:3052/contact"
                     class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">Contact</a>
             </div>
         </div>
@@ -107,29 +107,29 @@
 
     <main>
         <!-- Hero Section: Full screen height, centered content -->
-        <section class="min-h-screen relative flex flex-col pt-32 pb-20 items-center">
+        <section class="min-h-screen relative flex flex-col pt-32 pb-20 items-center overflow-hidden">
 
             <!-- Intro Heading -->
-            <div class="text-center z-10 mb-[-5vh]">
+            <div id="intro-heading" class="text-center z-10 mb-[-5vh]" style="will-change: transform, filter;">
                 <h2 class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight">
-                    Cinematic, architectural and <br />
-                    <span class="italic">unapologetically bold.</span>
+                    Where the light <br />
+                    <span class="italic">settles</span>
                 </h2>
             </div>
 
             <!-- Main Graphic: Massive Text interleaved with Images -->
             <div
-                class="relative w-full flex-1 flex flex-col items-center justify-center pointer-events-none select-none my-20">
+                class="relative w-full flex-1 flex flex-col items-center justify-center pointer-events-none select-none my-20 lg:px-48 xl:px-64">
 
                 <!-- Image 1 (Positioned via CSS class .hero-image-1) -->
-                <div class="absolute hero-image-1 opacity-80 z-0">
+                <div id="parallax-img-1" class="absolute hero-image-1 opacity-80 z-0" style="will-change: transform;">
                     <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBngMAxKa30TUYm_OYmD8GEG3mKWUuBCLA40ovQbCOVMUj4SAEyCq5sgiVU5mHEazlQ6ti0Rj6SVjrz5Ye7GYe5yraZpPjxskdI-R8j8U6hJitIt7NbDIPot0OYC2eRXdWke2GPNNpmdY82vk0j8JzSfMXcP-FSvljZQArYsmVrBFy9z2J3NtG32tfpkURNlmP8452_gWfNC8-fkO1cDKXtngcAqJjZbVXwQ6VmLzHAUNAQcNmPIOhBHVsfpOWf_KWR4EZ_bLAnBo5x"
                         alt="Mountain landscape" class="w-full h-auto object-cover grayscale opacity-50 block"
                         style="mix-blend-mode: multiply;">
                 </div>
 
                 <!-- Image 2 (Positioned via CSS class .hero-image-2) -->
-                <div class="absolute hero-image-2 opacity-80 z-0 translate-y-20">
+                <div id="parallax-img-2" class="absolute hero-image-2 opacity-80 z-0" style="will-change: transform;">
                     <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuD_blwz2RPl6QLCl7cV-ArfeVpf_da81ClDbzaspOhAaa6SUxyCbXQJCljWPhjJxTka_yV7kLPmP2hsnR47DG9QnFaOiQZ05SeLcngdKHHDsibd53ckibYe5Ga6DyETJoY97bN3zaLTJoLT7pG-UuSfiWbUuNiyisrzowq2qelgMHiLNMXD2XihA_1SVk7B8cgQ75nXzCMxIpKevz7lAK3gUM31aOeME6k8Q0G4h4fZEJHlTsTZSR9WxAGtHbnT9JlSXJYJ_D0qcmNc"
                         alt="Canyon vista" class="w-full h-auto object-cover grayscale opacity-50 block"
                         style="mix-blend-mode: multiply;">
@@ -139,7 +139,7 @@
                 <!-- z-10 ensures it sits above the images, leading-[0.85] adjusts line spacing -->
                 <h1
                     class="massive-text font-display text-primary text-center uppercase relative z-10 leading-[0.85] px-12 md:px-24">
-                    Photography<br />Portfolio.
+                    Photographs<br />of family
                 </h1>
 
             </div>
@@ -185,7 +185,7 @@
             </script>
 
             <!-- Bottom Right: Chat Button -->
-            <div class="absolute bottom-12 right-12 z-50">
+            <div class="fixed bottom-12 right-12 z-50">
                 <button
                     class="w-12 h-12 bg-black text-white rounded-lg flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
                     <span class="material-icons text-lg">chat_bubble_outline</span>
@@ -214,7 +214,7 @@
 
                     <div class="pt-8 border-t border-gray-100">
                         <a class="inline-flex items-center gap-4 group text-xs font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity"
-                            href="#">
+                            href="http://localhost:3052/collection/journeys">
                             Explore Collection
                             <span
                                 class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
@@ -255,7 +255,7 @@
 
                     <div class="pt-8 border-t border-gray-100">
                         <a class="inline-flex items-center gap-4 group text-xs font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity"
-                            href="#">
+                            href="http://localhost:3052/collection/archive-2023">
                             View Series
                             <span
                                 class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
@@ -293,7 +293,7 @@
 
                     <div class="pt-8 border-t border-gray-100">
                         <a class="inline-flex items-center gap-4 group text-xs font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity"
-                            href="#">
+                            href="http://localhost:3052/collection/urban-geometry">
                             Discover More
                             <span
                                 class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
@@ -357,7 +357,79 @@
                     scrollIndicator.classList.remove("opacity-0", "pointer-events-none");
                 }
             }
+
+            // Update parallax target positions and opacity on scroll
+            parallaxTargetY1 = currentScrollY * 0.3;
+            parallaxTargetY2 = 80 + currentScrollY * 0.15;
+
+            const vh = window.innerHeight;
+            const fadeStart = vh * 0.5;
+            const fadeEnd = vh * 0.9;
+
+            // Fade out hero images: full opacity until 50% vh, fade to 0 by 90% vh
+            if (currentScrollY <= fadeStart) {
+                parallaxTargetOpacity = 0.8;
+            } else if (currentScrollY >= fadeEnd) {
+                parallaxTargetOpacity = 0;
+            } else {
+                parallaxTargetOpacity = 0.8 * (1 - (currentScrollY - fadeStart) / (fadeEnd - fadeStart));
+            }
+
+            // Intro heading: parallax + blur from start of scroll
+            introTargetY = currentScrollY * 0.15;
+            if (currentScrollY >= fadeEnd) {
+                introTargetBlur = 8;
+            } else {
+                introTargetBlur = 8 * (currentScrollY / fadeEnd);
+            }
         });
+
+        // Parallax momentum effect using lerp (linear interpolation)
+        const parallaxImg1 = document.getElementById('parallax-img-1');
+        const parallaxImg2 = document.getElementById('parallax-img-2');
+        const introHeading = document.getElementById('intro-heading');
+        let parallaxTargetY1 = 0;
+        let parallaxTargetY2 = 80;
+        let parallaxCurrentY1 = 0;
+        let parallaxCurrentY2 = 80;
+        let parallaxTargetOpacity = 0.8;
+        let parallaxCurrentOpacity = 0.8;
+        let introTargetY = 0;
+        let introCurrentY = 0;
+        let introTargetBlur = 0;
+        let introCurrentBlur = 0;
+        const lerpFactor = 0.06;
+
+        function lerp(current, target, factor) {
+            return current + (target - current) * factor;
+        }
+
+        function animateParallax() {
+            // Smoothly interpolate toward target positions
+            parallaxCurrentY1 = lerp(parallaxCurrentY1, parallaxTargetY1, lerpFactor);
+            parallaxCurrentY2 = lerp(parallaxCurrentY2, parallaxTargetY2, lerpFactor);
+            parallaxCurrentOpacity = lerp(parallaxCurrentOpacity, parallaxTargetOpacity, 0.08);
+            introCurrentY = lerp(introCurrentY, introTargetY, lerpFactor);
+            introCurrentBlur = lerp(introCurrentBlur, introTargetBlur, 0.08);
+
+            if (parallaxImg1) {
+                parallaxImg1.style.transform = `translateY(${parallaxCurrentY1}px)`;
+                parallaxImg1.style.opacity = parallaxCurrentOpacity;
+            }
+            if (parallaxImg2) {
+                parallaxImg2.style.transform = `translateY(${parallaxCurrentY2}px)`;
+                parallaxImg2.style.opacity = parallaxCurrentOpacity;
+            }
+            if (introHeading) {
+                introHeading.style.transform = `translateY(${introCurrentY}px)`;
+                introHeading.style.filter = `blur(${introCurrentBlur}px)`;
+            }
+
+            requestAnimationFrame(animateParallax);
+        }
+
+        // Start the animation loop
+        requestAnimationFrame(animateParallax);
 
         // Lightbox Logic
         const lightbox = document.getElementById('lightbox');
