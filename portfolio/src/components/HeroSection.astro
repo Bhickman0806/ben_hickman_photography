@@ -31,7 +31,7 @@ const img2Props = getHeroImageProps(1);
 
     <!-- Intro Heading -->
     <div class="text-center z-10 mb-[-5vh]">
-        <h2 class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight" set:html={headingHtml || `Cinematic, architectural and <br /> <span class="italic">unapologetically bold.</span>`}>
+        <h2 id="hero-heading" class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight" set:html={headingHtml || `Cinematic, architectural and <br /> <span class="italic">unapologetically bold.</span>`}>
         </h2>
     </div>
 
@@ -88,6 +88,72 @@ const img2Props = getHeroImageProps(1);
 </style>
 
 <script>
+    // Staggered hero fade-in on load.
+    // Uses JS transitions so they don't conflict with existing Tailwind opacity values.
+    const heroItems: { selector: string; delay: number; dur: number; dy: string | null }[] = [
+        { selector: '#hero-heading',     delay: 200,  dur: 1600, dy: '-28px' },
+        { selector: '.massive-text',     delay: 450,  dur: 2000, dy:  '36px' },
+        { selector: '.hero-image-1',     delay: 850,  dur: 2000, dy:  '28px' },
+        { selector: '.hero-image-2',     delay: 1150, dur: 2000, dy:  null   },
+        { selector: '#scroll-indicator', delay: 2300, dur: 1400, dy:  null   },
+    ];
+
+    heroItems.forEach(({ selector, delay, dur, dy }) => {
+        const el = document.querySelector<HTMLElement>(selector);
+        if (!el) return;
+
+        // Start invisible
+        el.style.opacity = '0';
+        if (dy) el.style.transform = `translateY(${dy})`;
+
+        setTimeout(() => {
+            el.getBoundingClientRect(); // flush layout so browser registers initial state
+            const t = [`opacity ${dur}ms cubic-bezier(0.16, 1, 0.3, 1)`];
+            if (dy) t.push(`transform ${dur}ms cubic-bezier(0.16, 1, 0.3, 1)`);
+            el.style.transition = t.join(', ');
+            el.style.opacity = '';        // reverts to class-based opacity (e.g. opacity-80)
+            if (dy) el.style.transform = ''; // reverts to class-based transform or none
+        }, delay);
+    });
+
+    // --- Parallax + fade-on-scroll for hero images ---
+    // Starts after the image fade-ins are done so it doesn't fight the entrance transitions.
+    const heroImg1 = document.querySelector<HTMLElement>('.hero-image-1');
+    const heroImg2 = document.querySelector<HTMLElement>('.hero-image-2');
+    const heroSection = document.querySelector<HTMLElement>('section');
+
+    let parallaxReady = false;
+
+    function applyParallax() {
+        if (!parallaxReady || !heroImg1 || !heroImg2 || !heroSection) return;
+        const scrollY = window.scrollY;
+        const heroH = heroSection.offsetHeight;
+        // Fade images out as hero scrolls away (based on 65% of section height)
+        const progress = Math.min(scrollY / (heroH * 0.65), 1);
+
+        // Images move at ~25% / ~15% of scroll speed — slower = more depth
+        heroImg1.style.transform = `translateY(${scrollY * 0.25}px)`;
+        // Keep image-2's original translate-y-20 offset (5rem) intact while adding parallax
+        heroImg2.style.transform = `translateY(calc(5rem + ${scrollY * 0.15}px))`;
+
+        // Fade from their natural 0.8 opacity down to 0
+        heroImg1.style.opacity = String(0.8 * (1 - progress));
+        heroImg2.style.opacity = String(0.8 * (1 - progress * 0.85));
+    }
+
+    // Image fade-ins finish at ~3150ms (delay 1150 + dur 2000). Give a small buffer.
+    setTimeout(() => {
+        // Clear the entrance transitions so scroll updates are instant
+        if (heroImg1) heroImg1.style.transition = '';
+        if (heroImg2) heroImg2.style.transition = '';
+        parallaxReady = true;
+        applyParallax(); // sync to current scroll position in case user already scrolled
+    }, 3300);
+
+    window.addEventListener('scroll', () => {
+        requestAnimationFrame(applyParallax);
+    }, { passive: true });
+
     const scrollIndicator = document.getElementById("scroll-indicator");
 
     function smoothScrollTo(distance: number, duration: number) {

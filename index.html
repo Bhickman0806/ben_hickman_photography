@@ -107,13 +107,13 @@
     <nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-black transition-transform duration-300">
         <div class="flex items-center justify-between w-full">
             <!-- Left: Logo/Name -->
-            <div class="flex items-center gap-4">
+            <a href="/" class="flex items-center gap-4 hover:opacity-50 transition-opacity">
                 <div class="flex gap-1">
                     <span class="w-8 h-[1px] bg-current"></span>
                     <span class="w-4 h-[1px] bg-current"></span>
                 </div>
                 <span class="text-[10px] uppercase tracking-[0.2em] font-medium">Ben Hickman</span>
-            </div>
+            </a>
 
             <!-- Center: Brand Logo -->
             <div class="absolute left-1/2 -translate-x-1/2">
@@ -418,6 +418,10 @@
         const parallaxImg1 = document.getElementById('parallax-img-1');
         const parallaxImg2 = document.getElementById('parallax-img-2');
         const introHeading = document.getElementById('intro-heading');
+        const scrollIndicatorEl = document.getElementById("scroll-indicator");
+        const massiveTextEl = document.querySelector(".massive-text");
+
+        let parallaxReady = false;
         let parallaxTargetY1 = 0;
         let parallaxTargetY2 = 80;
         let parallaxCurrentY1 = 0;
@@ -430,11 +434,47 @@
         let introCurrentBlur = 0;
         const lerpFactor = 0.06;
 
+        // Staggered hero fade-in on load
+        const heroItems = [
+            { el: introHeading, delay: 200, dur: 1600, dy: -28 },
+            { el: massiveTextEl, delay: 450, dur: 2000, dy: 36 },
+            { el: parallaxImg1, delay: 850, dur: 2000, dy: 28 },
+            { el: parallaxImg2, delay: 1150, dur: 2000, dy: null },
+            { el: scrollIndicatorEl, delay: 2300, dur: 1400, dy: null },
+        ];
+
+        heroItems.forEach(({ el, delay, dur, dy }) => {
+            if (!el) return;
+            el.style.opacity = '0';
+            if (dy) el.style.transform = `translateY(${dy}px)`;
+
+            setTimeout(() => {
+                el.getBoundingClientRect(); // flush layout
+                const t = [`opacity ${dur}ms cubic-bezier(0.16, 1, 0.3, 1)`];
+                if (dy !== null) t.push(`transform ${dur}ms cubic-bezier(0.16, 1, 0.3, 1)`);
+                el.style.transition = t.join(', ');
+                el.style.opacity = '';
+                if (dy !== null) el.style.transform = '';
+            }, delay);
+        });
+
+        // Enable parallax after entrance animations
+        setTimeout(() => {
+            if (parallaxImg1) parallaxImg1.style.transition = 'opacity 0.3s ease-out'; // keep opacity smooth but transform sharp
+            if (parallaxImg2) parallaxImg2.style.transition = 'opacity 0.3s ease-out';
+            parallaxReady = true;
+        }, 3300);
+
         function lerp(current, target, factor) {
             return current + (target - current) * factor;
         }
 
         function animateParallax() {
+            if (!parallaxReady) {
+                requestAnimationFrame(animateParallax);
+                return;
+            }
+
             // Smoothly interpolate toward target positions
             parallaxCurrentY1 = lerp(parallaxCurrentY1, parallaxTargetY1, lerpFactor);
             parallaxCurrentY2 = lerp(parallaxCurrentY2, parallaxTargetY2, lerpFactor);

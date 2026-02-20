@@ -11,17 +11,17 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 <nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-black transition-transform duration-300">
   <div class="flex items-center justify-between w-full">
     <!-- Left: Logo/Name -->
-    <div class="flex items-center gap-4">
+    <a href="/" data-home-link class="flex items-center gap-4 hover:opacity-50 transition-opacity">
       <div class="flex gap-1">
         <span class="w-8 h-[1px] bg-current"></span>
         <span class="w-4 h-[1px] bg-current"></span>
       </div>
       <span class="text-[10px] uppercase tracking-[0.2em] font-medium">Ben Hickman</span>
-    </div>
+    </a>
 
     <!-- Center: Brand Logo -->
     <div class="absolute left-1/2 -translate-x-1/2">
-      <a href="http://localhost:3051/">
+      <a href="/" data-home-link>
         <img src="/abstract_Letterform_Logo.svg"
             alt="Ben Hickman Photography" class="h-[4.2rem] w-auto mt-2">
       </a>
@@ -42,19 +42,29 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 <script>
   let lastScrollY = window.scrollY;
   const navbar = document.getElementById("navbar");
-  
+
   if (navbar) {
     window.addEventListener("scroll", () => {
       const currentScrollY = window.scrollY;
-      
+
       // Handle Navbar based on scroll direction
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         navbar.classList.add("-translate-y-full");
       } else {
         navbar.classList.remove("-translate-y-full");
       }
-      
+
       lastScrollY = currentScrollY;
     });
   }
+
+  // Home links: smooth scroll to top on homepage, navigate otherwise
+  document.querySelectorAll<HTMLAnchorElement>('[data-home-link]').forEach(link => {
+    link.addEventListener('click', (e) => {
+      if (window.location.pathname === '/') {
+        e.preventDefault();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  });
 </script>

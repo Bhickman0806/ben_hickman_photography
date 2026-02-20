@@ -82,6 +82,8 @@ const {
         if (!link) return;
         const href = link.getAttribute('href');
         if (!href || href.startsWith('#') || href.startsWith('javascript:') || link.target === '_blank') return;
+        // If this is a home link and we're already on the homepage, let Nav.astro handle it (smooth scroll, no reload)
+        if (link.hasAttribute('data-home-link') && window.location.pathname === '/') return;
         e.preventDefault();
         document.body.classList.add('fade-out');
         setTimeout(function() {
