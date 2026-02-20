@@ -30,8 +30,8 @@ const projects = homeData?.featuredCollections?.map((collection: any) => ({
 
   <!-- Content Section: List of Project Rows -->
   <section class="max-w-[90%] mx-auto pt-16 pb-32 space-y-32">
-    {projects.map(project => (
-      <PhotoCard {...project} />
+    {projects.map((project, i) => (
+      <PhotoCard {...project} featured={i === 0} />
     ))}
   </section>
 

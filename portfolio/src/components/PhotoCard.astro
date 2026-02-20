@@ -13,20 +13,21 @@ interface Props {
   linkHref: string;
   linkLabel: string;
   reverse?: boolean;
+  featured?: boolean;
 }
 
-const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, linkLabel, reverse } = Astro.props;
+const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, linkLabel, reverse, featured } = Astro.props;
 ---
 <article class="project-row grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 items-center">
   
   <!-- Text Column -->
   <div class:list={["md:col-span-4 space-y-8", reverse ? "md:order-2" : ""]}>
     <div>
-      <span class="text-[10px] font-bold uppercase tracking-[0.2em] opacity-40 block mb-6">
+      <span class:list={["uppercase tracking-[0.2em] block mb-6", featured ? "text-[12px] font-medium opacity-70" : "text-[10px] font-bold opacity-40"]}>
         {subtitle}
       </span>
-      <h3 class="text-4xl font-display mb-6">{title}</h3>
-      <p class="text-muted text-sm leading-relaxed max-w-sm">{description}</p>
+      <h3 class:list={["font-display mb-6", featured ? "text-[46px]" : "text-4xl"]}>{title}</h3>
+      <p class:list={["text-muted leading-relaxed max-w-sm", featured ? "text-base" : "text-sm"]}>{description}</p>
     </div>
     <div class="pt-8 border-t border-border-color-DEFAULT">
       <ArrowLink href={linkHref} label={linkLabel} />
