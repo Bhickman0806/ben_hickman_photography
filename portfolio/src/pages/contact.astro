@@ -3,8 +3,8 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSiteSettings } from '../lib/queries';
 
 const settings = await getSiteSettings();
-const email = settings?.footer?.socialLinks?.email || 'hello@benhickman.photography';
-const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram.com/benhickman';
+const email = settings?.footer?.socialLinks?.email || 'ben@benhickman.photography';
+const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram.com/ben.hickman.photography';
 ---
 
 <BaseLayout title="Contact | Ben Hickman Photography Portfolio">
@@ -34,7 +34,13 @@ const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram
 
       <!-- Right Column: Simple Form -->
       <div class="bg-gray-50 dark:bg-white/5 p-8 md:p-12 rounded-lg">
-        <form class="space-y-8" action="#" method="POST">
+        <form class="space-y-8" action={`https://formsubmit.co/${email}`} method="POST">
+           <!-- FormSubmit.co configuration -->
+           <input type="hidden" name="_subject" value="New inquiry from benhickman.photography" />
+           <input type="hidden" name="_captcha" value="false" />
+           <input type="text" name="_honey" style="display:none" />
+           <input type="hidden" name="_next" value="https://benhickman.photography/contact" />
+
            <div class="space-y-2">
              <label for="name" class="text-xs uppercase tracking-widest opacity-50 font-bold block">Name</label>
              <input type="text" id="name" name="name" required class="w-full bg-transparent border-b border-border-color-DEFAULT py-2 focus:outline-none focus:border-black dark:focus:border-white transition-colors" placeholder="John Doe" />
