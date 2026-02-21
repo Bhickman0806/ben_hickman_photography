@@ -98,6 +98,33 @@
             opacity: 0;
             transition: opacity 0.5s ease-in-out;
         }
+
+        /* Scroll Glass Container Effect */
+        .scroll-glass-container {
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            border-radius: 9999px;
+            border: 1px solid transparent;
+            background-color: transparent;
+            padding: 0;
+            transform: translate(0, 0);
+        }
+
+        @supports ((backdrop-filter: blur(12px)) or (-webkit-backdrop-filter: blur(12px))) {
+            .scroll-glass-container.is-scrolled {
+                background-color: rgba(255, 255, 255, 0.65);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 1px solid rgba(255, 255, 255, 0.5);
+                padding: 0.75rem 1.25rem;
+                transform: translate(-1.25rem, 0.75rem);
+                box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+            }
+
+            .scroll-glass-container.is-scrolled .scroll-icon,
+            .scroll-glass-container.is-scrolled .scroll-text {
+                opacity: 0.9 !important;
+            }
+        }
     </style>
 </head>
 
@@ -112,7 +139,7 @@
                     <span class="w-8 h-[1px] bg-current"></span>
                     <span class="w-4 h-[1px] bg-current"></span>
                 </div>
-                <span class="text-[10px] uppercase tracking-[0.2em] font-medium">Ben Hickman</span>
+                <span class="hidden md:inline text-[10px] uppercase tracking-[0.2em] font-medium">Ben Hickman</span>
             </a>
 
             <!-- Center: Brand Logo -->
@@ -126,7 +153,7 @@
             <!-- Right: Navigation Links -->
             <div class="flex items-center gap-8">
                 <a href="http://localhost:3052/archive"
-                    class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">Archive</a>
+                    class="hidden md:block text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">Archive</a>
                 <a href="http://localhost:3052/contact"
                     class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">Contact</a>
             </div>
@@ -174,26 +201,45 @@
 
             </div>
 
-            <!-- Bottom Left: Scroll Indicator -->
-            <!-- Calls smoothScrollTo function defined in script below -->
-            <button id="scroll-indicator" onclick="smoothScrollTo(window.innerHeight, 1200)"
-                class="absolute bottom-12 left-12 flex items-center gap-4 z-50 hover:opacity-80 transition-opacity duration-500 text-left">
-                <span class="material-icons text-sm opacity-50 animate-bounce">south</span>
-                <span class="text-[10px] uppercase tracking-[0.2em] opacity-50 font-medium">Scroll to explore</span>
-            </button>
-
             <!-- Custom Smooth Scroll Script -->
             <script>
                 /**
-                 * Smoothly scrolls the window by a specific distance over a duration.
-                 * @param {number} distance - How many pixels to scroll down
-                 * @param {number} duration - Animation duration in milliseconds
+                 * Scrolls to the next .project-row collection below the current viewport.
+                 * Aligns the top edge of the collection with the top of the viewport.
+                 * Wraps to the top of the page after the last collection.
                  */
-                function smoothScrollTo(distance, duration) {
+                function scrollToNextCollection() {
+                    const rows = document.querySelectorAll('.project-row');
+                    const currentScroll = window.scrollY;
+                    const threshold = 10; // px tolerance to avoid re-selecting current row
+                    let targetY = null;
+
+                    for (const row of rows) {
+                        const rowTop = row.getBoundingClientRect().top + currentScroll;
+                        if (rowTop > currentScroll + threshold) {
+                            targetY = rowTop;
+                            break;
+                        }
+                    }
+
+                    // If no next collection found, scroll back to top
+                    if (targetY === null) {
+                        targetY = 0;
+                    }
+
+                    smoothAnimateTo(targetY, 1200);
+                }
+
+                /**
+                 * Smoothly scrolls to an absolute scroll position.
+                 * @param {number} targetY - Target scrollY position
+                 * @param {number} duration - Animation duration in ms
+                 */
+                function smoothAnimateTo(targetY, duration) {
                     const start = window.scrollY;
+                    const distance = targetY - start;
                     const startTime = performance.now();
 
-                    // Easing function for smooth start and end
                     function easeInOutCubic(t) {
                         return t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2;
                     }
@@ -213,6 +259,16 @@
                     requestAnimationFrame(animation);
                 }
             </script>
+
+            <!-- Bottom Left: Fixed Scroll Indicator (always visible) -->
+            <button id="scroll-indicator" onclick="scrollToNextCollection()"
+                class="scroll-glass-container fixed bottom-12 left-12 flex items-center gap-4 z-50 hover:opacity-80 text-left">
+                <span
+                    class="scroll-icon material-icons text-sm opacity-50 animate-bounce transition-opacity duration-500">south</span>
+                <span
+                    class="scroll-text text-[10px] uppercase tracking-[0.2em] opacity-50 font-medium transition-opacity duration-500">Scroll
+                    to explore</span>
+            </button>
 
             <!-- Bottom Right: Chat Button -->
             <div class="fixed bottom-12 right-12 z-50">
@@ -358,7 +414,7 @@
 
         <!-- Image Container -->
         <img id="lightbox-img" src="" alt="Full screen view"
-            class="max-w-full max-h-screen object-contain shadow-2xl scale-95 transition-transform duration-300">
+            class="max-w-full max-h-screen object-contain shadow-2xl scale-95 opacity-0 transition-all duration-300">
     </div>
 
     <script>
@@ -379,13 +435,11 @@
 
             lastScrollY = currentScrollY;
 
-            // Handle Scroll Indicator
-            if (scrollIndicator) {
-                if (currentScrollY > 10) {
-                    scrollIndicator.classList.add("opacity-0", "pointer-events-none");
-                } else {
-                    scrollIndicator.classList.remove("opacity-0", "pointer-events-none");
-                }
+            // Scroll indicator glass effect past initial viewport
+            if (currentScrollY > window.innerHeight) {
+                scrollIndicator.classList.add("is-scrolled");
+            } else {
+                scrollIndicator.classList.remove("is-scrolled");
             }
 
             // Update parallax target positions and opacity on scroll
@@ -510,9 +564,15 @@
         // Close Lightbox Function
         function closeLightbox() {
             lightbox.classList.add('opacity-0', 'pointer-events-none');
-            lightboxImg.classList.add('scale-95');
-            lightboxImg.classList.remove('scale-100');
+            lightboxImg.classList.remove('scale-100', 'opacity-100');
+            lightboxImg.classList.add('scale-95', 'opacity-0');
             document.body.style.overflow = ''; // Unlock scrolling
+
+            setTimeout(() => {
+                if (lightbox.classList.contains('opacity-0')) {
+                    lightboxImg.src = '';
+                }
+            }, 300);
         }
 
 

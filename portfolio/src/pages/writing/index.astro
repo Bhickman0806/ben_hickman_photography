@@ -1,0 +1,197 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getWritingIndex } from '../../lib/queries';
+
+const items = await getWritingIndex();
+
+function formatDate(dateStr: string | undefined): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+}
+---
+
+<BaseLayout title="Writing | Ben Hickman">
+
+  <style>
+    /* ── Label style ── */
+    .label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #595959;
+    }
+
+    /* ── Filter tabs ── */
+    .filter-tab {
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #595959;
+      padding-bottom: 2px;
+      border-bottom: 1px solid transparent;
+      cursor: pointer;
+      transition: color 0.15s, border-color 0.15s;
+      background: none;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+    }
+    .filter-tab:hover { color: #111111; }
+    .filter-tab.active {
+      color: #111111;
+      border-bottom-color: #111111;
+    }
+
+    /* ── Writing list rows ── */
+    .writing-row {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 2rem;
+      padding: 2rem 0;
+      border-top: 1px solid #f3f4f6;
+      text-decoration: none;
+      color: inherit;
+      transition: opacity 0.2s ease;
+    }
+    .writing-row:last-child { border-bottom: 1px solid #f3f4f6; }
+    .writing-row:hover { opacity: 0.5; }
+
+    /* Type badge */
+    .type-badge {
+      font-family: "Inter", sans-serif;
+      font-size: 0.625rem;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #595959;
+    }
+
+    /* Row title */
+    .row-title {
+      font-family: "Instrument Serif", serif;
+      font-size: clamp(1.375rem, 2.5vw, 1.875rem);
+      line-height: 1.15;
+      color: #111111;
+      margin-top: 0.4rem;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Row deck / descriptor */
+    .row-deck {
+      font-family: "Inter", sans-serif;
+      font-size: 0.8125rem;
+      font-weight: 300;
+      line-height: 1.6;
+      color: #595959;
+      max-width: 52ch;
+    }
+
+    /* Arrow icon — right-aligned, vertically centered with title */
+    .row-arrow {
+      flex-shrink: 0;
+      padding-top: 0.5rem;
+      color: #111111;
+      opacity: 0;
+      transform: translateX(-4px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+    .writing-row:hover .row-arrow {
+      opacity: 1;
+      transform: translateX(0);
+    }
+
+    /* Filter hide/show */
+    .writing-row[data-hidden] { display: none; }
+  </style>
+
+  <!-- ── Page Header ── -->
+  <header class="max-w-5xl mx-auto px-8 pt-40 pb-0">
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-10 mb-16">
+
+      <div>
+        <span class="label block mb-6">Ben Hickman</span>
+        <h1 class="font-display text-6xl md:text-7xl lg:text-8xl leading-[0.95] tracking-tight">
+          Writing
+        </h1>
+      </div>
+
+      <!-- Intro blurb -->
+      <p class="font-sans text-sm font-light leading-relaxed text-[#595959] max-w-xs md:mb-2">
+        Essays on photography and seeing.<br>
+        Poems from the field.
+      </p>
+
+    </div>
+
+    <!-- ── Filter tabs ── -->
+    <div class="flex items-center gap-8 pb-0">
+      <button class="filter-tab active" data-filter="all">All</button>
+      <button class="filter-tab" data-filter="essay">Essays</button>
+      <button class="filter-tab" data-filter="poem">Poetry</button>
+    </div>
+  </header>
+
+  <!-- ── Writing List ── -->
+  <section class="max-w-5xl mx-auto px-8 pb-32 mt-0">
+
+    {items.map((item: any) => {
+      const href = item.type === 'essay' ? `/essay/${item.slug}` : `/poem/${item.slug}`;
+      const typeLabel = item.type === 'essay' ? 'Essay' : 'Poem';
+      const meta = item.type === 'essay'
+        ? `${item.readingTime ? item.readingTime + ' min read' : ''}`
+        : `${item.form || ''}`;
+      const deck = item.type === 'essay'
+        ? item.deck
+        : item.location;
+
+      return (
+        <a href={href} class="writing-row" data-type={item.type}>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-4 flex-wrap">
+              <span class="type-badge">{typeLabel}</span>
+              {item.publishedAt && (
+                <>
+                  <span class="label opacity-60">{formatDate(item.publishedAt)}</span>
+                  {meta && <span class="label opacity-30">·</span>}
+                </>
+              )}
+              {meta && <span class="label opacity-60">{meta}</span>}
+            </div>
+            <p class="row-title">{item.title}</p>
+            {deck && <p class="row-deck">{deck}</p>}
+          </div>
+          <span class="material-icons row-arrow">east</span>
+        </a>
+      );
+    })}
+
+    {items.length === 0 && (
+      <p class="py-16 text-[#595959] text-sm font-light">No writing published yet.</p>
+    )}
+
+  </section>
+
+  <script>
+    const tabs = document.querySelectorAll<HTMLButtonElement>('.filter-tab');
+    const rows = document.querySelectorAll<HTMLElement>('.writing-row');
+
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+
+        const filter = tab.dataset.filter;
+        rows.forEach(row => {
+          const match = filter === 'all' || row.dataset.type === filter;
+          if (match) row.removeAttribute('data-hidden');
+          else row.setAttribute('data-hidden', '');
+        });
+      });
+    });
+  </script>
+
+</BaseLayout>

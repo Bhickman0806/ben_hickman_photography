@@ -86,3 +86,84 @@ export async function getArchivePhotos() {
   }`;
   return await client.fetch(query);
 }
+
+// Get all essays and poems merged for the writing index, sorted by publishedAt desc
+export async function getWritingIndex() {
+  const essays = await client.fetch(`*[_type == "essay"] | order(publishedAt desc) {
+    "type": "essay",
+    title,
+    "slug": slug.current,
+    deck,
+    publishedAt,
+    readingTime,
+    tags
+  }`);
+
+  const poems = await client.fetch(`*[_type == "poem"] | order(publishedAt desc) {
+    "type": "poem",
+    title,
+    "slug": slug.current,
+    form,
+    location,
+    publishedAt,
+    tags
+  }`);
+
+  return [...essays, ...poems].sort((a: any, b: any) => {
+    if (!a.publishedAt) return 1;
+    if (!b.publishedAt) return -1;
+    return new Date(b.publishedAt).getTime() - new Date(a.publishedAt).getTime();
+  });
+}
+
+// Get all essay slugs for static paths
+export async function getEssayPaths() {
+  return await client.fetch(`*[_type == "essay" && defined(slug.current)][].slug.current`);
+}
+
+// Get data for a specific essay
+export async function getEssayData(slug: string) {
+  return await client.fetch(`*[_type == "essay" && slug.current == $slug][0]{
+    title,
+    "slug": slug.current,
+    deck,
+    category,
+    publishedAt,
+    readingTime,
+    tags,
+    heroImage,
+    body,
+    "relatedEssays": relatedEssays[]->{
+      title,
+      "slug": slug.current,
+      deck,
+      "heroImage": heroImage
+    }
+  }`, { slug });
+}
+
+// Get all poem slugs for static paths
+export async function getPoemPaths() {
+  return await client.fetch(`*[_type == "poem" && defined(slug.current)][].slug.current`);
+}
+
+// Get data for a specific poem
+export async function getPoemData(slug: string) {
+  return await client.fetch(`*[_type == "poem" && slug.current == $slug][0]{
+    title,
+    "slug": slug.current,
+    publishedAt,
+    form,
+    location,
+    tags,
+    epigraph,
+    stanzas,
+    poetsNote,
+    "relatedPoems": relatedPoems[]->{
+      title,
+      "slug": slug.current,
+      publishedAt,
+      form
+    }
+  }`, { slug });
+}

@@ -49,7 +49,7 @@ const years = Object.keys(photosByYear).sort((a, b) => {
                   class="aspect-[2/3] md:aspect-square bg-gray-100 group relative overflow-hidden cursor-pointer rounded-sm"
                   data-lightbox
                   data-full-src={urlFor(photo.image).width(1600).url()}
-                  data-caption={`${photo.title}${photo.location ? ` — ${photo.location}` : ''}`}
+
                 >
                   <img 
                     src={urlFor(photo.image).width(600).height(600).fit('crop').url()} 
@@ -57,11 +57,7 @@ const years = Object.keys(photosByYear).sort((a, b) => {
                     loading="lazy"
                     class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110 grayscale group-hover:grayscale-0"
                   />
-                  <div class="absolute inset-x-0 bottom-0 p-4 opacity-0 group-hover:opacity-100 transition-opacity bg-gradient-to-t from-black/50 to-transparent">
-                     <span class="text-white text-xs uppercase tracking-widest truncate block">
-                       {photo.title}
-                     </span>
-                  </div>
+
                 </div>
               ))}
             </div>

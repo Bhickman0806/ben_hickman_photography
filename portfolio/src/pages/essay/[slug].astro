@@ -1,0 +1,263 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { PortableText } from 'astro-portabletext';
+import { getEssayPaths, getEssayData } from '../../lib/queries';
+import { urlFor, getResponsiveProps } from '../../lib/sanity';
+import PullQuoteBlock from '../../components/essay/PullQuoteBlock.astro';
+import InlineImageBlock from '../../components/essay/InlineImageBlock.astro';
+
+export async function getStaticPaths() {
+  const slugs: string[] = await getEssayPaths();
+  return slugs.map(slug => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const essay = await getEssayData(slug);
+
+if (!essay) return Astro.redirect('/writing');
+
+function formatDate(dateStr: string | undefined): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'long', year: 'numeric', timeZone: 'UTC' });
+}
+
+const heroProps = essay.heroImage
+  ? getResponsiveProps(essay.heroImage, { width: 1600, aspectRatio: 21 / 9, sizes: '(max-width: 1280px) 100vw, 1280px' })
+  : null;
+
+const ptComponents = {
+  type: {
+    pullQuote: PullQuoteBlock,
+    inlineImage: InlineImageBlock,
+  },
+};
+---
+
+<BaseLayout
+  title={`${essay.title} | Ben Hickman`}
+  description={essay.deck || undefined}
+  image={essay.heroImage ? urlFor(essay.heroImage).width(1200).height(630).url() : undefined}
+>
+
+  <style>
+    /* ── Article label (shared) ── */
+    .article-label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #595959;
+    }
+
+    /* ── Essay body typography ── */
+    .essay-body {
+      font-family: "Inter", sans-serif;
+      font-size: 0.9375rem;
+      line-height: 1.75;
+      color: #4a4a4a;
+      font-weight: 300;
+    }
+    .essay-body :global(p) {
+      margin-bottom: 1.25em;
+    }
+    .essay-body :global(h2) {
+      font-family: "Instrument Serif", serif;
+      font-size: 1.6rem;
+      line-height: 1.25;
+      color: #111111;
+      font-weight: 400;
+      margin-top: 2.5em;
+      margin-bottom: 0.75em;
+    }
+    .essay-body :global(p),
+    .essay-body :global(h2) {
+      break-inside: avoid;
+    }
+
+    /* ── Two-column layout at lg+ ── */
+    @media (min-width: 1024px) {
+      .essay-columns {
+        column-count: 2;
+        column-gap: 4rem;
+        column-rule: 1px solid #f3f4f6;
+      }
+    }
+
+    /* ── Pull quote ── */
+    :global(.pull-quote) {
+      column-span: all;
+      margin: 3rem 0;
+      padding: 3rem 0;
+      border-top: 1px solid #e5e7eb;
+      border-bottom: 1px solid #e5e7eb;
+      text-align: center;
+    }
+    :global(.pull-quote p) {
+      font-family: "Instrument Serif", serif;
+      font-style: italic;
+      font-size: clamp(1.4rem, 2.5vw, 2rem);
+      line-height: 1.4;
+      color: #111111;
+      max-width: 34em;
+      margin: 0 auto 0.75em;
+    }
+    :global(.pull-quote cite) {
+      font-family: "Inter", sans-serif;
+      font-size: 0.625rem;
+      font-style: normal;
+      letter-spacing: 0.2em;
+      text-transform: uppercase;
+      color: #595959;
+    }
+
+    /* ── Inline image ── */
+    :global(.essay-inline-img) {
+      break-inside: avoid;
+      margin: 2em 0;
+    }
+
+    /* ── Related essay card hover ── */
+    .essay-card:hover .essay-card-title {
+      opacity: 0.6;
+    }
+  </style>
+
+  <article>
+
+    <!-- ── Article Header ── -->
+    <header class="max-w-3xl mx-auto px-8 pt-40 pb-12 text-center">
+
+      <!-- Breadcrumb -->
+      <div class="flex items-center justify-center gap-3 mb-8">
+        <a href="/writing" class="article-label hover:opacity-50 transition-opacity">Writing</a>
+        <span class="article-label opacity-30">/</span>
+        {essay.category && <span class="article-label">{essay.category}</span>}
+      </div>
+
+      <!-- Title -->
+      <h1 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] mb-8 tracking-tight">
+        {essay.title}
+      </h1>
+
+      <!-- Deck -->
+      {essay.deck && (
+        <p class="font-display italic text-xl md:text-2xl text-[#767676] leading-relaxed max-w-xl mx-auto mb-10">
+          {essay.deck}
+        </p>
+      )}
+
+      <!-- Divider -->
+      <div class="flex items-center gap-6 mb-10">
+        <div class="flex-1 h-[1px] bg-gray-100"></div>
+        <div class="flex gap-1">
+          <span class="w-1 h-1 rounded-full bg-gray-300 block"></span>
+          <span class="w-1 h-1 rounded-full bg-gray-300 block"></span>
+          <span class="w-1 h-1 rounded-full bg-gray-300 block"></span>
+        </div>
+        <div class="flex-1 h-[1px] bg-gray-100"></div>
+      </div>
+
+      <!-- Metadata -->
+      <div class="flex items-center justify-center gap-8 flex-wrap">
+        <span class="article-label">Ben Hickman</span>
+        {essay.publishedAt && (
+          <>
+            <span class="article-label opacity-30">·</span>
+            <span class="article-label">{formatDate(essay.publishedAt)}</span>
+          </>
+        )}
+        {essay.readingTime && (
+          <>
+            <span class="article-label opacity-30">·</span>
+            <span class="article-label">{essay.readingTime} min read</span>
+          </>
+        )}
+      </div>
+
+    </header>
+
+    <!-- ── Hero Image ── -->
+    {heroProps && (
+      <div class="max-w-5xl mx-auto px-8 mb-16">
+        <div class="aspect-[21/9] overflow-hidden rounded-lg bg-gray-100 relative">
+          <img
+            src={heroProps.src}
+            srcset={heroProps.srcset}
+            sizes={heroProps.sizes}
+            alt={essay.heroImage.alt || essay.title}
+            class="w-full h-full object-cover"
+          />
+        </div>
+        {essay.heroImage.caption && (
+          <p class="article-label mt-4 text-center">{essay.heroImage.caption}</p>
+        )}
+      </div>
+    )}
+
+    <!-- ── Essay Body ── -->
+    {essay.body && (
+      <div class="max-w-5xl mx-auto px-8 pb-32">
+        <div class="essay-body essay-columns">
+          <PortableText value={essay.body} components={ptComponents} />
+        </div>
+
+        <!-- ── Footer: Tags ── -->
+        {essay.tags?.length > 0 && (
+          <div class="mt-16 pt-12 border-t border-gray-100">
+            <div class="flex flex-wrap items-center gap-3 mb-16">
+              <span class="article-label mr-2 opacity-40">Filed under</span>
+              {essay.tags.map((tag: string) => (
+                <a href={`/writing?tag=${tag.toLowerCase()}`}
+                  class="text-[10px] uppercase tracking-[0.2em] font-medium border border-gray-200 px-3 py-1.5 hover:border-gray-400 transition-colors">
+                  {tag}
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <!-- ── Related Essays ── -->
+        {essay.relatedEssays?.length > 0 && (
+          <div class={essay.tags?.length > 0 ? '' : 'mt-16 pt-12 border-t border-gray-100'}>
+            <span class="article-label opacity-40 block mb-10">More Writing</span>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+              {essay.relatedEssays.map((related: any) => {
+                const relHero = related.heroImage
+                  ? getResponsiveProps(related.heroImage, { width: 800, aspectRatio: 16 / 9, sizes: '(max-width: 768px) 100vw, 50vw' })
+                  : null;
+                return (
+                  <a href={`/essay/${related.slug}`} class="essay-card group block space-y-4 hover:opacity-70 transition-opacity">
+                    {relHero && (
+                      <div class="aspect-[16/9] overflow-hidden rounded bg-gray-100">
+                        <img
+                          src={relHero.src}
+                          srcset={relHero.srcset}
+                          sizes={relHero.sizes}
+                          alt={related.heroImage.alt || related.title}
+                          loading="lazy"
+                          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                        />
+                      </div>
+                    )}
+                    <div>
+                      <h3 class="essay-card-title font-display text-2xl leading-snug transition-opacity">
+                        {related.title}
+                      </h3>
+                      {related.deck && (
+                        <p class="mt-1 text-[#595959] text-sm font-light">{related.deck}</p>
+                      )}
+                    </div>
+                  </a>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+      </div>
+    )}
+
+  </article>
+
+</BaseLayout>

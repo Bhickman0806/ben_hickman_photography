@@ -3,6 +3,7 @@ import { getSiteSettings } from '../lib/queries';
 
 const settings = await getSiteSettings();
 const links = settings?.navLinks || [
+  { label: 'Writing', href: '/writing' },
   { label: 'Archive', href: '/archive' },
   { label: 'Contact', href: '/contact' },
 ];

@@ -1,0 +1,262 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { getPoemPaths, getPoemData } from '../../lib/queries';
+
+export async function getStaticPaths() {
+  const slugs: string[] = await getPoemPaths();
+  return slugs.map(slug => ({ params: { slug } }));
+}
+
+const { slug } = Astro.params;
+const poem = await getPoemData(slug);
+
+if (!poem) return Astro.redirect('/writing');
+
+function formatDate(dateStr: string | undefined): string {
+  if (!dateStr) return '';
+  const d = new Date(dateStr);
+  return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
+}
+---
+
+<BaseLayout title={`${poem.title} | Ben Hickman`}>
+
+  <style>
+    /* ── Article label (shared) ── */
+    .article-label {
+      font-size: 0.625rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.2em;
+      color: #595959;
+    }
+
+    /* ── Epigraph ── */
+    .epigraph {
+      font-family: "Instrument Serif", serif;
+      font-style: italic;
+      font-size: 1.0625rem;
+      line-height: 1.6;
+      color: #595959;
+      max-width: 28em;
+    }
+    .epigraph cite {
+      display: block;
+      margin-top: 0.6em;
+      font-family: "Inter", sans-serif;
+      font-style: normal;
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #595959;
+    }
+
+    /* ── Section numeral ── */
+    .stanza-numeral {
+      font-family: "Inter", sans-serif;
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.25em;
+      text-transform: uppercase;
+      color: #595959;
+      display: block;
+      margin-bottom: 1.25rem;
+    }
+
+    /* ── Poem text ── */
+    .poem-text {
+      font-family: "Instrument Serif", serif;
+      font-style: normal;
+      font-size: 1.1875rem;
+      line-height: 1.65;
+      color: #111111;
+    }
+    .poem-text .line {
+      display: block;
+    }
+
+    /* ── Stanza group ── */
+    .stanza {
+      margin-bottom: 2.75rem;
+    }
+    .stanza:last-child {
+      margin-bottom: 0;
+    }
+
+    /* ── Poet's Note ── */
+    .poets-note {
+      font-family: "Inter", sans-serif;
+      font-size: 0.8125rem;
+      line-height: 1.75;
+      color: #595959;
+      font-weight: 300;
+    }
+
+    /* ── Related poems list ── */
+    .poem-list-item {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 1.5rem;
+      padding: 1.25rem 0;
+      border-bottom: 1px solid #f3f4f6;
+      text-decoration: none;
+      transition: opacity 0.2s ease;
+    }
+    .poem-list-item:hover { opacity: 0.5; }
+    .poem-list-title {
+      font-family: "Instrument Serif", serif;
+      font-style: normal;
+      font-size: 1.125rem;
+      color: #111111;
+      line-height: 1.3;
+    }
+    .poem-list-meta {
+      font-family: "Inter", sans-serif;
+      font-size: 0.625rem;
+      font-weight: 500;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #595959;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+  </style>
+
+  <article>
+
+    <!-- ── Poem Header ── -->
+    <header class="max-w-2xl mx-auto px-8 pt-40 pb-16">
+
+      <!-- Breadcrumb -->
+      <div class="flex items-center gap-3 mb-10">
+        <a href="/writing" class="article-label hover:opacity-50 transition-opacity">Writing</a>
+        <span class="article-label opacity-30">/</span>
+        <span class="article-label">Poetry</span>
+      </div>
+
+      <!-- Title -->
+      <h1 class="font-display text-5xl md:text-6xl lg:text-[4.25rem] leading-[1.05] mb-6 tracking-tight">
+        {poem.title}
+      </h1>
+
+      <!-- Thin rule -->
+      <div class="flex items-center gap-6 mt-10 mb-10">
+        <div class="flex-1 h-[1px] bg-gray-100"></div>
+      </div>
+
+      <!-- Metadata -->
+      <div class="flex items-center gap-8 flex-wrap">
+        <span class="article-label">Ben Hickman</span>
+        {poem.location && (
+          <>
+            <span class="article-label opacity-30">·</span>
+            <span class="article-label">{poem.location}</span>
+          </>
+        )}
+        {poem.form && (
+          <>
+            <span class="article-label opacity-30">·</span>
+            <span class="article-label">{poem.form}</span>
+          </>
+        )}
+      </div>
+
+    </header>
+
+    <!-- ── Epigraph ── -->
+    {poem.epigraph?.text && (
+      <div class="max-w-2xl mx-auto px-8 mb-20">
+        <blockquote class="epigraph pl-5 border-l border-gray-100">
+          <p>{poem.epigraph.text}</p>
+          {poem.epigraph.attribution && (
+            <cite>— {poem.epigraph.attribution}</cite>
+          )}
+        </blockquote>
+      </div>
+    )}
+
+    <!-- ── Poem Body ── -->
+    <div class="max-w-2xl mx-auto px-8 pb-4">
+      <div class="poem-text">
+        {poem.stanzas?.map((stanza: any) => (
+          <div class="stanza">
+            {stanza.numeral && (
+              <span class="stanza-numeral">{stanza.numeral}.</span>
+            )}
+            {stanza.lines?.split('\n').map((line: string) => (
+              <span class="line">{line || '\u00A0'}</span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- ── Ornamental rule ── -->
+    <div class="max-w-2xl mx-auto px-8 py-16">
+      <div class="flex items-center gap-4">
+        <div class="flex-1 h-[1px] bg-gray-100"></div>
+        <div class="flex gap-1">
+          <span class="w-1 h-1 rounded-full bg-gray-200 block"></span>
+          <span class="w-1 h-1 rounded-full bg-gray-200 block"></span>
+          <span class="w-1 h-1 rounded-full bg-gray-200 block"></span>
+        </div>
+        <div class="flex-1 h-[1px] bg-gray-100"></div>
+      </div>
+    </div>
+
+    <!-- ── Poet's Note ── -->
+    {poem.poetsNote && (
+      <div class="max-w-2xl mx-auto px-8 pb-24">
+        <span class="article-label opacity-40 block mb-5">Note</span>
+        <p class="poets-note max-w-lg">{poem.poetsNote}</p>
+      </div>
+    )}
+
+    <!-- ── Tags ── -->
+    {poem.tags?.length > 0 && (
+      <div class="max-w-2xl mx-auto px-8 pb-24">
+        <div class="flex flex-wrap items-center gap-3">
+          <span class="article-label mr-2 opacity-40">Filed under</span>
+          {poem.tags.map((tag: string) => (
+            <a href={`/writing?tag=${tag.toLowerCase()}`}
+              class="text-[10px] uppercase tracking-[0.2em] font-medium border border-gray-200 px-3 py-1.5 hover:border-gray-400 transition-colors">
+              {tag}
+            </a>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- ── Related Poems ── -->
+    <div class="max-w-2xl mx-auto px-8 pb-32">
+      {poem.relatedPoems?.length > 0 && (
+        <>
+          <span class="article-label opacity-40 block mb-2">More poems</span>
+          <div class="border-t border-gray-100 mt-8">
+            {poem.relatedPoems.map((related: any) => (
+              <a href={`/poem/${related.slug}`} class="poem-list-item">
+                <span class="poem-list-title">{related.title}</span>
+                {related.publishedAt && (
+                  <span class="poem-list-meta">{formatDate(related.publishedAt)}</span>
+                )}
+              </a>
+            ))}
+          </div>
+        </>
+      )}
+
+      <!-- Link back to all writing -->
+      <div class="mt-12">
+        <a href="/writing"
+          class="inline-flex items-center gap-4 group text-[10px] font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity">
+          All Writing
+          <span class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
+        </a>
+      </div>
+    </div>
+
+  </article>
+
+</BaseLayout>

@@ -3,7 +3,7 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import { getSiteSettings } from '../lib/queries';
 
 const settings = await getSiteSettings();
-const email = settings?.footer?.socialLinks?.email || 'ben@benhickman.photography';
+const email = settings?.footer?.socialLinks?.email || 'ben@benhickmanphotography.com';
 const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram.com/ben.hickman.photography';
 ---
 
@@ -36,10 +36,10 @@ const instagram = settings?.footer?.socialLinks?.instagram || 'https://instagram
       <div class="bg-gray-50 dark:bg-white/5 p-8 md:p-12 rounded-lg">
         <form class="space-y-8" action={`https://formsubmit.co/${email}`} method="POST">
            <!-- FormSubmit.co configuration -->
-           <input type="hidden" name="_subject" value="New inquiry from benhickman.photography" />
+           <input type="hidden" name="_subject" value="New inquiry from benhickmanphotography.com" />
            <input type="hidden" name="_captcha" value="false" />
            <input type="text" name="_honey" style="display:none" />
-           <input type="hidden" name="_next" value="https://benhickman.photography/contact" />
+           <input type="hidden" name="_next" value="https://benhickmanphotography.com/contact" />
 
            <div class="space-y-2">
              <label for="name" class="text-xs uppercase tracking-widest opacity-50 font-bold block">Name</label>

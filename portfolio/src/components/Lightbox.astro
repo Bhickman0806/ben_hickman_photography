@@ -13,20 +13,20 @@
   </button>
 
   <img id="lightbox-img" src="" alt=""
-       class="max-w-full max-h-[90vh] object-contain shadow-2xl scale-95 transition-transform duration-300 select-none" />
+       class="max-w-full max-h-[90vh] object-contain shadow-2xl scale-95 opacity-0 transition-all duration-300 select-none" />
 
   <button id="lb-next" class="absolute right-4 text-white/70 hover:text-white transition-colors z-10 p-2"
           aria-label="Next image">
     <span class="material-icons text-3xl">chevron_right</span>
   </button>
 
-  <button id="lb-close" class="absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2"
+  <button id="lb-close" class="hidden absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2"
           aria-label="Close lightbox">
     <span class="material-icons text-2xl">close</span>
   </button>
 
-  <!-- Caption -->
-  <div id="lb-caption" class="absolute bottom-6 left-6 text-white/70 text-sm font-sans tracking-wide"></div>
+  <!-- Caption (hidden – titles should never be visible) -->
+  <div id="lb-caption" class="hidden"></div>
 </div>
 
 <script>
@@ -54,31 +54,46 @@
     const src = target.getAttribute('data-full-src');
     const cap = target.getAttribute('data-caption');
     const imgTag = target.querySelector('img');
+    const targetSrc = src || (imgTag ? imgTag.src : '');
+    const targetAlt = imgTag ? imgTag.alt : '';
     
-    if (src) {
-        imgEl.src = src;
-    } else if (imgTag) {
-        imgEl.src = imgTag.src;
-    }
-
-    if (imgTag) {
-        imgEl.alt = imgTag.alt;
-    }
+    // Hide image immediately and wait for it to load
+    imgEl.classList.remove('opacity-100', 'scale-100');
+    imgEl.classList.add('opacity-0', 'scale-95');
+    
+    const tempImg = new Image();
+    tempImg.onload = () => {
+        imgEl.src = targetSrc;
+        imgEl.alt = targetAlt;
+        // Small delay to ensure the DOM has updated with new src before animating
+        setTimeout(() => {
+            imgEl.classList.remove('opacity-0', 'scale-95');
+            imgEl.classList.add('opacity-100', 'scale-100');
+        }, 20);
+    };
+    tempImg.src = targetSrc;
     
     if (captionEl) {
         captionEl.textContent = cap || '';
     }
 
     lightboxEl.classList.remove('opacity-0', 'pointer-events-none');
-    imgEl.classList.replace('scale-95', 'scale-100');
     document.body.style.overflow = 'hidden';
   }
 
   function close() {
     if (!lightboxEl || !imgEl) return;
     lightboxEl.classList.add('opacity-0', 'pointer-events-none');
-    imgEl.classList.replace('scale-100', 'scale-95');
+    imgEl.classList.remove('opacity-100', 'scale-100');
+    imgEl.classList.add('opacity-0', 'scale-95');
     document.body.style.overflow = '';
+    
+    // Clear the source after transition so there is no old image flash next time
+    setTimeout(() => {
+        if (lightboxEl.classList.contains('opacity-0')) {
+            imgEl.src = '';
+        }
+    }, 300);
   }
 
   function navigate(dir: -1 | 1) {

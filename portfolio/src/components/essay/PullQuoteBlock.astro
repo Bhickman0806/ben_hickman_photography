@@ -1,0 +1,8 @@
+---
+// Custom Portable Text component for pullQuote blocks in essays
+const { node } = Astro.props;
+---
+<blockquote class="pull-quote">
+  <p>{node.text}</p>
+  {node.attribution && <cite>{node.attribution}</cite>}
+</blockquote>
