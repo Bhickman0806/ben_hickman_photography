@@ -6,7 +6,8 @@
     "dev": "astro dev",
     "build": "astro build",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "cms": "cd sanity && npm run dev"
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",

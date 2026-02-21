@@ -57,6 +57,31 @@ async function uploadImages() {
                 filename: fileBasename,
                 contentType: mimeType,
             })
+
+            // Generate required fields based on the filename
+            const fileNameWithoutExt = fileBasename.replace(/\.[^/.]+$/, "")
+            const title = fileNameWithoutExt.replace(/[-_]/g, ' ')
+            const slug = fileNameWithoutExt.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '')
+
+            const doc = {
+                _type: 'photo',
+                title: title,
+                slug: {
+                    _type: 'slug',
+                    current: slug || 'unnamed-photo'
+                },
+                image: {
+                    _type: 'image',
+                    asset: {
+                        _type: 'reference',
+                        _ref: asset._id
+                    },
+                    alt: title || 'Photo'
+                }
+            }
+
+            await client.create(doc)
+
             console.log(` ✅ Done (${asset._id})`)
             successCount++
         } catch (err) {
