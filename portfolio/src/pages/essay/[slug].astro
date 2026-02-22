@@ -37,7 +37,7 @@ const ptComponents = {
 <BaseLayout
   title={`${essay.title} | Ben Hickman`}
   description={essay.deck || undefined}
-  image={essay.heroImage ? urlFor(essay.heroImage).width(1200).height(630).url() : undefined}
+  image={essay.heroImage && essay.heroImage.asset ? urlFor(essay.heroImage).width(1200).height(630).url() : undefined}
 >
 
   <style>

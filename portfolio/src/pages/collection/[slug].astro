@@ -40,13 +40,13 @@ if (!collection) {
           aspectRatio: 4/5, 
           sizes: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw' 
         });
-        
+        const fullSrc = photo.image && photo.image.asset ? urlFor(photo.image).width(1600).url() : "";
+          
         return (
         <div 
-          class="aspect-[4/5] relative group overflow-hidden bg-gray-100 cursor-pointer"
-          data-lightbox
-          data-full-src={urlFor(photo.image).width(1600).url()}
-
+          class={`photo-item cursor-pointer overflow-hidden rounded relative bg-[var(--color-border)]`}
+          data-full-src={fullSrc}
+          onclick="openLightbox(this.getAttribute('data-full-src'))"
         >
           <img 
             src={responsive.src}

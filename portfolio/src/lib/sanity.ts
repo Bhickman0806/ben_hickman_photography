@@ -24,7 +24,7 @@ export function getResponsiveProps(
     source: any,
     config: { width: number; aspectRatio?: number; sizes?: string }
 ): ImageParams {
-    if (!source) return { src: '', srcset: '', sizes: '' };
+    if (!source || !source.asset) return { src: '', srcset: '', sizes: '' };
 
     const builder = urlFor(source);
     const { width: baseWidth, aspectRatio, sizes = '100vw' } = config;
