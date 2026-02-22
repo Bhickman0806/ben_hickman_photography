@@ -1,6 +1,6 @@
 import { GoogleGenAI } from '@google/genai';
 
-const ai = new GoogleGenAI({ apiKey: import.meta.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY });
 
 const SYSTEM_INSTRUCTION = `System Instructions: The Creative Portfolio Agent
 Role & Persona
