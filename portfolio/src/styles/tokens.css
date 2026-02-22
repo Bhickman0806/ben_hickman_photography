@@ -45,7 +45,4 @@
   --color-overlay-hover: rgba(255, 255, 255, 0.08);
 }
 
-/* Invert the SVG logo in dark mode so it remains visible */
-[data-theme="dark"] .nav-logo {
-  filter: invert(1);
-}
+/* Removed SVG logo inversion since it is replaced by Lottie */

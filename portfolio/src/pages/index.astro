@@ -12,7 +12,7 @@ const projects = homeData?.featuredCollections?.map((collection: any) => ({
   subtitle: collection.subtitle || "Collection",
   title: collection.title,
   description: collection.description,
-  image: collection.image && collection.image.asset ? urlFor(collection.image).width(1600).url() : "",
+  image: collection.image && collection.image.asset && typeof collection.image.asset._ref === 'string' && collection.image.asset._ref.startsWith('image-') ? urlFor(collection.image).width(1600).url() : "",
   ...getResponsiveProps(collection.image, { width: 800, aspectRatio: 16/10, sizes: '(min-width: 768px) 66vw, 100vw' }),
   alt: collection.alt || collection.title,
   linkHref: `/collection/${collection.slug}`,

@@ -8,6 +8,7 @@ const links = (settings?.navLinks || [
 ]).filter((link: any) => link.label.toLowerCase() !== 'archive');
 const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 ---
+<script src="https://unpkg.com/@lottiefiles/dotlottie-wc@latest/dist/dotlottie-wc.js" type="module"></script>
 <nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-primary transition-all duration-300">
   <div class="flex items-center justify-between w-full">
     <!-- Left: Logo/Name -->
@@ -21,9 +22,8 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 
     <!-- Center: Brand Logo -->
     <div class="absolute left-1/2 -translate-x-1/2">
-      <a href="/" data-home-link>
-        <img src="/abstract_Letterform_Logo.svg"
-            alt="Ben Hickman Photography" class="nav-logo h-[4.2rem] w-auto mt-2">
+      <a href="/" data-home-link class="flex items-center justify-center">
+        <dotlottie-wc id="lottie-logo" src="/animated_abstract_logo.lottie" background="transparent" speed="1" class="h-[4.2rem] w-[4.2rem] mt-2"></dotlottie-wc>
       </a>
     </div>
 
@@ -88,59 +88,154 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 </style>
 
 <script>
-  // ── Scroll-hide navbar ──
   let lastScrollY = window.scrollY;
-  const navbar = document.getElementById("navbar");
+  let navHidden = false;
 
-  if (navbar) {
-    const handleScroll = () => {
-      const currentScrollY = window.scrollY;
+  const handleScroll = () => {
+    const navbar = document.getElementById("navbar");
+    if (!navbar) return;
+    const currentScrollY = window.scrollY;
+    const lottiePlayer = document.getElementById('lottie-logo') as any;
 
-      if (currentScrollY > lastScrollY && currentScrollY > 50) {
+    if (currentScrollY > lastScrollY && currentScrollY > 50) {
+      if (!navHidden) {
         navbar.classList.add("-translate-y-full");
-      } else {
+        navHidden = true;
+        if (lottiePlayer && lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setMode === 'function') {
+          lottiePlayer.dotLottie.setMode('reverse');
+          lottiePlayer.dotLottie.play();
+        }
+      }
+    } else {
+      if (navHidden) {
         navbar.classList.remove("-translate-y-full");
+        navHidden = false;
+        if (lottiePlayer && lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setMode === 'function') {
+          lottiePlayer.dotLottie.setMode('forward');
+          lottiePlayer.dotLottie.play();
+        }
       }
+    }
 
-      if (currentScrollY > 20) {
-        navbar.classList.add("bg-surface/75", "backdrop-blur-3xl");
-      } else {
-        navbar.classList.remove("bg-surface/75", "backdrop-blur-3xl");
-      }
+    if (currentScrollY > 20) {
+      navbar.classList.add("bg-surface/75", "backdrop-blur-3xl");
+    } else {
+      navbar.classList.remove("bg-surface/75", "backdrop-blur-3xl");
+    }
 
-      lastScrollY = currentScrollY;
-    };
+    lastScrollY = currentScrollY;
+  };
 
-    window.addEventListener("scroll", handleScroll);
-    // Apply immediate state
-    handleScroll();
-  }
-
-  // ── Home links: smooth scroll on homepage ──
-  document.querySelectorAll<HTMLAnchorElement>('[data-home-link]').forEach(link => {
-    link.addEventListener('click', (e) => {
-      if (window.location.pathname === '/') {
-        e.preventDefault();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-    });
-  });
-
-  // ── Theme Toggle ──
-  const toggle = document.getElementById('theme-toggle');
-  const html = document.documentElement;
-
+  // ── Theme Apply Function ──
   function applyTheme(theme: string) {
+    const html = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+    
     html.setAttribute('data-theme', theme);
     localStorage.setItem('theme', theme);
-    toggle?.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+    if (toggle) {
+      toggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+    }
+    
+    // Sync Lottie animation theme (Inverted to match Token Config)
+    const lottieTheme = theme === 'dark' ? 'light' : 'dark';
+    const lottiePlayer = document.getElementById('lottie-logo') as any;
+    if (lottiePlayer) {
+      lottiePlayer.setAttribute('theme-id', lottieTheme);
+      if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setTheme === 'function') {
+        lottiePlayer.dotLottie.setTheme(lottieTheme);
+      }
+    }
   }
 
-  // Sync with whatever theme was set by the inline script in <head>
-  applyTheme(html.getAttribute('data-theme') || 'light');
+  // ── Lottie Initialization ──
+  const initLottiePlayer = () => {
+    const lottiePlayer = document.getElementById('lottie-logo') as any;
+    if (lottiePlayer) {
+      const startAnimation = () => {
+        if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.play === 'function') {
+          // When engine is ready, ensure theme matches exactly BEFORE playing
+          const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+          const lottieTheme = currentTheme === 'dark' ? 'light' : 'dark';
+          lottiePlayer.setAttribute('theme-id', lottieTheme);
+          if (typeof lottiePlayer.dotLottie.setTheme === 'function') {
+            lottiePlayer.dotLottie.setTheme(lottieTheme);
+          }
 
-  toggle?.addEventListener('click', () => {
-    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-    applyTheme(next);
-  });
+          // Delay for appearance transition
+          setTimeout(() => {
+            lottiePlayer.dotLottie.play();
+          }, 500); 
+        } else {
+           setTimeout(startAnimation, 100);
+        }
+      }
+      startAnimation();
+    }
+  };
+
+  // ── Setup Function to run on Page Load ──
+  const setupPage = () => {
+    const html = document.documentElement;
+    const toggle = document.getElementById('theme-toggle');
+
+    // 1. Initialize scroll and listeners
+    window.removeEventListener("scroll", handleScroll);
+    window.addEventListener("scroll", handleScroll);
+    handleScroll();
+
+    document.querySelectorAll<HTMLAnchorElement>('[data-home-link]').forEach(link => {
+      // Avoid attaching multiple times
+      if (!link.hasAttribute('data-listener-attached')) {
+        link.addEventListener('click', (e) => {
+          if (window.location.pathname === '/') {
+            e.preventDefault();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+          }
+        });
+        link.setAttribute('data-listener-attached', 'true');
+      }
+    });
+
+    // 2. Initialize Lottie
+    initLottiePlayer();
+
+    // 3. Sync initial theme
+    const currentTheme = html.getAttribute('data-theme') || 'light';
+    applyTheme(currentTheme);
+
+    // 4. Attach toggle listener
+    if (toggle && !toggle.hasAttribute('data-listener-attached')) {
+      toggle.addEventListener('click', () => {
+        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+        applyTheme(next);
+      });
+      toggle.setAttribute('data-listener-attached', 'true');
+    }
+  };
+
+  // Astro view transitions trigger this event
+  document.addEventListener('astro:page-load', setupPage);
+  
+  // Initial page load bootstrapping
+  if (document.readyState === 'interactive' || document.readyState === 'complete') {
+    setupPage();
+  } else {
+    document.addEventListener('DOMContentLoaded', setupPage);
+  }
+
+  // Optional root observer to catch theme changes forced by unrelated scripts
+  let observerInitialized = false;
+  if (!observerInitialized) {
+    const observer = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
+          const newTheme = document.documentElement.getAttribute('data-theme');
+          if (newTheme) applyTheme(newTheme);
+        }
+      });
+    });
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    observerInitialized = true;
+  }
 </script>

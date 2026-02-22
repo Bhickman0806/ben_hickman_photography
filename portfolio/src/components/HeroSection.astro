@@ -10,9 +10,10 @@ const { images } = Astro.props;
 
 // Helper to get props or fallback
 function getHeroImageProps(index: number) {
-  if (images && images[index]) {
+  const img = images && images[index];
+  if (img && img.asset && img.asset._ref && typeof img.asset._ref === 'string' && img.asset._ref.startsWith('image-')) {
     // 25vw is roughly the size used in CSS
-    return getResponsiveProps(images[index], { width: 600, aspectRatio: 4/5, sizes: '25vw' });
+    return getResponsiveProps(img, { width: 600, aspectRatio: 4/5, sizes: '25vw' });
   }
   // Fallback defaults
   const defaults = [
@@ -69,7 +70,7 @@ const img2Props = getHeroImageProps(1);
     <button id="scroll-indicator"
         class="absolute bottom-12 left-12 flex items-center gap-4 z-50 hover:opacity-80 transition-opacity duration-500 text-left">
         <span class="material-icons text-sm opacity-50 animate-bounce">south</span>
-        <span class="text-[10px] uppercase tracking-[0.2em] opacity-50 font-medium">Scroll to explore</span>
+        <span class="text-[10px] uppercase tracking-[0.2em] opacity-50 font-medium">Explore</span>
     </button>
 
 
