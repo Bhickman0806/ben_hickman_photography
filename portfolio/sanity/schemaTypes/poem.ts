@@ -100,16 +100,29 @@ export const poem = defineType({
                         defineField({
                             name: 'lines',
                             title: 'Lines',
-                            type: 'text',
-                            description: 'Write the poem line by line. Each line break is a new poetic line.',
-                            rows: 8,
+                            type: 'array',
+                            description: 'Each paragraph is one poetic line. Press Enter to start a new line. Select text to apply Italic or Underline.',
+                            of: [
+                                defineArrayMember({
+                                    type: 'block',
+                                    styles: [{ title: 'Normal', value: 'normal' }],
+                                    lists: [],
+                                    marks: {
+                                        decorators: [
+                                            { title: 'Italic', value: 'em' },
+                                            { title: 'Underline', value: 'underline' },
+                                        ],
+                                        annotations: [],
+                                    },
+                                }),
+                            ],
                             validation: (Rule) => Rule.required(),
                         }),
                     ],
                     preview: {
                         select: { numeral: 'numeral', lines: 'lines' },
-                        prepare({ numeral, lines }) {
-                            const firstLine = lines?.split('\n')[0] ?? 'Empty stanza'
+                        prepare({ numeral, lines }: { numeral?: string; lines?: any[] }) {
+                            const firstLine = lines?.[0]?.children?.[0]?.text ?? 'Empty stanza'
                             return {
                                 title: numeral ? `${numeral}.  ${firstLine}` : firstLine,
                             }

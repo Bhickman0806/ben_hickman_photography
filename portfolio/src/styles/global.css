@@ -41,20 +41,33 @@
 /* Custom utilities */
 @layer utilities {
     .massive-text {
-        font-size: 15vw;
-        line-height: 1.1;
+        font-size: min(18vw, 17dvh);
+        line-height: -0.90;
         letter-spacing: -0.04em;
     }
 
     @media (min-width: 768px) {
         .massive-text {
-            font-size: 19vw;
+            font-size: min(23vw, 21dvh);
         }
     }
 
     /* Typography shortcuts */
     .heading-hero {
-        @apply text-5xl md:text-6xl lg:text-7xl font-display leading-tight;
+        font-size: min(11vw, 7dvh);
+        @apply font-display leading-[1.0];
+    }
+
+    @media (min-width: 768px) {
+        .heading-hero {
+            font-size: min(7vw, 8dvh);
+        }
+    }
+
+    @media (min-width: 1024px) {
+        .heading-hero {
+            font-size: min(5.5vw, 8.5dvh);
+        }
     }
 
     .heading-section {

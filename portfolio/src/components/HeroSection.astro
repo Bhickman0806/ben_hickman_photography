@@ -1,5 +1,6 @@
 ---
 import { urlFor, getResponsiveProps } from '../lib/sanity';
+import PhotographsOfFamilyHeadline from './PhotographsOfFamilyHeadline.astro';
 
 interface Props {
   images?: any[];
@@ -26,17 +27,17 @@ const img2Props = getHeroImageProps(1);
 ---
 
 
-<section class="min-h-screen relative flex flex-col pt-32 pb-20 items-center overflow-x-hidden">
+<section class="min-h-[max(100vh,550px)] relative flex flex-col pt-[clamp(7rem,12dvh,9rem)] pb-[clamp(2rem,8dvh,5rem)] justify-center items-center overflow-x-hidden">
 
     <!-- Intro Heading -->
-    <div class="text-center z-10 mb-[-5vh]">
-        <h2 id="hero-heading" class="text-5xl md:text-6xl lg:text-7xl font-display leading-tight">
+    <div class="text-center z-10 m-0">
+        <h2 id="hero-heading" class="heading-hero">
             Where the light <br /><span class="italic">settles</span>
         </h2>
     </div>
 
     <!-- Main Graphic: Massive Text interleaved with Images -->
-    <div class="relative w-full flex-1 flex flex-col items-center justify-center pointer-events-none select-none my-20">
+    <div class="relative w-full flex-1 flex flex-col items-center justify-center pointer-events-none select-none my-[clamp(1rem,5dvh,5rem)]">
 
         <!-- Image 1 -->
         <div class="absolute hero-image-1 opacity-80 z-0">
@@ -56,10 +57,11 @@ const img2Props = getHeroImageProps(1);
                 alt="Canyon vista" class="w-full h-auto object-cover grayscale opacity-50 block mix-blend-multiply" />
         </div>
 
-        <!-- Massive Title Text -->
-        <h1 class="massive-text font-display text-primary text-center relative z-10 leading-[1.15] px-12 md:px-24">
-            Photographs<br />of family
-        </h1>
+        <!-- Massive Title Text (illustrated SVG) -->
+        <PhotographsOfFamilyHeadline
+            class="massive-text text-primary relative z-10 px-6 md:px-12 mx-auto object-contain"
+            style="width: 100%; max-height: 2.2em;"
+        />
 
     </div>
 
@@ -181,7 +183,7 @@ const img2Props = getHeroImageProps(1);
     
     if (scrollIndicator) {
         scrollIndicator.addEventListener('click', () => {
-             smoothScrollTo(window.innerHeight, 1200);
+             smoothScrollTo(heroSection ? heroSection.offsetHeight : Math.max(window.innerHeight, 550), 1200);
         });
         
         // Hide scroll indicator on scroll

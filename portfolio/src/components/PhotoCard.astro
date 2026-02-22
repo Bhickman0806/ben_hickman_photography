@@ -23,11 +23,11 @@ const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, 
   <!-- Text Column -->
   <div class:list={["md:col-span-4 space-y-8", reverse ? "md:order-2" : ""]}>
     <div>
-      <span class="text-[12px] font-medium opacity-70 uppercase tracking-[0.2em] block mb-6">
+      <span class="text-[0.625rem] font-bold text-muted uppercase tracking-[0.2em] block mb-6">
         {subtitle}
       </span>
-      <h3 class="font-display text-[46px] mb-6">{title}</h3>
-      <p class="text-muted text-base leading-relaxed max-w-sm">{description}</p>
+      <h3 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight mb-8">{title}</h3>
+      <p class="font-sans text-[0.9375rem] font-light text-muted leading-[1.75] max-w-md">{description}</p>
     </div>
     <div class="pt-8 border-t border-border-color-DEFAULT">
       <ArrowLink href={linkHref} label={linkLabel} />

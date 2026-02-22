@@ -47,7 +47,7 @@ const ptComponents = {
       font-weight: 700;
       text-transform: uppercase;
       letter-spacing: 0.2em;
-      color: #595959;
+      color: var(--color-text-muted);
     }
 
     /* ── Essay body typography ── */
@@ -55,7 +55,7 @@ const ptComponents = {
       font-family: "Inter", sans-serif;
       font-size: 0.9375rem;
       line-height: 1.75;
-      color: #4a4a4a;
+      color: var(--color-text-muted);
       font-weight: 300;
     }
     .essay-body :global(p) {
@@ -65,7 +65,7 @@ const ptComponents = {
       font-family: "Instrument Serif", serif;
       font-size: 1.6rem;
       line-height: 1.25;
-      color: #111111;
+      color: var(--color-text-primary);
       font-weight: 400;
       margin-top: 2.5em;
       margin-bottom: 0.75em;
@@ -80,7 +80,7 @@ const ptComponents = {
       .essay-columns {
         column-count: 2;
         column-gap: 4rem;
-        column-rule: 1px solid #f3f4f6;
+        column-rule: 1px solid var(--color-border);
       }
     }
 
@@ -89,8 +89,8 @@ const ptComponents = {
       column-span: all;
       margin: 3rem 0;
       padding: 3rem 0;
-      border-top: 1px solid #e5e7eb;
-      border-bottom: 1px solid #e5e7eb;
+      border-top: 1px solid var(--color-border);
+      border-bottom: 1px solid var(--color-border);
       text-align: center;
     }
     :global(.pull-quote p) {
@@ -98,7 +98,7 @@ const ptComponents = {
       font-style: italic;
       font-size: clamp(1.4rem, 2.5vw, 2rem);
       line-height: 1.4;
-      color: #111111;
+      color: var(--color-text-primary);
       max-width: 34em;
       margin: 0 auto 0.75em;
     }
@@ -108,7 +108,7 @@ const ptComponents = {
       font-style: normal;
       letter-spacing: 0.2em;
       text-transform: uppercase;
-      color: #595959;
+      color: var(--color-text-muted);
     }
 
     /* ── Inline image ── */
@@ -142,20 +142,20 @@ const ptComponents = {
 
       <!-- Deck -->
       {essay.deck && (
-        <p class="font-display italic text-xl md:text-2xl text-[#767676] leading-relaxed max-w-xl mx-auto mb-10">
+        <p class="font-display italic text-xl md:text-2xl text-muted leading-relaxed max-w-xl mx-auto mb-10">
           {essay.deck}
         </p>
       )}
 
       <!-- Divider -->
       <div class="flex items-center gap-6 mb-10">
-        <div class="flex-1 h-[1px] bg-gray-100"></div>
+        <div class="flex-1 h-[1px] bg-[var(--color-border)]"></div>
         <div class="flex gap-1">
-          <span class="w-1 h-1 rounded-full bg-gray-300 block"></span>
-          <span class="w-1 h-1 rounded-full bg-gray-300 block"></span>
-          <span class="w-1 h-1 rounded-full bg-gray-300 block"></span>
+          <span class="w-1 h-1 rounded-full bg-[var(--color-border)] block"></span>
+          <span class="w-1 h-1 rounded-full bg-[var(--color-border)] block"></span>
+          <span class="w-1 h-1 rounded-full bg-[var(--color-border)] block"></span>
         </div>
-        <div class="flex-1 h-[1px] bg-gray-100"></div>
+        <div class="flex-1 h-[1px] bg-[var(--color-border)]"></div>
       </div>
 
       <!-- Metadata -->
@@ -180,7 +180,7 @@ const ptComponents = {
     <!-- ── Hero Image ── -->
     {heroProps && (
       <div class="max-w-5xl mx-auto px-8 mb-16">
-        <div class="aspect-[21/9] overflow-hidden rounded-lg bg-gray-100 relative">
+        <div class="aspect-[21/9] overflow-hidden rounded-lg bg-[var(--color-border)] relative">
           <img
             src={heroProps.src}
             srcset={heroProps.srcset}
@@ -204,12 +204,12 @@ const ptComponents = {
 
         <!-- ── Footer: Tags ── -->
         {essay.tags?.length > 0 && (
-          <div class="mt-16 pt-12 border-t border-gray-100">
+          <div class="mt-16 pt-12 border-t border-[var(--color-border)]">
             <div class="flex flex-wrap items-center gap-3 mb-16">
               <span class="article-label mr-2 opacity-40">Filed under</span>
               {essay.tags.map((tag: string) => (
                 <a href={`/writing?tag=${tag.toLowerCase()}`}
-                  class="text-[10px] uppercase tracking-[0.2em] font-medium border border-gray-200 px-3 py-1.5 hover:border-gray-400 transition-colors">
+                  class="text-[10px] uppercase tracking-[0.2em] font-medium border border-[var(--color-border)] px-3 py-1.5 hover:border-gray-400 transition-colors">
                   {tag}
                 </a>
               ))}
@@ -219,7 +219,7 @@ const ptComponents = {
 
         <!-- ── Related Essays ── -->
         {essay.relatedEssays?.length > 0 && (
-          <div class={essay.tags?.length > 0 ? '' : 'mt-16 pt-12 border-t border-gray-100'}>
+          <div class={essay.tags?.length > 0 ? '' : 'mt-16 pt-12 border-t border-[var(--color-border)]'}>
             <span class="article-label opacity-40 block mb-10">More Writing</span>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
               {essay.relatedEssays.map((related: any) => {
@@ -229,7 +229,7 @@ const ptComponents = {
                 return (
                   <a href={`/essay/${related.slug}`} class="essay-card group block space-y-4 hover:opacity-70 transition-opacity">
                     {relHero && (
-                      <div class="aspect-[16/9] overflow-hidden rounded bg-gray-100">
+                      <div class="aspect-[16/9] overflow-hidden rounded bg-[var(--color-border)]">
                         <img
                           src={relHero.src}
                           srcset={relHero.srcset}
@@ -245,7 +245,7 @@ const ptComponents = {
                         {related.title}
                       </h3>
                       {related.deck && (
-                        <p class="mt-1 text-[#595959] text-sm font-light">{related.deck}</p>
+                        <p class="mt-1 text-muted text-sm font-light">{related.deck}</p>
                       )}
                     </div>
                   </a>

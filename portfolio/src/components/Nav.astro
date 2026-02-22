@@ -2,17 +2,16 @@
 import { getSiteSettings } from '../lib/queries';
 
 const settings = await getSiteSettings();
-const links = settings?.navLinks || [
+const links = (settings?.navLinks || [
   { label: 'Writing', href: '/writing' },
-  { label: 'Archive', href: '/archive' },
   { label: 'Contact', href: '/contact' },
-];
+]).filter((link: any) => link.label.toLowerCase() !== 'archive');
 const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 ---
-<nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-black transition-transform duration-300">
+<nav id="navbar" class="fixed top-0 left-0 w-full z-50 px-8 py-6 text-primary transition-all duration-300">
   <div class="flex items-center justify-between w-full">
     <!-- Left: Logo/Name -->
-    <a href="/" data-home-link class="flex items-center gap-4 hover:opacity-50 transition-opacity">
+    <a href="/" data-home-link class="max-[650px]:hidden flex items-center gap-4 hover:opacity-50 transition-opacity">
       <div class="flex gap-1">
         <span class="w-8 h-[1px] bg-current"></span>
         <span class="w-4 h-[1px] bg-current"></span>
@@ -24,42 +23,100 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     <div class="absolute left-1/2 -translate-x-1/2">
       <a href="/" data-home-link>
         <img src="/abstract_Letterform_Logo.svg"
-            alt="Ben Hickman Photography" class="h-[4.2rem] w-auto mt-2">
+            alt="Ben Hickman Photography" class="nav-logo h-[4.2rem] w-auto mt-2">
       </a>
     </div>
 
-    <!-- Right: Navigation Links -->
+    <!-- Right: Navigation Links + Theme Toggle -->
     <div class="flex items-center gap-8">
       {links.map(link => (
         <a href={link.href}
-           class="text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">
+           class={`text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity ${link.label === 'Archive' ? 'max-[650px]:hidden' : ''} ${link.label === 'Contact' ? 'max-[500px]:hidden' : ''}`.trim()}>
           {link.label}
         </a>
       ))}
+
+      <!-- Theme Toggle Switch -->
+      <button
+        id="theme-toggle"
+        role="switch"
+        aria-checked="false"
+        aria-label="Toggle dark mode"
+        class="theme-switch"
+      >
+        <span class="theme-switch-knob"></span>
+      </button>
     </div>
   </div>
 </nav>
 
+<style>
+  .theme-switch {
+    position: relative;
+    display: flex;
+    align-items: center;
+    width: 36px;
+    height: 20px;
+    border-radius: 10px;
+    border: 1px solid currentColor;
+    background: transparent;
+    padding: 2px;
+    cursor: pointer;
+    flex-shrink: 0;
+    opacity: 1;
+    transition: opacity 300ms;
+  }
+
+  .theme-switch:hover {
+    opacity: 0.5;
+  }
+
+  .theme-switch-knob {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    background: currentColor;
+    transform: translateX(0);
+    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0;
+  }
+
+  /* Knob slides right when dark mode is active */
+  :global([data-theme="dark"]) .theme-switch-knob {
+    transform: translateX(16px);
+  }
+</style>
+
 <script>
+  // ── Scroll-hide navbar ──
   let lastScrollY = window.scrollY;
   const navbar = document.getElementById("navbar");
 
   if (navbar) {
-    window.addEventListener("scroll", () => {
+    const handleScroll = () => {
       const currentScrollY = window.scrollY;
 
-      // Handle Navbar based on scroll direction
       if (currentScrollY > lastScrollY && currentScrollY > 50) {
         navbar.classList.add("-translate-y-full");
       } else {
         navbar.classList.remove("-translate-y-full");
       }
 
+      if (currentScrollY > 20) {
+        navbar.classList.add("bg-surface/75", "backdrop-blur-3xl");
+      } else {
+        navbar.classList.remove("bg-surface/75", "backdrop-blur-3xl");
+      }
+
       lastScrollY = currentScrollY;
-    });
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    // Apply immediate state
+    handleScroll();
   }
 
-  // Home links: smooth scroll to top on homepage, navigate otherwise
+  // ── Home links: smooth scroll on homepage ──
   document.querySelectorAll<HTMLAnchorElement>('[data-home-link]').forEach(link => {
     link.addEventListener('click', (e) => {
       if (window.location.pathname === '/') {
@@ -67,5 +124,23 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
     });
+  });
+
+  // ── Theme Toggle ──
+  const toggle = document.getElementById('theme-toggle');
+  const html = document.documentElement;
+
+  function applyTheme(theme: string) {
+    html.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
+    toggle?.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
+  }
+
+  // Sync with whatever theme was set by the inline script in <head>
+  applyTheme(html.getAttribute('data-theme') || 'light');
+
+  toggle?.addEventListener('click', () => {
+    const next = html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    applyTheme(next);
   });
 </script>

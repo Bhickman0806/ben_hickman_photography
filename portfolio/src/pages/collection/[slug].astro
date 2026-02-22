@@ -24,11 +24,11 @@ if (!collection) {
   <div class="pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
     
     <!-- Collection Header -->
-    <header class="mb-20 text-center max-w-3xl mx-auto space-y-6">
-      <span class="text-xs uppercase tracking-[0.2em] opacity-60 block">{collection.subtitle || "Collection"}</span>
-      <h1 class="text-5xl md:text-7xl font-display leading-tight">{collection.title}</h1>
+    <header class="mb-20 text-center max-w-3xl mx-auto">
+      <span class="text-[0.625rem] font-bold text-muted uppercase tracking-[0.2em] block mb-8">{collection.subtitle || "Collection"}</span>
+      <h1 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight mb-8">{collection.title}</h1>
       {collection.description && (
-        <p class="text-muted leading-relaxed max-w-prose mx-auto">{collection.description}</p>
+        <p class="font-sans text-[0.9375rem] font-light text-muted leading-[1.75] max-w-xl mx-auto">{collection.description}</p>
       )}
     </header>
 
