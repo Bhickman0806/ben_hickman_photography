@@ -28,7 +28,7 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     </div>
 
     <!-- Right: Navigation Links + Theme Toggle -->
-    <div class="flex items-center gap-8">
+    <div class="flex items-center gap-8 ml-auto">
       {links.map(link => (
         <a href={link.href}
            class={`text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity ${link.label === 'Archive' ? 'max-[650px]:hidden' : ''} ${link.label === 'Contact' ? 'max-[500px]:hidden' : ''}`.trim()}>
@@ -131,7 +131,11 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     const html = document.documentElement;
     const toggle = document.getElementById('theme-toggle');
     
-    html.setAttribute('data-theme', theme);
+    // Prevent infinite loop by checking current value
+    if (html.getAttribute('data-theme') !== theme) {
+      html.setAttribute('data-theme', theme);
+    }
+    
     localStorage.setItem('theme', theme);
     if (toggle) {
       toggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
@@ -141,9 +145,12 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     const lottieTheme = theme === 'dark' ? 'light' : 'dark';
     const lottiePlayer = document.getElementById('lottie-logo') as any;
     if (lottiePlayer) {
-      lottiePlayer.setAttribute('theme-id', lottieTheme);
-      if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setTheme === 'function') {
-        lottiePlayer.dotLottie.setTheme(lottieTheme);
+      const currentThemeId = lottiePlayer.getAttribute('theme-id');
+      if (currentThemeId !== lottieTheme) {
+        lottiePlayer.setAttribute('theme-id', lottieTheme);
+        if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setTheme === 'function') {
+          lottiePlayer.dotLottie.setTheme(lottieTheme);
+        }
       }
     }
   }
@@ -153,6 +160,8 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     const lottiePlayer = document.getElementById('lottie-logo') as any;
     if (lottiePlayer) {
       const startAnimation = () => {
+        if (!lottiePlayer.isConnected) return; // Prevent infinite orphaned loops if navigated away
+
         if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.play === 'function') {
           // When engine is ready, ensure theme matches exactly BEFORE playing
           const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
@@ -164,7 +173,9 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 
           // Delay for appearance transition
           setTimeout(() => {
-            lottiePlayer.dotLottie.play();
+            if (lottiePlayer.isConnected) {
+               lottiePlayer.dotLottie.play();
+            }
           }, 500); 
         } else {
            setTimeout(startAnimation, 100);

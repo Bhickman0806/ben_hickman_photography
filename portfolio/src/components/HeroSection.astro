@@ -126,10 +126,16 @@ const img2Props = getHeroImageProps(1);
     const heroSection = document.querySelector<HTMLElement>('section');
 
     let parallaxReady = false;
+    let ticking = false;
 
     function applyParallax() {
-        if (!parallaxReady || !heroImg1 || !heroImg2 || !heroSection) return;
+        if (!parallaxReady || !heroImg1 || !heroImg2 || !heroSection || !heroSection.isConnected) {
+            ticking = false;
+            return;
+        }
+        
         const scrollY = window.scrollY;
+        // Cache offsetHeight here if needed, but doing it in the rAF is better than doing it synchronously in the scroll event
         const heroH = heroSection.offsetHeight;
         // Fade images out as hero scrolls away (based on 65% of section height)
         const progress = Math.min(scrollY / (heroH * 0.65), 1);
@@ -142,20 +148,37 @@ const img2Props = getHeroImageProps(1);
         // Fade from their natural 0.8 opacity down to 0
         heroImg1.style.opacity = String(0.8 * (1 - progress));
         heroImg2.style.opacity = String(0.8 * (1 - progress * 0.85));
+        
+        ticking = false;
     }
 
     // Image fade-ins finish at ~3150ms (delay 1150 + dur 2000). Give a small buffer.
     setTimeout(() => {
         // Clear the entrance transitions so scroll updates are instant
-        if (heroImg1) heroImg1.style.transition = '';
-        if (heroImg2) heroImg2.style.transition = '';
+        // also ensuring nodes are still connected before touching styles
+        if (heroImg1 && heroImg1.isConnected) heroImg1.style.transition = '';
+        if (heroImg2 && heroImg2.isConnected) heroImg2.style.transition = '';
         parallaxReady = true;
-        applyParallax(); // sync to current scroll position in case user already scrolled
+        
+        if (!ticking) {
+            requestAnimationFrame(applyParallax);
+            ticking = true;
+        }
     }, 3300);
+    
+    // Cleanup previous listener on view transition to avoid memory leaks
+    if (window._heroScrollListener) {
+        window.removeEventListener('scroll', window._heroScrollListener);
+    }
+    
+    window._heroScrollListener = () => {
+        if (!ticking) {
+            requestAnimationFrame(applyParallax);
+            ticking = true;
+        }
+    };
 
-    window.addEventListener('scroll', () => {
-        requestAnimationFrame(applyParallax);
-    }, { passive: true });
+    window.addEventListener('scroll', window._heroScrollListener, { passive: true });
 
     const scrollIndicator = document.getElementById("scroll-indicator");
 

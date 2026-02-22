@@ -57,17 +57,12 @@ function formatDate(dateStr: string | undefined): string {
       text-decoration: none;
       color: inherit;
       background-color: transparent;
-      overflow: hidden;
-      max-height: 500px;
       opacity: 1;
       transform: translateY(0);
       transition: 
         background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1),
         opacity 0.3s ease-in-out,
         transform 0.3s ease-in-out,
-        max-height 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        padding 0.4s cubic-bezier(0.4, 0, 0.2, 1),
-        margin 0.4s cubic-bezier(0.4, 0, 0.2, 1),
         border-color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
     }
     .writing-row:last-child { border-bottom: 1px solid var(--color-border); }
@@ -76,11 +71,6 @@ function formatDate(dateStr: string | undefined): string {
     .writing-row.fade-out {
       opacity: 0;
       transform: translateY(10px);
-      max-height: 0;
-      padding-top: 0;
-      padding-bottom: 0;
-      margin-top: 0;
-      margin-bottom: 0;
       border-color: transparent;
       pointer-events: none;
     }
@@ -182,42 +172,56 @@ function formatDate(dateStr: string | undefined): string {
   </section>
 
   <script>
-    const tabs = document.querySelectorAll<HTMLButtonElement>('.filter-tab');
-    const rows = document.querySelectorAll<HTMLElement>('.writing-row');
+    function setupFilters() {
+      const tabs = document.querySelectorAll<HTMLButtonElement>('.filter-tab');
+      const rows = document.querySelectorAll<HTMLElement>('.writing-row');
 
-    tabs.forEach(tab => {
-      tab.addEventListener('click', () => {
-        tabs.forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
+      tabs.forEach(tab => {
+        if (tab.dataset.listenerAttached) return;
+        tab.dataset.listenerAttached = 'true';
 
-        const filter = tab.dataset.filter;
-        
-        rows.forEach(row => {
-          const match = filter === 'all' || row.dataset.type === filter;
+        tab.addEventListener('click', () => {
+          tabs.forEach(t => t.classList.remove('active'));
+          tab.classList.add('active');
+
+          const filter = tab.dataset.filter;
           
-          if (match) {
-            if (row.hasAttribute('data-hidden')) {
-              row.removeAttribute('data-hidden');
-              // Read layout to ensure display:flex is applied before transitioning
-              void row.offsetWidth;
-              row.classList.remove('fade-out');
+          rows.forEach(row => {
+            const match = filter === 'all' || row.dataset.type === filter;
+            
+            if (match) {
+              if (row.hasAttribute('data-hidden')) {
+                row.removeAttribute('data-hidden');
+                // Use requestAnimationFrame to avoid synchronous layout thrashing
+                requestAnimationFrame(() => {
+                  row.classList.remove('fade-out');
+                });
+              } else {
+                row.classList.remove('fade-out');
+              }
             } else {
-              row.classList.remove('fade-out');
+              if (!row.hasAttribute('data-hidden')) {
+                row.classList.add('fade-out');
+                // Wait for opacity fade to finish before hiding fully
+                setTimeout(() => {
+                  if (row.classList.contains('fade-out')) {
+                    row.setAttribute('data-hidden', '');
+                  }
+                }, 300); // corresponds to the 0.3s CSS opacity transition
+              }
             }
-          } else {
-            if (!row.hasAttribute('data-hidden')) {
-              row.classList.add('fade-out');
-              // Wait for collapse to finish before hiding fully
-              setTimeout(() => {
-                if (row.classList.contains('fade-out')) {
-                  row.setAttribute('data-hidden', '');
-                }
-              }, 400); // corresponds to the 0.4s CSS transition
-            }
-          }
+          });
         });
       });
-    });
+    }
+
+    // Run on initial load and after Astro view transitions
+    document.addEventListener('astro:page-load', setupFilters);
+    if (document.readyState === 'interactive' || document.readyState === 'complete') {
+      setupFilters();
+    } else {
+      document.addEventListener('DOMContentLoaded', setupFilters);
+    }
   </script>
 
 </BaseLayout>
