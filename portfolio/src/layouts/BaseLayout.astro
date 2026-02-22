@@ -2,6 +2,7 @@
 import '../styles/global.css';
 import Nav from '../components/Nav.astro';
 import Footer from '../components/Footer.astro';
+import ChatAgent from '../components/ChatAgent.astro';
 
 interface Props {
   title?: string;
@@ -79,12 +80,7 @@ const {
     <!-- Optional: Global scripts/islands -->
   
     <!-- Global Chat Button -->
-    <div id="global-chat-btn" class="fixed bottom-12 right-12 z-50">
-        <button
-            class="w-12 h-12 bg-black text-white rounded-lg flex items-center justify-center hover:scale-110 transition-transform shadow-lg">
-            <span class="material-icons text-lg">chat_bubble_outline</span>
-        </button>
-    </div>
+    <ChatAgent />
 
     <!-- Page transition script -->
     <script>

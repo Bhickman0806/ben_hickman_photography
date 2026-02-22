@@ -11,6 +11,8 @@
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.39.0",
+    "@astrojs/vercel": "^9.0.4",
+    "@google/genai": "^1.42.0",
     "@sanity/client": "^7.15.0",
     "@sanity/image-url": "^2.0.3",
     "@tailwindcss/vite": "^4.2.0",
