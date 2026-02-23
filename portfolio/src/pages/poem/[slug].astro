@@ -148,12 +148,12 @@ function formatDate(dateStr: string | undefined): string {
       </h1>
 
       <!-- Thin rule -->
-      <div class="flex items-center gap-6 mt-10 mb-10">
+      <div class="hidden md:flex items-center gap-6 mt-10 mb-10">
         <div class="flex-1 h-[1px] bg-[var(--color-border)]"></div>
       </div>
 
       <!-- Metadata -->
-      <div class="flex items-center gap-8 flex-wrap">
+      <div class="hidden md:flex items-center gap-8 flex-wrap">
         <span class="article-label">Ben Hickman</span>
         {poem.location && (
           <>

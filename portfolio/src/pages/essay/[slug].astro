@@ -148,7 +148,7 @@ const ptComponents = {
       )}
 
       <!-- Divider -->
-      <div class="flex items-center gap-6 mb-10">
+      <div class="hidden md:flex items-center gap-6 mb-10">
         <div class="flex-1 h-[1px] bg-[var(--color-border)]"></div>
         <div class="flex gap-1">
           <span class="w-1 h-1 rounded-full bg-[var(--color-border)] block"></span>
@@ -159,7 +159,7 @@ const ptComponents = {
       </div>
 
       <!-- Metadata -->
-      <div class="flex items-center justify-center gap-8 flex-wrap">
+      <div class="hidden md:flex items-center justify-center gap-8 flex-wrap">
         <span class="article-label">Ben Hickman</span>
         {essay.publishedAt && (
           <>

@@ -29,6 +29,14 @@
 
 /* Base resets */
 @layer base {
+
+    html,
+    body {
+        overflow-x: hidden;
+        width: 100%;
+        position: relative;
+    }
+
     body {
         @apply bg-surface text-primary antialiased font-sans;
         transition-property: color, background-color, border-color, text-decoration-color, fill, stroke;

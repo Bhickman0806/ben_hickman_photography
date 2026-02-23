@@ -20,6 +20,14 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
       <span class="text-[10px] uppercase tracking-[0.2em] font-medium">Ben Hickman</span>
     </a>
 
+    <!-- Left: Writing Link (Mobile Only) -->
+    {links.filter(link => link.label.toLowerCase() === 'writing').map(link => (
+      <a href={link.href}
+         class="hidden max-[650px]:block text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity">
+        {link.label}
+      </a>
+    ))}
+
     <!-- Center: Brand Logo -->
     <div class="absolute left-1/2 -translate-x-1/2">
       <a href="/" data-home-link class="flex items-center justify-center">
@@ -31,7 +39,7 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     <div class="flex items-center gap-8 ml-auto">
       {links.map(link => (
         <a href={link.href}
-           class={`text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity ${link.label === 'Archive' ? 'max-[650px]:hidden' : ''} ${link.label === 'Contact' ? 'max-[500px]:hidden' : ''}`.trim()}>
+           class={`text-[10px] uppercase tracking-[0.2em] font-medium hover:opacity-50 transition-opacity ${link.label === 'Archive' ? 'max-[650px]:hidden' : ''} ${link.label === 'Contact' ? 'max-[500px]:hidden' : ''} ${link.label.toLowerCase() === 'writing' ? 'max-[650px]:hidden' : ''}`.trim()}>
           {link.label}
         </a>
       ))}

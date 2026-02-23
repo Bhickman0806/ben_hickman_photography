@@ -46,7 +46,7 @@ if (!collection) {
         <div 
           class={`photo-item cursor-pointer overflow-hidden rounded relative bg-[var(--color-border)]`}
           data-full-src={fullSrc}
-          onclick="openLightbox(this.getAttribute('data-full-src'))"
+          data-lightbox
         >
           <img 
             src={responsive.src}

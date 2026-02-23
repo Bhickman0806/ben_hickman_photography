@@ -16,7 +16,7 @@ const projects = homeData?.featuredCollections?.map((collection: any) => ({
   ...getResponsiveProps(collection.image, { width: 800, aspectRatio: 16/10, sizes: '(min-width: 768px) 66vw, 100vw' }),
   alt: collection.alt || collection.title,
   linkHref: `/collection/${collection.slug}`,
-  linkLabel: "Explore Collection",
+  linkLabel: "Explore",
   reverse: false 
 })) || [];
 

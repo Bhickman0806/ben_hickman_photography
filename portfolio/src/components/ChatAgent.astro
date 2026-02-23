@@ -30,6 +30,7 @@ I’m here to provide context about the photographs, the themes behind them, and
       
       <!-- Suggested Prompts -->
       <div id="suggested-prompts" class="flex flex-col gap-2 opacity-0 translate-y-2 transition-all duration-500 w-full mb-4 items-end mt-2" style="animation: fadeUp 0.5s ease forwards 0.4s">
+        <button class="suggested-prompt text-xs text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800 px-4 py-2 rounded-2xl rounded-tr-sm transition-colors w-fit text-right shadow-sm">Contact Ben Hickman</button>
         <button class="suggested-prompt text-xs text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800 px-4 py-2 rounded-2xl rounded-tr-sm transition-colors w-fit text-right shadow-sm">Who are his influences?</button>
         <button class="suggested-prompt text-xs text-stone-600 dark:text-stone-300 bg-white dark:bg-stone-900 border border-stone-200 dark:border-stone-800 hover:bg-stone-50 dark:hover:bg-stone-800 px-4 py-2 rounded-2xl rounded-tr-sm transition-colors w-fit text-right shadow-sm">Why did he start writing poetry?</button>
       </div>
@@ -152,7 +153,7 @@ I’m here to provide context about the photographs, the themes behind them, and
     }
   }
 
-  function addMessage(content: string, sender: 'user' | 'agent') {
+  function addMessage(content: string, sender: 'user' | 'agent', isHtml = false) {
     if (!messagesContainer) return;
 
     const messageDiv = document.createElement('div');
@@ -166,7 +167,8 @@ I’m here to provide context about the photographs, the themes behind them, and
       innerClasses = 'bg-stone-200/50 dark:bg-stone-800/50 text-stone-800 dark:text-stone-200 rounded-2xl p-3 max-w-[85%] rounded-tl-sm leading-relaxed whitespace-pre-wrap text-left';
     }
 
-    messageDiv.innerHTML = `<div class="${innerClasses}">${escapeHTML(content)}</div>`;
+    const displayContent = isHtml ? content : escapeHTML(content);
+    messageDiv.innerHTML = `<div class="${innerClasses}">${displayContent}</div>`;
     messagesContainer.appendChild(messageDiv);
     
     // trigger animation
@@ -250,6 +252,18 @@ I’m here to provide context about the photographs, the themes behind them, and
     isTyping = true;
 
     const indicator = showTypingIndicator();
+
+    if (message.toLowerCase() === 'contact ben hickman') {
+      setTimeout(() => {
+        removeTypingIndicator(indicator);
+        addMessage(`You can contact Ben using the <a href="/contact" class="underline hover:text-stone-500 transition-colors">contact section</a>.`, 'agent', true);
+        chatInput.disabled = false;
+        sendButton.disabled = false;
+        chatInput.focus();
+        isTyping = false;
+      }, 600);
+      return;
+    }
 
     try {
       const response = await fetch('/api/chat', {

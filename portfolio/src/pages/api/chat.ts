@@ -1,6 +1,7 @@
 import { GoogleGenAI } from '@google/genai';
 
-const ai = new GoogleGenAI({ apiKey: import.meta.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY });
+// The GoogleGenAI instance will be created inside the request handler to ensure 
+// environment variables are evaluated at runtime, not build time.
 
 const SYSTEM_INSTRUCTION = `System Instructions: The Creative Portfolio Agent
 Role & Persona
@@ -89,6 +90,7 @@ export async function POST({ request }: { request: Request }) {
             parts: [{ text: msg.content }]
         }));
 
+        const ai = new GoogleGenAI({ apiKey: import.meta.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY });
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: [
