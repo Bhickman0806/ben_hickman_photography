@@ -1,0 +1,22 @@
+---
+// Custom Portable Text component for inlineImage blocks in essays
+import { urlFor } from '../../lib/sanity';
+
+const { node } = Astro.props;
+const src = node?.asset ? urlFor(node).width(900).url() : '';
+---
+<figure class="essay-inline-img">
+  {src && (
+    <div class="aspect-[4/3] overflow-hidden rounded bg-gray-100">
+      <img
+        src={src}
+        alt={node.alt || ''}
+        loading="lazy"
+        class="w-full h-full object-cover"
+      />
+    </div>
+  )}
+  {node.caption && (
+    <figcaption class="article-label mt-3">{node.caption}</figcaption>
+  )}
+</figure>

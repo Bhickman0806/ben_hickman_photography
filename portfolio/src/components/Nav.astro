@@ -167,29 +167,57 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
   const initLottiePlayer = () => {
     const lottiePlayer = document.getElementById('lottie-logo') as any;
     if (lottiePlayer) {
-      const startAnimation = () => {
+      const applyThemeAndPlay = () => {
         if (!lottiePlayer.isConnected) return; // Prevent infinite orphaned loops if navigated away
 
-        if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.play === 'function') {
-          // When engine is ready, ensure theme matches exactly BEFORE playing
-          const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-          const lottieTheme = currentTheme === 'dark' ? 'light' : 'dark';
-          lottiePlayer.setAttribute('theme-id', lottieTheme);
-          if (typeof lottiePlayer.dotLottie.setTheme === 'function') {
+        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const lottieTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        lottiePlayer.setAttribute('theme-id', lottieTheme);
+        
+        if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setTheme === 'function') {
+          try {
             lottiePlayer.dotLottie.setTheme(lottieTheme);
+          } catch(e) {
+            console.error('Error setting theme:', e);
           }
-
-          // Delay for appearance transition
-          setTimeout(() => {
-            if (lottiePlayer.isConnected) {
-               lottiePlayer.dotLottie.play();
-            }
-          }, 500); 
-        } else {
-           setTimeout(startAnimation, 100);
         }
+
+        // Delay for appearance transition
+        setTimeout(() => {
+          if (lottiePlayer.isConnected && lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.play === 'function') {
+             lottiePlayer.dotLottie.play();
+          }
+        }, 500); 
+      };
+
+      // Listen for the 'load' event, which fires when the animation file itself is parsed and themes are available.
+      // We also listen for 'ready' just in case, but 'load' is the critical one for themes.
+      let hasLoaded = false;
+      
+      const onEventFired = () => {
+        if (!hasLoaded) {
+          hasLoaded = true;
+          applyThemeAndPlay();
+        }
+      };
+
+      lottiePlayer.addEventListener('load', onEventFired, { once: true });
+      lottiePlayer.addEventListener('ready', onEventFired, { once: true });
+
+      // Fallback: Check if it's already loaded (isLoaded property for dotLottie, or just presence of play)
+      if (lottiePlayer.isLoaded || (lottiePlayer.dotLottie && lottiePlayer.dotLottie.isLoaded)) {
+        onEventFired();
+      } else {
+        // Ultimate fallback for Safari edge cases where events might be missed over Astro navigations
+        const fallbackInterval = setInterval(() => {
+          if (lottiePlayer.isLoaded || (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.play === 'function')) {
+            clearInterval(fallbackInterval);
+            onEventFired();
+          }
+        }, 200);
+        // Clear interval after 5 seconds to prevent memory leaks
+        setTimeout(() => clearInterval(fallbackInterval), 5000);
       }
-      startAnimation();
     }
   };
 
@@ -255,6 +283,12 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
       });
     });
     observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+    
+    // Listen to system theme changes natively
+    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
+      applyTheme(e.matches ? 'dark' : 'light');
+    });
+
     observerInitialized = true;
   }
 </script>
