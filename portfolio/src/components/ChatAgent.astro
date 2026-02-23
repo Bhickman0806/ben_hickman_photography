@@ -272,9 +272,11 @@ I’m here to provide context about the photographs, the themes behind them, and
         body: JSON.stringify({ message, history: conversationHistory })
       });
 
-      if (!response.ok) throw new Error('API Error');
-
       const data = await response.json();
+      
+      if (!response.ok) {
+        throw new Error(data.details || data.error || 'API Error');
+      }
       
       // Update history
       conversationHistory.push({ role: 'user', content: message });
@@ -288,10 +290,10 @@ I’m here to provide context about the photographs, the themes behind them, and
       removeTypingIndicator(indicator);
       addMessage(data.reply, 'agent');
 
-    } catch (error) {
+    } catch (error: any) {
       console.error(error);
       removeTypingIndicator(indicator);
-      addMessage("Sorry, I'm having trouble connecting to the network right now.", 'agent');
+      addMessage(`Error: ${error.message || "I'm having trouble connecting to the network right now."}`, 'agent');
     } finally {
       chatInput.disabled = false;
       sendButton.disabled = false;

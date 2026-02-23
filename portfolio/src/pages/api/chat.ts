@@ -90,7 +90,12 @@ export async function POST({ request }: { request: Request }) {
             parts: [{ text: msg.content }]
         }));
 
-        const ai = new GoogleGenAI({ apiKey: import.meta.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY });
+        const apiKey = import.meta.env.GEMINI_API_KEY || process.env.GEMINI_API_KEY;
+        if (!apiKey) {
+            throw new Error("API key is not configured in the environment.");
+        }
+
+        const ai = new GoogleGenAI({ apiKey });
         const response = await ai.models.generateContent({
             model: 'gemini-2.5-flash',
             contents: [

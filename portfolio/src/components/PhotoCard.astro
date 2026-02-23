@@ -28,7 +28,7 @@ const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, 
       <h3 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight mb-8">{title}</h3>
       <p class="font-sans text-[0.9375rem] font-light text-muted leading-[1.75] max-w-md">{description}</p>
     </div>
-    <div class="pt-8 border-t border-border-color-DEFAULT">
+    <div class="pt-0 md:pt-8 md:border-t border-border-color-DEFAULT mt-2 md:mt-0">
       <div class="inline-flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:opacity-60 transition-opacity">
         {linkLabel}
         <span class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
@@ -50,6 +50,8 @@ const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, 
       />
       <div class="absolute inset-0 bg-black/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
     </div>
+    <!-- Mobile Horizontal Line Separator -->
+    <div class="md:hidden mt-8 border-t border-border-color-DEFAULT w-full"></div>
   </div>
 </a>
 
