@@ -23,16 +23,237 @@ const projects = homeData?.featuredCollections?.map((collection: any) => ({
 ---
 
 <BaseLayout>
-  <HeroSection 
-    images={homeData?.heroImages}
-  />
+  <div id="home-slider-container" class="home-slider-container">
+    <div class="slider-section" data-slide-index="0">
+      <HeroSection 
+        images={homeData?.heroImages}
+      />
+    </div>
 
-  <!-- Content Section: List of Project Rows -->
-  <section class="max-w-[90%] mx-auto pt-16 pb-32 space-y-32">
-    {projects.map((project, i) => (
-      <PhotoCard {...project} featured={i === 0} />
-    ))}
-  </section>
+    <!-- Content Section: List of Project Rows -->
+    <section class="max-w-[90%] mx-auto pt-16 pb-32 space-y-32 mobile-space-y-0">
+      {projects.map((project, i) => (
+        <div class="slider-section" data-slide-index={i + 1}>
+          <PhotoCard {...project} featured={i === 0} />
+        </div>
+      ))}
+    </section>
+  </div>
 
   <Lightbox />
 </BaseLayout>
+
+<style>
+  /* Base styles for the slider sections */
+  @media (max-width: 767px) {
+    .home-slider-container {
+      position: relative;
+      width: 100%;
+    }
+    .mobile-space-y-0 > :not([hidden]) ~ :not([hidden]) {
+      margin-top: 0;
+    }
+    .slider-section {
+      width: 100%;
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-start; /* Ensure top alignment */
+    }
+  }
+</style>
+
+<script>
+  let isMobileSliderActive = false;
+  let currentSlideIndex = 0;
+  let isAnimating = false;
+  let touchStartY = 0;
+  let maxSlideIndex = 0;
+  let isNativeScrollingDown = false;
+
+  const initSlider = () => {
+    // Only run on mobile, and specifically on the homepage container
+    const container = document.getElementById('home-slider-container');
+    if (!container || window.innerWidth >= 768) {
+      isMobileSliderActive = false;
+      document.body.style.overflow = '';
+      return;
+    }
+
+    const sections = Array.from(document.querySelectorAll('.slider-section')) as HTMLElement[];
+    if (sections.length === 0) return;
+
+    maxSlideIndex = sections.length - 1;
+    isMobileSliderActive = true;
+
+    // Check if we arrived here by scrolling up from the footer
+    if (isNativeScrollingDown) return; 
+
+    // Prevent native scroll on load if we're at the top
+    if (window.scrollY < sections[maxSlideIndex].offsetTop) {
+      document.body.style.overflow = 'hidden';
+      // Snap to current index based on load position
+      currentSlideIndex = sections.findIndex(sec => window.scrollY < sec.offsetTop + (sec.offsetHeight / 2));
+      if (currentSlideIndex === -1) currentSlideIndex = maxSlideIndex;
+      scrollToSlide(currentSlideIndex, false);
+    }
+  };
+
+  const scrollToSlide = (index: number, smooth: boolean = true) => {
+    const sections = Array.from(document.querySelectorAll('.slider-section')) as HTMLElement[];
+    if (!sections[index]) return;
+
+    isAnimating = true;
+    currentSlideIndex = index;
+    
+    // We scroll to exact offsetTop. The internal padding of the sections will handle the "0.1vh" clearance.
+    const targetY = sections[index].offsetTop;
+
+    window.scrollTo({
+      top: targetY,
+      behavior: smooth ? 'smooth' : 'auto'
+    });
+
+    // Fire custom event for Nav to listen to (simulates native scroll behavior)
+    window.dispatchEvent(new CustomEvent('sliderScroll', { detail: { index, direction: 'down' } })); // Assuming Nav hides on any slide change for now, will refine in Nav logic if needed.
+
+    // Using a timeout fallback since scrollend is not perfectly supported everywhere yet
+    setTimeout(() => {
+      isAnimating = false;
+      
+      // If we reached the end, re-enable scrolling
+      if (currentSlideIndex === maxSlideIndex) {
+        document.body.style.overflow = '';
+        isNativeScrollingDown = true; // We are now in native scroll mode below the slider
+      }
+    }, 800);
+  };
+
+  const handleWheel = (e: WheelEvent) => {
+    if (!isMobileSliderActive || window.innerWidth >= 768) return;
+    
+    // If we are native scrolling (past the last slide), let the browser handle it...
+    if (isNativeScrollingDown) {
+        const sections = Array.from(document.querySelectorAll('.slider-section')) as HTMLElement[];
+        const lastSectionTop = sections[maxSlideIndex].offsetTop;
+        
+        // ...UNLESS we scroll back up above the last slide trigger point
+        if (window.scrollY <= lastSectionTop && e.deltaY < 0) {
+            e.preventDefault();
+            isNativeScrollingDown = false;
+            document.body.style.overflow = 'hidden';
+            scrollToSlide(maxSlideIndex - 1);
+        }
+        return;
+    }
+
+    // Slider active: handle wheel scroll
+    e.preventDefault();
+    if (isAnimating) return;
+
+    if (e.deltaY > 50) {
+      // Scroll Down
+      if (currentSlideIndex < maxSlideIndex) {
+        scrollToSlide(currentSlideIndex + 1);
+      }
+    } else if (e.deltaY < -50) {
+      // Scroll Up
+      if (currentSlideIndex > 0) {
+        scrollToSlide(currentSlideIndex - 1);
+      }
+    }
+  };
+
+  const handleTouchStart = (e: TouchEvent) => {
+    touchStartY = e.touches[0].clientY;
+  };
+
+  const handleTouchMove = (e: TouchEvent) => {
+    if (!isMobileSliderActive || window.innerWidth >= 768) return;
+
+    if (isNativeScrollingDown) {
+         const sections = Array.from(document.querySelectorAll('.slider-section')) as HTMLElement[];
+         const lastSectionTop = sections[maxSlideIndex]?.offsetTop || 0;
+         const currentY = e.touches[0].clientY;
+         const deltaY = touchStartY - currentY;
+         
+         // If scrolling UP and we hit the top of the last section, lock back into slider
+         if (window.scrollY <= lastSectionTop && deltaY < 0) {
+             e.preventDefault();
+             // Note: we don't trigger the slide change until touchEnd to avoid jank mid-swipe,
+             // just prevent the default scroll so it doesn't rubber-band.
+             document.body.style.overflow = 'hidden'; 
+         }
+         return;
+    }
+
+    // active slider mode
+    e.preventDefault();
+  };
+
+  const handleTouchEnd = (e: TouchEvent) => {
+    if (!isMobileSliderActive || window.innerWidth >= 768 || isAnimating) return;
+
+    const touchEndY = e.changedTouches[0].clientY;
+    const deltaY = touchStartY - touchEndY; // Positive if Swipe up / Scroll Down
+
+    if (isNativeScrollingDown) {
+         const sections = Array.from(document.querySelectorAll('.slider-section')) as HTMLElement[];
+         const lastSectionTop = sections[maxSlideIndex]?.offsetTop || 0;
+         
+         if (window.scrollY <= lastSectionTop && deltaY < -30) {
+             isNativeScrollingDown = false;
+             document.body.style.overflow = 'hidden';
+             scrollToSlide(maxSlideIndex - 1);
+         }
+         return;
+    }
+
+    if (deltaY > 50 && currentSlideIndex < maxSlideIndex) {
+      // Swipe up (next slide)
+      scrollToSlide(currentSlideIndex + 1);
+    } else if (deltaY < -50 && currentSlideIndex > 0) {
+      // Swipe down (prev slide)
+      scrollToSlide(currentSlideIndex - 1);
+    }
+  };
+
+  // Setup/Teardown listeners
+  const attachListeners = () => {
+    window.addEventListener('resize', initSlider);
+    window.addEventListener('wheel', handleWheel, { passive: false });
+    window.addEventListener('touchstart', handleTouchStart, { passive: true });
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
+  };
+
+  const detachListeners = () => {
+    window.removeEventListener('resize', initSlider);
+    window.removeEventListener('wheel', handleWheel);
+    window.removeEventListener('touchstart', handleTouchStart);
+    window.removeEventListener('touchmove', handleTouchMove);
+    window.removeEventListener('touchend', handleTouchEnd);
+    document.body.style.overflow = '';
+  };
+
+  // Astro page transitions
+  document.addEventListener('astro:page-load', () => {
+    if (window.location.pathname === '/') {
+        attachListeners();
+        initSlider();
+    } else {
+        detachListeners();
+    }
+  });
+
+  // Initial load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        if (window.location.pathname === '/') attachListeners();
+        initSlider();
+    });
+  } else {
+    if (window.location.pathname === '/') attachListeners();
+    initSlider();
+  }
+</script>

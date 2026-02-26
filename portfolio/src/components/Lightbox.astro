@@ -6,135 +6,270 @@
      aria-modal="true"
      aria-label="Image lightbox">
 
-  <!-- Navigation buttons -->
-  <button id="lb-prev" class="absolute left-4 text-white/70 hover:text-white transition-colors z-10 p-2"
-          aria-label="Previous image">
-    <span class="material-icons text-3xl">chevron_left</span>
-  </button>
+  <!-- A wrapper for the vertical scroll snap -->
+  <!-- overscroll-y-contain allows the bounce effect inside the container, hide-scrollbar removes native scrollbars -->
+  <div id="lb-scroll-container" class="absolute inset-0 overflow-y-auto overscroll-y-contain snap-y snap-mandatory flex flex-col w-full h-full pb-[env(safe-area-inset-bottom)]" style="scrollbar-width: none; -ms-overflow-style: none;">
+     <!-- images will be injected here via javascript -->
+  </div>
 
-  <img id="lightbox-img" src="" alt=""
-       class="max-w-full max-h-[90vh] object-contain shadow-2xl scale-95 opacity-0 transition-all duration-300 select-none" />
-
-  <button id="lb-next" class="absolute right-4 text-white/70 hover:text-white transition-colors z-10 p-2"
-          aria-label="Next image">
-    <span class="material-icons text-3xl">chevron_right</span>
-  </button>
-
-  <button id="lb-close" class="hidden absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2"
+  <button id="lb-close" class="hidden absolute top-6 right-6 text-white/70 hover:text-white transition-colors p-2 z-50"
           aria-label="Close lightbox">
-    <span class="material-icons text-2xl">close</span>
+    <span class="material-icons text-2xl drop-shadow-md">close</span>
   </button>
 
-  <!-- Caption (hidden – titles should never be visible) -->
-  <div id="lb-caption" class="hidden"></div>
+  <!-- Swipe Affordance Indicators -->
+  <div id="lb-indicator-up" class="absolute top-8 left-1/2 -translate-x-1/2 text-white/70 transition-opacity duration-[600ms] pointer-events-none z-50 flex flex-col items-center opacity-0">
+    <span class="material-icons text-xl drop-shadow-md animate-bounce" style="animation-direction: alternate-reverse;">north</span>
+  </div>
+
+  <div id="lb-indicator-down" class="absolute bottom-8 left-1/2 -translate-x-1/2 text-white/70 transition-opacity duration-[600ms] pointer-events-none z-50 flex flex-col items-center opacity-0">
+    <span class="material-icons text-xl drop-shadow-md animate-bounce">south</span>
+  </div>
 </div>
+
+<style>
+/* Hide scrollbar for Chrome, Safari and Opera */
+#lb-scroll-container::-webkit-scrollbar {
+  display: none;
+}
+</style>
 
 <script>
   // Lightbox logic: open, close, navigate, keyboard support
   // Runs as a client-side island in Astro
-  const lightbox = document.getElementById('lightbox');
-  const img = document.getElementById('lightbox-img');
-  const caption = document.getElementById('lb-caption');
-  
-  // Need to cast to HTMLElement for TS checks if stricter settings are on
-  const lightboxEl = lightbox as HTMLElement;
-  const imgEl = img as HTMLImageElement;
-  const captionEl = caption as HTMLElement;
+  const lightboxEl = document.getElementById('lightbox') as HTMLElement;
+  const scrollContainer = document.getElementById('lb-scroll-container') as HTMLElement;
+  const closeBtn = document.getElementById('lb-close');
+  const indicatorUp = document.getElementById('lb-indicator-up');
+  const indicatorDown = document.getElementById('lb-indicator-down');
 
-  let images: HTMLElement[] = [];
-  let currentIndex = 0;
+  let imagesData: { src: string, alt: string, caption: string }[] = [];
+  let isLightboxOpen = false;
+  let scrollTimeout: number;
 
-  function open(index: number) {
-    if (!lightboxEl || !imgEl) return;
+  function initGallery() {
+    const galleryItems = Array.from(document.querySelectorAll('[data-lightbox]')) as HTMLElement[];
     
-    currentIndex = index;
-    const target = images[index];
-    
-    // Get full src from data attribute
-    const src = target.getAttribute('data-full-src');
-    const cap = target.getAttribute('data-caption');
-    const imgTag = target.querySelector('img');
-    const targetSrc = src || (imgTag ? imgTag.src : '');
-    const targetAlt = imgTag ? imgTag.alt : '';
-    
-    // Hide image immediately and wait for it to load
-    imgEl.classList.remove('opacity-100', 'scale-100');
-    imgEl.classList.add('opacity-0', 'scale-95');
-    
-    const tempImg = new Image();
-    tempImg.onload = () => {
-        imgEl.src = targetSrc;
-        imgEl.alt = targetAlt;
-        // Small delay to ensure the DOM has updated with new src before animating
-        setTimeout(() => {
-            imgEl.classList.remove('opacity-0', 'scale-95');
-            imgEl.classList.add('opacity-100', 'scale-100');
-        }, 20);
-    };
-    tempImg.src = targetSrc;
-    
-    if (captionEl) {
-        captionEl.textContent = cap || '';
-    }
+    // Extract metadata
+    imagesData = galleryItems.map(item => {
+      const src = item.getAttribute('data-full-src');
+      const caption = item.getAttribute('data-caption') || '';
+      const imgTag = item.querySelector('img');
+      const targetSrc = src || (imgTag ? imgTag.src : '');
+      const targetAlt = imgTag ? imgTag.alt : '';
+      return { src: targetSrc, alt: targetAlt, caption };
+    });
 
-    lightboxEl.classList.remove('opacity-0', 'pointer-events-none');
-    document.body.style.overflow = 'hidden';
-  }
+    // Populate the scroll container
+    scrollContainer.innerHTML = '';
+    imagesData.forEach((data, i) => {
+      const wrapper = document.createElement('div');
+      // Each wrapper is exactly viewport height
+      wrapper.className = 'w-full h-[100dvh] flex-none snap-center flex items-center justify-center p-4 relative';
+      
+      const img = document.createElement('img');
+      img.src = data.src;
+      img.loading = 'lazy';
+      img.alt = data.alt;
+      img.className = 'max-w-full max-h-[90dvh] object-contain shadow-2xl transition-transform duration-100 ease-out select-none';
+      img.dataset.index = i.toString();
+      
+      wrapper.appendChild(img);
+      scrollContainer.appendChild(wrapper);
+    });
 
-  function close() {
-    if (!lightboxEl || !imgEl) return;
-    lightboxEl.classList.add('opacity-0', 'pointer-events-none');
-    imgEl.classList.remove('opacity-100', 'scale-100');
-    imgEl.classList.add('opacity-0', 'scale-95');
-    document.body.style.overflow = '';
-    
-    // Clear the source after transition so there is no old image flash next time
-    setTimeout(() => {
-        if (lightboxEl.classList.contains('opacity-0')) {
-            imgEl.src = '';
-        }
-    }, 300);
-  }
-
-  function navigate(dir: -1 | 1) {
-    if (images.length === 0) return;
-    currentIndex = (currentIndex + dir + images.length) % images.length;
-    open(currentIndex);
-  }
-
-  // Init: collect all gallery images
-  // We use data-lightbox attribute on the container
-  document.addEventListener('DOMContentLoaded', () => {
-    images = Array.from(document.querySelectorAll('[data-lightbox]')) as HTMLElement[];
-    
-    images.forEach((el, i) => {
+    // Attach click listeners to gallery thumbs
+    galleryItems.forEach((el, i) => {
       el.style.cursor = 'zoom-in';
       el.addEventListener('click', (e) => {
           e.stopPropagation();
           open(i);
       });
     });
-    
-    const closeBtn = document.getElementById('lb-close');
-    const prevBtn = document.getElementById('lb-prev');
-    const nextBtn = document.getElementById('lb-next');
 
+    // Scroll listener to handle the bounce scale effect
+    scrollContainer.addEventListener('scroll', handleScroll, { passive: true });
+  }
+
+  function handleScroll() {
+    if (!isLightboxOpen || imagesData.length === 0) return;
+
+    const scrollTop = scrollContainer.scrollTop;
+    const maxScroll = scrollContainer.scrollHeight - scrollContainer.clientHeight;
+    
+    // Scale effect for the first image when overscrolling up
+    if (scrollTop < 0) {
+      const firstImg = scrollContainer.querySelector('img[data-index="0"]') as HTMLImageElement;
+      if (firstImg) {
+        // Calculate scale, squishing slightly (max 20% shrink for extreme overscroll)
+        const scale = Math.max(0.8, 1 - (Math.abs(scrollTop) / scrollContainer.clientHeight));
+        firstImg.style.transform = `scale(${scale})`;
+      }
+    } else {
+      // Reset if not negative
+      const firstImg = scrollContainer.querySelector('img[data-index="0"]') as HTMLImageElement;
+      if (firstImg && firstImg.style.transform) firstImg.style.transform = '';
+    }
+
+    // Scale effect for the last image when overscrolling down
+    if (scrollTop > maxScroll) {
+      const overscroll = scrollTop - maxScroll;
+      const lastImg = scrollContainer.querySelector(`img[data-index="${imagesData.length - 1}"]`) as HTMLImageElement;
+      if (lastImg) {
+        const scale = Math.max(0.8, 1 - (overscroll / scrollContainer.clientHeight));
+        lastImg.style.transform = `scale(${scale})`;
+      }
+    } else {
+      // Reset if not overscrolled
+      const lastImg = scrollContainer.querySelector(`img[data-index="${imagesData.length - 1}"]`) as HTMLImageElement;
+      if (lastImg && lastImg.style.transform) lastImg.style.transform = '';
+    }
+
+    // Update affordance indicators
+    updateIndicators();
+    
+    // Hide indicators while scrolling, show when snapped
+    if (indicatorUp) indicatorUp.classList.replace('opacity-70', 'opacity-0');
+    if (indicatorDown) indicatorDown.classList.replace('opacity-70', 'opacity-0');
+    
+    clearTimeout(scrollTimeout);
+    scrollTimeout = window.setTimeout(() => {
+      updateIndicators(); // Re-apply visibility based on final position
+    }, 3000); // 3 second delay before arrows appear after scrolling stops
+  }
+
+  function updateIndicators() {
+    if (!isLightboxOpen || imagesData.length <= 1) return;
+    const currentIndex = Math.round(scrollContainer.scrollTop / scrollContainer.clientHeight);
+    const maxIndex = imagesData.length - 1;
+
+    if (indicatorUp) {
+      if (currentIndex > 0) {
+        indicatorUp.classList.remove('opacity-0');
+        indicatorUp.classList.add('opacity-70');
+      } else {
+        indicatorUp.classList.add('opacity-0');
+        indicatorUp.classList.remove('opacity-70');
+      }
+    }
+
+    if (indicatorDown) {
+      if (currentIndex < maxIndex) {
+        indicatorDown.classList.remove('opacity-0');
+        indicatorDown.classList.add('opacity-70');
+      } else {
+        indicatorDown.classList.add('opacity-0');
+        indicatorDown.classList.remove('opacity-70');
+      }
+    }
+  }
+
+  function open(index: number) {
+    if (!lightboxEl) return;
+    isLightboxOpen = true;
+    
+    // Temporarily remove smooth scroll so it jumps instantly to the correct image on open
+    scrollContainer.classList.remove('scroll-smooth');
+    const childHeight = scrollContainer.clientHeight;
+    scrollContainer.scrollTop = index * childHeight;
+
+    // Restore smooth scroll shortly after for native swipe flicks
+    setTimeout(() => {
+        scrollContainer.classList.add('scroll-smooth');
+    }, 50);
+
+    lightboxEl.classList.remove('opacity-0', 'pointer-events-none');
+    
+    // Prevent background scrolling
+    document.body.style.overflow = 'hidden';
+    document.documentElement.style.overflow = 'hidden';
+
+    // Prevent touchmove from bubbling to the document
+    lightboxEl.addEventListener('touchmove', preventDefaultTouchMove, { passive: false });
+
+    if (closeBtn) closeBtn.classList.remove('hidden');
+    
+    // Reset indicators immediately to hidden state on open
+    if (indicatorUp) {
+       indicatorUp.classList.remove('opacity-70');
+       indicatorUp.classList.add('opacity-0');
+    }
+    if (indicatorDown) {
+       indicatorDown.classList.remove('opacity-70');
+       indicatorDown.classList.add('opacity-0');
+    }
+    
+    clearTimeout(scrollTimeout);
+
+    // Initial indicator calculation (delayed so it acts as subtle guidance)
+    scrollTimeout = window.setTimeout(() => {
+        updateIndicators();
+    }, 3000); 
+  }
+
+  function close() {
+    if (!lightboxEl) return;
+    isLightboxOpen = false;
+    lightboxEl.classList.add('opacity-0', 'pointer-events-none');
+    
+    // Restore background scrolling
+    document.body.style.overflow = '';
+    document.documentElement.style.overflow = '';
+
+    lightboxEl.removeEventListener('touchmove', preventDefaultTouchMove);
+
+    if (closeBtn) closeBtn.classList.add('hidden');
+    if (indicatorUp) indicatorUp.classList.replace('opacity-70', 'opacity-0');
+    if (indicatorDown) indicatorDown.classList.replace('opacity-70', 'opacity-0');
+    
+    clearTimeout(scrollTimeout);
+    
+    // Reset transforms just in case closed during a bounce
+    const firstImg = scrollContainer.querySelector('img[data-index="0"]') as HTMLImageElement;
+    const lastImg = scrollContainer.querySelector(`img[data-index="${imagesData.length - 1}"]`) as HTMLImageElement;
+    if (firstImg) firstImg.style.transform = '';
+    if (lastImg) lastImg.style.transform = '';
+  }
+
+  document.addEventListener('DOMContentLoaded', () => {
+    initGallery();
+    
     if (closeBtn) closeBtn.addEventListener('click', close);
-    if (prevBtn) prevBtn.addEventListener('click', (e) => { e.stopPropagation(); navigate(-1); });
-    if (nextBtn) nextBtn.addEventListener('click', (e) => { e.stopPropagation(); navigate(1); });
     
     if (lightboxEl) {
         lightboxEl.addEventListener('click', (e) => { 
-            if (e.target === lightboxEl) close(); 
+            const target = e.target as HTMLElement;
+            // Close if tapping background, but not if tapping the image itself or close button
+            if (target.tagName !== 'IMG' && target.id !== 'lb-close' && !target.closest('#lb-close')) {
+                close(); 
+            }
         });
     }
 
+    // Helper to prevent background scrolling if the user misses the image
+    function preventDefaultTouchMove(e: TouchEvent) {
+        const target = e.target as HTMLElement;
+        // If swiping on the lightbox directly (backdrop), stop the page from scrolling
+        if (target === lightboxEl) {
+            e.preventDefault();
+        }
+    }
+
     document.addEventListener('keydown', (e) => {
-      if (lightboxEl && lightboxEl.classList.contains('opacity-0')) return;
-      
+      if (!isLightboxOpen) return;
       if (e.key === 'Escape') close();
-      if (e.key === 'ArrowLeft') navigate(-1);
-      if (e.key === 'ArrowRight') navigate(1);
+      // Arrow keys mapping to vertical flip
+      if (e.key === 'ArrowUp') {
+        e.preventDefault();
+        scrollContainer.scrollBy({ top: -window.innerHeight, behavior: 'smooth' });
+      }
+      if (e.key === 'ArrowDown') {
+         e.preventDefault();
+         scrollContainer.scrollBy({ top: window.innerHeight, behavior: 'smooth' });
+      }
     });
+
+    // Mobile specific: if they flick past top or bottom by touch, we get overscroll bounce 
+    // natively on iOS. The scale shrink effect handles it visually. 
   });
 </script>

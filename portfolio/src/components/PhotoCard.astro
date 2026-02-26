@@ -17,7 +17,7 @@ interface Props {
 
 const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, linkLabel, reverse, featured } = Astro.props;
 ---
-<a href={linkHref} class="project-row group grid grid-cols-1 md:grid-cols-12 gap-16 md:gap-8 items-center">
+<a href={linkHref} class="project-row group grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center h-full">
   
   <!-- Text Column -->
   <div class:list={["md:col-span-4 space-y-8", reverse ? "md:order-2" : ""]}>
@@ -57,20 +57,24 @@ const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, 
 
 <style>
   .project-row {
-    padding: 2rem 1.5rem;
+    padding: 7rem 1.5rem 2rem 1.5rem; /* Increased top padding specifically for the mobile slider */
     margin: 0 -1.5rem;
     border-radius: 1rem;
     transition: background-color 0.5s cubic-bezier(0.4, 0, 0.2, 1);
     color: inherit;
     text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
   }
   .project-row:hover {
     background-color: color-mix(in srgb, var(--color-text-primary) 4%, transparent);
   }
   @media (min-width: 768px) {
     .project-row {
-      padding: 3rem 2.5rem;
+      padding: 3rem 2.5rem; /* Reset to normal on desktop */
       margin: 0 -2.5rem;
+      display: grid;
     }
   }
 </style>
