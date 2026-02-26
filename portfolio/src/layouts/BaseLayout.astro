@@ -42,11 +42,15 @@ const {
     <meta name="apple-mobile-web-app-title" content="Ben Hickman" />
     <link rel="manifest" href="/site.webmanifest?v=2" />
 
-    <!-- Theme init: force light mode -->
+    <!-- Theme init: try to load localStorage to respect chosen mode -->
     <script is:inline>
       (function () {
-        document.documentElement.setAttribute('data-theme', 'light');
-        localStorage.setItem('theme', 'light');
+        var theme = localStorage.getItem('theme');
+        if (!theme) {
+          // Explicitly default to light mode to ensure Lottie visibility
+          theme = 'light';
+        }
+        document.documentElement.setAttribute('data-theme', theme);
       })();
     </script>
 
