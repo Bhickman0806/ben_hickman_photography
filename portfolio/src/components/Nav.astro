@@ -133,34 +133,6 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 
     lastScrollY = currentScrollY;
   };
-  
-  // Custom listener for Mobile Slider Event (where native scroll might be blocked)
-  const handleSliderScroll = (e: any) => {
-    const navbar = document.getElementById("navbar");
-    if (!navbar) return;
-    const lottiePlayer = document.getElementById('lottie-logo') as any;
-
-    // For now, if someone slides down, hide it. If they reach slide 0, show it.
-    if (e.detail.direction === 'down' && e.detail.index > 0) {
-      if (!navHidden) {
-        navbar.classList.add("-translate-y-full");
-        navHidden = true;
-        if (lottiePlayer && lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setMode === 'function') {
-          lottiePlayer.dotLottie.setMode('reverse');
-          lottiePlayer.dotLottie.play();
-        }
-      }
-    } else if (e.detail.index === 0 || e.detail.direction === 'up') {
-      if (navHidden) {
-        navbar.classList.remove("-translate-y-full");
-        navHidden = false;
-        if (lottiePlayer && lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setMode === 'function') {
-          lottiePlayer.dotLottie.setMode('forward');
-          lottiePlayer.dotLottie.play();
-        }
-      }
-    }
-  };
 
   // ── Theme Apply Function ──
   function applyTheme(theme: string) {
@@ -257,8 +229,6 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     // 1. Initialize scroll and listeners
     window.removeEventListener("scroll", handleScroll);
     window.addEventListener("scroll", handleScroll);
-    window.removeEventListener("sliderScroll", handleSliderScroll as any);
-    window.addEventListener("sliderScroll", handleSliderScroll as any);
     handleScroll();
 
     document.querySelectorAll<HTMLAnchorElement>('[data-home-link]').forEach(link => {
