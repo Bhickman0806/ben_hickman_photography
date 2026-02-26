@@ -42,14 +42,11 @@ const {
     <meta name="apple-mobile-web-app-title" content="Ben Hickman" />
     <link rel="manifest" href="/site.webmanifest?v=2" />
 
-    <!-- Theme init: read localStorage before render to prevent flash -->
+    <!-- Theme init: force light mode -->
     <script is:inline>
       (function () {
-        var theme = localStorage.getItem('theme');
-        if (!theme) {
-          theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-        }
-        document.documentElement.setAttribute('data-theme', theme);
+        document.documentElement.setAttribute('data-theme', 'light');
+        localStorage.setItem('theme', 'light');
       })();
     </script>
 

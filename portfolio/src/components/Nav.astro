@@ -44,56 +44,12 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
         </a>
       ))}
 
-      <!-- Theme Toggle Switch -->
-      <button
-        id="theme-toggle"
-        role="switch"
-        aria-checked="false"
-        aria-label="Toggle dark mode"
-        class="theme-switch"
-      >
-        <span class="theme-switch-knob"></span>
-      </button>
+
     </div>
   </div>
 </nav>
 
-<style>
-  .theme-switch {
-    position: relative;
-    display: flex;
-    align-items: center;
-    width: 36px;
-    height: 20px;
-    border-radius: 10px;
-    border: 1px solid currentColor;
-    background: transparent;
-    padding: 2px;
-    cursor: pointer;
-    flex-shrink: 0;
-    opacity: 1;
-    transition: opacity 300ms;
-  }
 
-  .theme-switch:hover {
-    opacity: 0.5;
-  }
-
-  .theme-switch-knob {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    background: currentColor;
-    transform: translateX(0);
-    transition: transform 300ms cubic-bezier(0.4, 0, 0.2, 1);
-    flex-shrink: 0;
-  }
-
-  /* Knob slides right when dark mode is active */
-  :global([data-theme="dark"]) .theme-switch-knob {
-    transform: translateX(16px);
-  }
-</style>
 
 <script>
   let lastScrollY = window.scrollY;
@@ -134,34 +90,6 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     lastScrollY = currentScrollY;
   };
 
-  // ── Theme Apply Function ──
-  function applyTheme(theme: string) {
-    const html = document.documentElement;
-    const toggle = document.getElementById('theme-toggle');
-    
-    // Prevent infinite loop by checking current value
-    if (html.getAttribute('data-theme') !== theme) {
-      html.setAttribute('data-theme', theme);
-    }
-    
-    localStorage.setItem('theme', theme);
-    if (toggle) {
-      toggle.setAttribute('aria-checked', theme === 'dark' ? 'true' : 'false');
-    }
-    
-    // Sync Lottie animation theme (Inverted to match Token Config)
-    const lottieTheme = theme === 'dark' ? 'light' : 'dark';
-    const lottiePlayer = document.getElementById('lottie-logo') as any;
-    if (lottiePlayer) {
-      const currentThemeId = lottiePlayer.getAttribute('theme-id');
-      if (currentThemeId !== lottieTheme) {
-        lottiePlayer.setAttribute('theme-id', lottieTheme);
-        if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setTheme === 'function') {
-          lottiePlayer.dotLottie.setTheme(lottieTheme);
-        }
-      }
-    }
-  }
 
   // ── Lottie Initialization ──
   const initLottiePlayer = () => {
@@ -170,8 +98,8 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
       const applyThemeAndPlay = () => {
         if (!lottiePlayer.isConnected) return; // Prevent infinite orphaned loops if navigated away
 
-        const currentTheme = document.documentElement.getAttribute('data-theme') || 'light';
-        const lottieTheme = currentTheme === 'dark' ? 'light' : 'dark';
+        // Force lottieTheme to dark to match the forced light mode
+        const lottieTheme = 'dark';
         lottiePlayer.setAttribute('theme-id', lottieTheme);
         
         if (lottiePlayer.dotLottie && typeof lottiePlayer.dotLottie.setTheme === 'function') {
@@ -223,8 +151,6 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
 
   // ── Setup Function to run on Page Load ──
   const setupPage = () => {
-    const html = document.documentElement;
-    const toggle = document.getElementById('theme-toggle');
 
     // 1. Initialize scroll and listeners
     window.removeEventListener("scroll", handleScroll);
@@ -247,18 +173,6 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     // 2. Initialize Lottie
     initLottiePlayer();
 
-    // 3. Sync initial theme
-    const currentTheme = html.getAttribute('data-theme') || 'light';
-    applyTheme(currentTheme);
-
-    // 4. Attach toggle listener
-    if (toggle && !toggle.hasAttribute('data-listener-attached')) {
-      toggle.addEventListener('click', () => {
-        const next = document.documentElement.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
-        applyTheme(next);
-      });
-      toggle.setAttribute('data-listener-attached', 'true');
-    }
   };
 
   // Astro view transitions trigger this event
@@ -271,24 +185,5 @@ const siteName = settings?.siteName || 'Ben Hickman Photography Portfolio';
     document.addEventListener('DOMContentLoaded', setupPage);
   }
 
-  // Optional root observer to catch theme changes forced by unrelated scripts
-  let observerInitialized = false;
-  if (!observerInitialized) {
-    const observer = new MutationObserver((mutations) => {
-      mutations.forEach((mutation) => {
-        if (mutation.type === 'attributes' && mutation.attributeName === 'data-theme') {
-          const newTheme = document.documentElement.getAttribute('data-theme');
-          if (newTheme) applyTheme(newTheme);
-        }
-      });
-    });
-    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
-    
-    // Listen to system theme changes natively
-    window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-      applyTheme(e.matches ? 'dark' : 'light');
-    });
 
-    observerInitialized = true;
-  }
 </script>
