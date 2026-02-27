@@ -13,7 +13,7 @@ export async function getHomePage() {
   const query = `*[_type == "page" && slug.current == "/"][0]{
     heroHeading,
     "heroImages": heroImages[]->image,
-    "featuredCollections": featuredCollections[]->{
+    "featuredCollections": featuredCollections[]->[isHidden != true]{
       title,
       subtitle,
       description,
@@ -27,13 +27,13 @@ export async function getHomePage() {
 
 // Get all collection slugs for static paths
 export async function getCollectionPaths() {
-  const query = `*[_type == "collection" && defined(slug.current)][].slug.current`;
+  const query = `*[_type == "collection" && defined(slug.current) && isHidden != true][].slug.current`;
   return await client.fetch(query);
 }
 
 // Get data for a specific collection
 export async function getCollectionData(slug: string) {
-  const query = `*[_type == "collection" && slug.current == $slug][0]{
+  const query = `*[_type == "collection" && slug.current == $slug && isHidden != true][0]{
     title,
     subtitle,
     description,
@@ -67,7 +67,7 @@ export async function getPhotoData(slug: string) {
     location,
     dateTaken,
     tags,
-    "relatedCollections": *[_type == "collection" && ^._id in photos[]._ref]{
+    "relatedCollections": *[_type == "collection" && ^._id in photos[]._ref && isHidden != true]{
       title,
       "slug": slug.current
     }

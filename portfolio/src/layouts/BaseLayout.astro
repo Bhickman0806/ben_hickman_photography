@@ -8,6 +8,7 @@ interface Props {
   title?: string;
   description?: string;
   image?: string;
+  canonicalURL?: string | URL;
 }
 
 const { 
@@ -15,6 +16,11 @@ const {
   description = "Cinematic, architectural and unapologetically bold photography.",
   image = "/og-image.jpg"
 } = Astro.props;
+
+const canonicalURL = Astro.props.canonicalURL || new URL(Astro.url.pathname, Astro.site);
+
+const umamiWebsiteId = import.meta.env.PUBLIC_UMAMI_WEBSITE_ID;
+const umamiScriptUrl = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL || "https://cloud.umami.is/script.js";
 ---
 
 <!DOCTYPE html>
@@ -32,6 +38,22 @@ const {
     <meta property="og:image" content={image} />
     
     <title>{title}</title>
+    <link rel="canonical" href={canonicalURL} />
+
+    <!-- Structured Data -->
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "Ben Hickman Photography",
+      "url": "https://benhickmanphotography.com"
+    })} />
+    <script type="application/ld+json" set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Ben Hickman",
+      "url": "https://benhickmanphotography.com",
+      "jobTitle": "Photographer & Creative Director"
+    })} />
 
     <!-- Favicons -->
     <link rel="icon" type="image/png" href="/favicon-48x48.png?v=2" sizes="48x48" />
@@ -41,6 +63,11 @@ const {
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png?v=2" />
     <meta name="apple-mobile-web-app-title" content="Ben Hickman" />
     <link rel="manifest" href="/site.webmanifest?v=2" />
+
+    {umamiWebsiteId && (
+      <script defer src={umamiScriptUrl} data-website-id={umamiWebsiteId}></script>
+    )}
+
 
     <!-- Theme init: try to load localStorage to respect chosen mode -->
     <script is:inline>

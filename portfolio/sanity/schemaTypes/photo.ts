@@ -50,8 +50,8 @@ export const photo = defineType({
             title: 'Collection',
             type: 'reference',
             to: [{ type: 'collection' }],
-            description: 'The collection this photo historically belonged to.',
-            // Removed validation so it's not strictly required anymore
+            weak: true,
+            description: 'The collection this photo historically belonged to. Making this weak allows deleting the collection without deleting the photo.',
         }),
         defineField({
             name: 'location',

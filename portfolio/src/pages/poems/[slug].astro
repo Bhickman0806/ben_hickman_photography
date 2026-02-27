@@ -23,9 +23,23 @@ function formatDate(dateStr: string | undefined): string {
   const d = new Date(dateStr);
   return d.toLocaleDateString('en-US', { month: 'short', year: 'numeric', timeZone: 'UTC' });
 }
+
+const schemaUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : `https://benhickmanphotography.com${Astro.url.pathname}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CreativeWork",
+  "name": poem.title,
+  "author": {
+    "@type": "Person",
+    "name": "Ben Hickman"
+  },
+  "url": schemaUrl,
+  "datePublished": poem.publishedAt || undefined
+};
 ---
 
 <BaseLayout title={`${poem.title} | Ben Hickman`}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
 
   <style>
     /* ── Article label (shared) ── */

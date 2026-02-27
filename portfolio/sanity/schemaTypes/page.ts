@@ -48,7 +48,7 @@ export const page = defineType({
             name: 'featuredCollections',
             title: 'Featured Collections',
             type: 'array',
-            of: [{ type: 'reference', to: { type: 'collection' } }],
+            of: [{ type: 'reference', to: { type: 'collection' }, weak: true }],
         }),
     ],
 })

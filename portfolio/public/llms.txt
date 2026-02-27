@@ -1,0 +1,14 @@
+# Ben Hickman Photography
+
+Ben Hickman brings an editor's eye, lighting expertise on par with major studios, and a unique creative direction perspective. He specializes in providing cinematic, architectural, and unapologetically bold photography.
+
+## Key Information
+- **Portfolio Focus**: Creative direction, photography, and cinematic visuals.
+- **Style**: Bold, architectural, and cinematic.
+
+## Important Links
+- [Home](/)
+- [Writing](/writing)
+- [Contact](/contact) Waitlist / inquiry availability.
+
+For full content including recent essays and thoughts, see our detailed [llms-full.txt](/llms-full.txt).

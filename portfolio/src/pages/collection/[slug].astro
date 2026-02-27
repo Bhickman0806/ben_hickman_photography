@@ -29,9 +29,23 @@ const ptComponents = {
     inlineImage: InlineImageBlock,
   },
 };
+
+const schemaUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : `https://benhickmanphotography.com${Astro.url.pathname}`;
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ImageGallery",
+  "name": `${collection.title} | Ben Hickman Photography Portfolio`,
+  "url": schemaUrl,
+  "author": {
+    "@type": "Person",
+    "name": "Ben Hickman"
+  },
+  "image": collection.photos?.map((photo: any) => photo.image && photo.image.asset ? urlFor(photo.image).width(1600).url() : null).filter(Boolean) || []
+};
 ---
 
 <BaseLayout title={`${collection.title} | Ben Hickman Photography Portfolio`}>
+  <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
   <div class="pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
     
     <!-- Collection Header -->

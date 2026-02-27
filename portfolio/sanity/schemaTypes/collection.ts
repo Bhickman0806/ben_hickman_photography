@@ -12,6 +12,13 @@ export const collection = defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
+            name: 'isHidden',
+            title: 'Hide Collection',
+            type: 'boolean',
+            description: 'If checked, this collection will not be visible on the public website.',
+            initialValue: false,
+        }),
+        defineField({
             name: 'slug',
             title: 'Slug',
             type: 'slug',

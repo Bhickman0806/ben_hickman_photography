@@ -8,7 +8,9 @@ import Lightbox from '../components/Lightbox.astro';
 
 const homeData = await getHomePage();
 
-const projects = homeData?.featuredCollections?.map((collection: any) => ({
+const projects = (homeData?.featuredCollections || [])
+  .filter(Boolean)
+  .map((collection: any) => ({
   subtitle: collection.subtitle || "Collection",
   title: collection.title,
   description: collection.description,
@@ -19,7 +21,6 @@ const projects = homeData?.featuredCollections?.map((collection: any) => ({
   linkLabel: "Explore",
   reverse: false 
 })) || [];
-
 ---
 
 <BaseLayout>
