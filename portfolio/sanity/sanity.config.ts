@@ -3,16 +3,29 @@ import { structureTool } from 'sanity/structure'
 import { visionTool } from '@sanity/vision'
 import { schemaTypes } from './schemaTypes'
 
-export default defineConfig({
-  name: 'default',
-  title: 'Ben Hickman Photography',
+import { structure } from './deskStructure'
 
-  projectId: '6xolgh7z',
-  dataset: 'production',
-
-  plugins: [structureTool(), visionTool()],
-
-  schema: {
-    types: schemaTypes,
+export default defineConfig([
+  {
+    name: 'production',
+    title: 'Production - Ben Hickman Photography',
+    projectId: '6xolgh7z',
+    dataset: 'production',
+    basePath: '/production',
+    plugins: [structureTool({ structure }), visionTool()],
+    schema: {
+      types: schemaTypes,
+    },
   },
-})
+  {
+    name: 'staging',
+    title: 'Staging - Ben Hickman Photography',
+    projectId: '6xolgh7z',
+    dataset: 'staging',
+    basePath: '/staging',
+    plugins: [structureTool({ structure }), visionTool()],
+    schema: {
+      types: schemaTypes,
+    },
+  }
+])
