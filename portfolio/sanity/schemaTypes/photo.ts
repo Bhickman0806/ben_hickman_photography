@@ -46,6 +46,14 @@ export const photo = defineType({
             validation: (Rule) => Rule.required(),
         }),
         defineField({
+            name: 'collection',
+            title: 'Collection',
+            type: 'reference',
+            to: [{ type: 'collection' }],
+            description: 'The collection this photo historically belonged to.',
+            // Removed validation so it's not strictly required anymore
+        }),
+        defineField({
             name: 'location',
             title: 'Location',
             type: 'string',

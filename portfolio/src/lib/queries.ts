@@ -37,6 +37,7 @@ export async function getCollectionData(slug: string) {
     title,
     subtitle,
     description,
+    writeup,
     "slug": slug.current,
     "photos": photos[]->{
       title,
@@ -66,7 +67,7 @@ export async function getPhotoData(slug: string) {
     location,
     dateTaken,
     tags,
-    "relatedCollections": *[_type == "collection" && references(^._id)]{
+    "relatedCollections": *[_type == "collection" && ^._id in photos[]._ref]{
       title,
       "slug": slug.current
     }

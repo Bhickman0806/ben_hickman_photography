@@ -1,4 +1,4 @@
-import { defineType, defineField } from 'sanity'
+import { defineType, defineField, defineArrayMember } from 'sanity'
 
 export const collection = defineType({
     name: 'collection',
@@ -32,6 +32,74 @@ export const collection = defineType({
             type: 'text',
         }),
         defineField({
+            name: 'writeup',
+            title: 'Write-up',
+            type: 'array',
+            of: [
+                // Standard text blocks
+                defineArrayMember({
+                    type: 'block',
+                    styles: [
+                        { title: 'Paragraph', value: 'normal' },
+                        { title: 'Section Heading', value: 'h2' },
+                    ],
+                    marks: {
+                        decorators: [
+                            { title: 'Bold', value: 'strong' },
+                            { title: 'Italic', value: 'em' },
+                        ],
+                    },
+                }),
+                // Pull quote — spans both columns in the layout
+                defineArrayMember({
+                    name: 'pullQuote',
+                    title: 'Pull Quote',
+                    type: 'object',
+                    fields: [
+                        defineField({
+                            name: 'text',
+                            title: 'Quote',
+                            type: 'text',
+                            rows: 3,
+                            validation: (Rule) => Rule.required(),
+                        }),
+                        defineField({
+                            name: 'attribution',
+                            title: 'Attribution',
+                            type: 'string',
+                            description: 'Optional. E.g. "On waiting for light, Utah — 2024"',
+                        }),
+                    ],
+                    preview: {
+                        select: { text: 'text' },
+                        prepare({ text }) {
+                            return { title: `❝ ${text?.slice(0, 60) ?? ''}…` }
+                        },
+                    },
+                }),
+                // Inline image — sits within the column flow
+                defineArrayMember({
+                    name: 'inlineImage',
+                    title: 'Inline Image',
+                    type: 'image',
+                    options: { hotspot: true },
+                    fields: [
+                        defineField({
+                            name: 'alt',
+                            title: 'Alt Text',
+                            type: 'string',
+                            validation: (Rule) => Rule.required().warning('Alt text required for accessibility'),
+                        }),
+                        defineField({
+                            name: 'caption',
+                            title: 'Caption',
+                            type: 'string',
+                        }),
+                    ],
+                }),
+            ],
+        }),
+        defineField({
             name: 'coverPhoto',
             title: 'Cover Photo',
             type: 'reference',
@@ -41,8 +109,10 @@ export const collection = defineType({
             name: 'photos',
             title: 'Photos',
             type: 'array',
-            of: [{ type: 'reference', to: { type: 'photo' } }],
+            of: [{ type: 'reference', to: [{ type: 'photo' }] }],
+            description: 'Photos assigned to this collection. You can drag to reorder them.',
         }),
+
         defineField({
             name: 'sortOrder',
             title: 'Sort Order',
