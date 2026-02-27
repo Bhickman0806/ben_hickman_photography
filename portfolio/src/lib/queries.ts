@@ -13,7 +13,7 @@ export async function getHomePage() {
   const query = `*[_type == "page" && slug.current == "/"][0]{
     heroHeading,
     "heroImages": heroImages[]->image,
-    "featuredCollections": featuredCollections[]->[isHidden != true]{
+    "featuredCollections": featuredCollections[@->isHidden != true]->{
       title,
       subtitle,
       description,
