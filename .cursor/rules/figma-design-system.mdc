@@ -1,0 +1,221 @@
+---
+description: Rules for implementing Figma designs from the Ben Hickman Photography design system. Covers Figma-to-code workflow, token mapping, component reuse, typography, and styling conventions for the Astro + Tailwind v4 portfolio.
+globs:
+  - portfolio/src/components/**
+  - portfolio/src/pages/**
+  - portfolio/src/layouts/**
+  - portfolio/src/styles/**
+alwaysApply: false
+---
+
+# Ben Hickman Photography — Figma Design System Rules
+
+Source of truth for design: **[Ben Hickman — Design System](https://www.figma.com/design/ZAIUGIPWRXFWsy1SwkIsg7)** (`fileKey: ZAIUGIPWRXFWsy1SwkIsg7`).
+
+Code lives in `portfolio/` — an **Astro 5** site with **Tailwind CSS v4**, **Sanity CMS**, and semantic CSS tokens.
+
+---
+
+## Figma MCP Integration — Required Flow
+
+Do not skip these steps when implementing or updating UI from Figma:
+
+1. Run `get_design_context` for the exact Figma node (use `fileKey` + `nodeId` from the design file).
+2. If the response is truncated, run `get_metadata` for the page map, then re-fetch only the needed nodes.
+3. Run `get_screenshot` for a visual reference of the variant being built.
+4. Download assets from the MCP payload when provided. Use localhost asset URLs directly — do not substitute placeholders.
+5. Translate MCP output (often React + Tailwind) into **Astro components** using this project's tokens and existing components.
+6. Validate 1:1 look and behavior against the screenshot before marking complete.
+
+---
+
+## Component Organization
+
+- **Shared UI components:** `portfolio/src/components/` (PascalCase `.astro` files)
+- **Essay/poem blocks:** `portfolio/src/components/essay/`, `portfolio/src/components/essays/`, `portfolio/src/components/poem/`, `portfolio/src/components/poems/`
+- **Layouts:** `portfolio/src/layouts/BaseLayout.astro` wraps Nav, Footer, ChatAgent
+- **Pages:** `portfolio/src/pages/` (file-based routing)
+- **Data:** `portfolio/src/lib/queries.ts` (Sanity), `portfolio/src/lib/sanity.ts`
+
+### Figma component → code mapping
+
+| Figma component | Code file | Notes |
+|---|---|---|
+| Label / Meta | `.label-meta` utility | `global.css` — also inline `text-[10px] font-bold uppercase tracking-[0.2em]` |
+| Arrow Link | `components/ArrowLink.astro` | Material Icons `east` arrow |
+| Theme Switch | `components/Nav.astro` | `.theme-switch` / `.theme-switch-knob` scoped styles |
+| Footer | `components/Footer.astro` | `.label-footer` pattern |
+| Filter Tab | `pages/writing/index.astro` | `.filter-tab` scoped styles |
+| Writing Row | `pages/writing/index.astro` | `.writing-row` scoped styles |
+| Nav | `components/Nav.astro` | Fixed top nav, Lottie logo, theme toggle |
+| Photo Card | `components/PhotoCard.astro` | Grid layout, `reverse` prop |
+| Pull Quote | `components/essay/PullQuoteBlock.astro` | `.pull-quote` styled in essay pages |
+| Scroll Indicator | `components/HeroSection.astro` | Scroll affordance at section bottom |
+| Hero Section | `components/HeroSection.astro` | Fluid `.heading-hero` + `.massive-text` |
+| Lightbox | `components/Lightbox.astro` | Full-screen overlay, Material Icons |
+| Chat Agent | `components/ChatAgent.astro` | Floating widget — **migrate `stone-*` to design tokens** |
+
+IMPORTANT: Before creating a new component, check the table above and reuse or extend the existing file.
+
+---
+
+## Design Tokens
+
+Tokens are defined in `portfolio/src/styles/tokens.css` and exposed to Tailwind via `@theme` in `portfolio/src/styles/global.css`.
+
+### Color tokens (Light / Dark via `[data-theme="dark"]`)
+
+| Figma variable | CSS variable | Tailwind utility |
+|---|---|---|
+| `color/surface` | `--color-surface` | `bg-surface` |
+| `color/surface-dark` | `--color-surface-dark` | `bg-surface-dark` |
+| `color/text/primary` | `--color-text-primary` | `text-primary` |
+| `color/text/muted` | `--color-text-muted` | `text-muted` |
+| `color/text/subtle` | `--color-text-subtle` | `text-subtle` |
+| `color/border` | `--color-border` | `border-border-color-DEFAULT` |
+| `color/overlay` | `--color-overlay` | Use `var(--color-overlay)` or semantic classes |
+| `color/overlay-hover` | `--color-overlay-hover` | Hover states on overlays |
+
+IMPORTANT: Never hardcode hex colors or use arbitrary Tailwind palette colors (`stone-*`, `gray-*`) for UI that maps to the design system. Use semantic tokens above.
+
+### Spacing & radius
+
+| Figma variable | CSS variable | Value |
+|---|---|---|
+| `spacing/section` | `--space-section` | 128px (8rem) |
+| `spacing/block` | `--space-block` | 32px (2rem) |
+| `spacing/inline` | `--space-inline` | 16px (1rem) |
+| `radius/card` | `--radius-card` | 8px (0.5rem) |
+
+Prefer Tailwind theme spacing (`spacing-section`, `spacing-block`, `spacing-inline`) or the CSS variables directly.
+
+### Typography
+
+| Figma variable | CSS variable | Font |
+|---|---|---|
+| `font/display` | `--font-display` | Instrument Serif |
+| `font/sans` | `--font-sans` | Inter |
+
+Use `font-display` and `font-sans` Tailwind utilities. Do not import additional font families.
+
+### Motion
+
+| Token | CSS variable | Value |
+|---|---|---|
+| Fast | `--duration-fast` | 300ms |
+| Medium | `--duration-medium` | 500ms |
+| Slow | `--duration-slow` | 700ms |
+| Easing | `--ease-default` | `cubic-bezier(0.4, 0, 0.2, 1)` |
+
+Body theme transitions use `duration-500` on `body` — match for theme-aware UI.
+
+---
+
+## Typography Scale (20 text styles)
+
+Map Figma text styles to code using these patterns. Semantic meaning (placeholder, muted, active) is carried by **color tokens**, not duplicate styles.
+
+### Display (Instrument Serif)
+
+| Figma style | Code pattern |
+|---|---|
+| `Display/Cover` | Large cover titles — `font-display`, ~96px fixed in Figma; use fluid sizing only when matching live hero |
+| `Heading/Massive` | `.massive-text` utility in `global.css` (fluid viewport sizing) |
+| `Heading/Hero` | `.heading-hero` utility (fluid viewport sizing) |
+| `Heading/Card` | `font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05]` (PhotoCard) |
+| `Heading/Page` | `font-display text-5xl` (~48px) |
+| `Heading/Section` | `.heading-section` → `text-4xl font-display` |
+| `Heading/Writing Row` | `font-display text-[1.75rem]` in writing rows |
+| `Pull Quote` | `.pull-quote` — Instrument Serif Italic, styled in essay page `<style>` blocks |
+
+### Documentation headings (Inter Bold — docs/marketing only)
+
+| Figma style | Size |
+|---|---|
+| `Heading/Documentation` | 28px / 32px lh |
+| `Heading/Subsection` | 24px / 28px lh |
+| `Heading/Section Docs` | 18px / 24px lh |
+
+### Body (Inter)
+
+| Figma style | Code pattern |
+|---|---|
+| `Body/Large` | `text-base leading-6` (16px) |
+| `Body/Default` | `.body-default` → `text-sm leading-relaxed text-muted` (14px Light) |
+| `Body/Caption` | `text-[0.8125rem]` (13px) |
+| `Body/Small` | `text-xs` (12px) — chips, subtitles, meta lines |
+
+### Labels & UI (Inter)
+
+| Figma style | Code pattern |
+|---|---|
+| `Label/Meta` | `.label-meta` or `text-[10px] font-bold uppercase tracking-[0.2em]` |
+| `Label/Footer` | `.label-footer` or `text-[10px] uppercase tracking-[0.4em] text-subtle` |
+| `Label/Medium` | `text-[10px] font-medium uppercase tracking-[0.2em]` |
+| `Label/UI` | `text-[9px] uppercase` (scroll labels) |
+| `UI/Icon Label` | `text-[11px]` (icon-adjacent labels) |
+
+---
+
+## Styling Rules
+
+- Use **Tailwind v4** utilities backed by `@theme` tokens — not inline styles except for animation initial states (see HeroSection).
+- Scoped component styles go in `<style>` blocks within `.astro` files (Nav theme switch, writing page filters, pull quotes).
+- Page-specific layout styles belong in the page's `<style>` block, not global CSS.
+- IMPORTANT: Import `../styles/global.css` only from layouts — components rely on layout-level import.
+- Use `class:list` for conditional classes in Astro (see `ArrowLink.astro`, `PhotoCard.astro`).
+- Border radius on cards: `rounded-lg` (maps to `--radius-card` / 8px).
+- Images: `loading="lazy"`, `decoding="async"`, responsive `srcset` via Sanity helpers in `lib/sanity.ts`.
+
+---
+
+## Component Patterns
+
+- Export Astro components as default; define props with TypeScript `interface Props` in frontmatter.
+- Accept optional `className` prop when the component needs composition (see `ArrowLink.astro`).
+- Use **Material Icons** (`material-icons` class) for arrows and lightbox controls — do not add new icon libraries.
+- Theme toggle: `role="switch"`, `aria-checked`, `aria-label` on the button in Nav.
+- Dark mode: `document.documentElement.setAttribute('data-theme', 'dark')` — tokens swap automatically.
+- Chat/lightbox overlays: prefer `color/overlay` token values over raw `bg-black/90`.
+
+---
+
+## Asset Handling
+
+- IMPORTANT: If Figma MCP returns a localhost image/SVG URL, use it directly during development.
+- Production assets live in `portfolio/public/` (e.g. `/animated_abstract_logo.lottie`).
+- Sanity images: use `urlFor()` and `getResponsiveProps()` from `lib/sanity.ts`.
+- Do not install new icon packages — Material Icons + inline SVGs only.
+
+---
+
+## Accessibility
+
+- Interactive elements require `aria-label` or visible text.
+- Color contrast: design tokens are validated for AA (Light + Dark) in Figma.
+- Lightbox: `role="dialog"`, `aria-modal="true"`, keyboard navigation (Escape, arrows).
+- Nav links and filter tabs must be keyboard-focusable (`<a>` or `<button>`).
+
+---
+
+## What NOT to do
+
+- Do not create duplicate components when a Figma component already maps to an existing `.astro` file.
+- Do not hardcode colors, spacing, or font families outside the token system.
+- Do not use `stone-*` / `gray-*` Tailwind colors for design-system UI (ChatAgent is a known exception to fix).
+- Do not copy Figma MCP React output verbatim — translate to Astro + project conventions.
+- Do not add React/Vue islands unless the feature requires client interactivity (prefer `<script>` in Astro for lightbox, chat, theme).
+
+---
+
+## Validation Checklist
+
+Before completing any Figma-driven change:
+
+- [ ] `get_design_context` + `get_screenshot` were used
+- [ ] Existing component reused or extended when mapping exists
+- [ ] Colors use semantic tokens (`text-primary`, `text-muted`, `bg-surface`, etc.)
+- [ ] Typography matches the Figma text style mapping table
+- [ ] Spacing uses `spacing/section`, `spacing/block`, or `spacing/inline` scale
+- [ ] Dark mode verified with `[data-theme="dark"]`
+- [ ] Visual parity checked against Figma screenshot
