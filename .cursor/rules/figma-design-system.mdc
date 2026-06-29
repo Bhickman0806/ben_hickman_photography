@@ -80,14 +80,40 @@ IMPORTANT: Never hardcode hex colors or use arbitrary Tailwind palette colors (`
 
 ### Spacing & radius
 
-| Figma variable | CSS variable | Value |
-|---|---|---|
-| `spacing/section` | `--space-section` | 128px (8rem) |
-| `spacing/block` | `--space-block` | 32px (2rem) |
-| `spacing/inline` | `--space-inline` | 16px (1rem) |
-| `radius/card` | `--radius-card` | 8px (0.5rem) |
+**Primitives** (`--space-N` / Tailwind `spacing-N`): 2, 4, 8, 10, 12, 16, 20, 24, 32, 34, 40, 48, 64, 80, 96, 128, 160
 
-Prefer Tailwind theme spacing (`spacing-section`, `spacing-block`, `spacing-inline`) or the CSS variables directly.
+**Semantic spacing** (prefer these in components):
+
+| Figma variable | CSS variable | Tailwind | Value |
+|---|---|---|---|
+| `spacing/micro` | `--space-micro` | `spacing-micro` | 2px |
+| `spacing/xs` | `--space-xs` | `spacing-xs` | 4px |
+| `spacing/sm` | `--space-sm` | `spacing-sm` | 8px |
+| `spacing/compact` | `--space-compact` | `spacing-compact` | 12px |
+| `spacing/inline` | `--space-inline` | `spacing-inline` | 16px |
+| `spacing/input` | `--space-input` | `spacing-input` | 20px |
+| `spacing/md` | `--space-md` | `spacing-md` | 24px |
+| `spacing/block` | `--space-block` | `spacing-block` | 32px |
+| `spacing/card-x` | `--space-card-x` | `spacing-card-x` | 40px |
+| `spacing/lg` | `--space-lg` | `spacing-lg` | 48px |
+| `spacing/comfortable` | `--space-comfortable` | `spacing-comfortable` | 64px |
+| `spacing/xl` | `--space-xl` | `spacing-xl` | 80px |
+| `spacing/2xl` | `--space-2xl` | `spacing-2xl` | 96px |
+| `spacing/section` | `--space-section` | `spacing-section` | 128px |
+| `spacing/3xl` | `--space-3xl` | `spacing-3xl` | 160px |
+
+**Radius:**
+
+| Figma variable | CSS variable | Tailwind | Value |
+|---|---|---|---|
+| `radius/card` | `--radius-card` | `rounded-card` | 8px |
+| `radius/pill` | `--radius-pill` | `rounded-pill` | 10px |
+| `radius/md` | `--radius-md` | `rounded-md` | 16px |
+| `radius/input` | `--radius-input` | `rounded-input` | 20px |
+| `radius/logo` | `--radius-logo` | `rounded-logo` | 34px |
+| `radius/full` | `--radius-full` | `rounded-full` | 999px |
+
+Prefer semantic Tailwind utilities (`p-spacing-md`, `gap-spacing-inline`, `rounded-card`) or CSS variables directly.
 
 ### Typography
 

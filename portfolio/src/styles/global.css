@@ -14,10 +14,49 @@
     --font-display: var(--font-display);
     --font-sans: var(--font-sans);
 
-    /* Spacing */
-    --spacing-section: var(--space-section);
-    --spacing-block: var(--space-block);
+    /* Spacing — primitives */
+    --spacing-2: var(--space-2);
+    --spacing-4: var(--space-4);
+    --spacing-8: var(--space-8);
+    --spacing-10: var(--space-10);
+    --spacing-12: var(--space-12);
+    --spacing-16: var(--space-16);
+    --spacing-20: var(--space-20);
+    --spacing-24: var(--space-24);
+    --spacing-32: var(--space-32);
+    --spacing-34: var(--space-34);
+    --spacing-40: var(--space-40);
+    --spacing-48: var(--space-48);
+    --spacing-64: var(--space-64);
+    --spacing-80: var(--space-80);
+    --spacing-96: var(--space-96);
+    --spacing-128: var(--space-128);
+    --spacing-160: var(--space-160);
+
+    /* Spacing — semantic */
+    --spacing-micro: var(--space-micro);
+    --spacing-xs: var(--space-xs);
+    --spacing-sm: var(--space-sm);
+    --spacing-compact: var(--space-compact);
     --spacing-inline: var(--space-inline);
+    --spacing-input: var(--space-input);
+    --spacing-md: var(--space-md);
+    --spacing-block: var(--space-block);
+    --spacing-card-x: var(--space-card-x);
+    --spacing-lg: var(--space-lg);
+    --spacing-comfortable: var(--space-comfortable);
+    --spacing-xl: var(--space-xl);
+    --spacing-2xl: var(--space-2xl);
+    --spacing-section: var(--space-section);
+    --spacing-3xl: var(--space-3xl);
+
+    /* Radius */
+    --radius-card: var(--radius-card);
+    --radius-pill: var(--radius-pill);
+    --radius-md: var(--radius-md);
+    --radius-input: var(--radius-input);
+    --radius-logo: var(--radius-logo);
+    --radius-full: var(--radius-full);
 
     /* Transitions */
     --transition-duration-fast: var(--duration-fast);
