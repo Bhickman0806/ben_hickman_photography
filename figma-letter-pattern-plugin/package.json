@@ -1,0 +1,14 @@
+{
+  "name": "figma-letter-pattern-plugin",
+  "version": "1.0.0",
+  "description": "Generate typographic letter patterns in Figma — scatter and weave modes",
+  "scripts": {
+    "build": "node esbuild.config.mjs",
+    "watch": "node esbuild.config.mjs --watch"
+  },
+  "devDependencies": {
+    "@figma/plugin-typings": "^1.109.0",
+    "esbuild": "^0.25.0",
+    "typescript": "^5.7.0"
+  }
+}

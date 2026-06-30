@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Letter Pattern Generator</title>
+  <style>
+    :root {
+      --bg: var(--figma-color-bg);
+      --text: var(--figma-color-text);
+      --border: var(--figma-color-border);
+      --accent: var(--figma-color-bg-brand);
+      --accent-text: var(--figma-color-text-onbrand);
+      --muted: var(--figma-color-text-secondary);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font: 11px/1.4 Inter, system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      padding: 12px;
+    }
+    h1 { font-size: 13px; font-weight: 600; margin-bottom: 10px; }
+    .tabs { display: flex; gap: 4px; margin-bottom: 12px; }
+    .tab {
+      flex: 1; padding: 6px 8px; border: 1px solid var(--border);
+      background: transparent; color: var(--text); border-radius: 6px;
+      cursor: pointer; font-size: 11px;
+    }
+    .tab.active { background: var(--accent); color: var(--accent-text); border-color: var(--accent); }
+    .panel { display: none; }
+    .panel.active { display: block; }
+    .field { margin-bottom: 10px; }
+    .field label { display: block; font-size: 10px; color: var(--muted); margin-bottom: 3px; }
+    .field input, .field select {
+      width: 100%; padding: 6px 8px; border: 1px solid var(--border);
+      border-radius: 4px; background: var(--bg); color: var(--text); font-size: 11px;
+    }
+    .row { display: flex; gap: 8px; }
+    .row .field { flex: 1; }
+    .actions { margin-top: 14px; display: flex; gap: 8px; }
+    button.primary {
+      flex: 1; padding: 8px; border: none; border-radius: 6px;
+      background: var(--accent); color: var(--accent-text);
+      font-size: 12px; font-weight: 600; cursor: pointer;
+    }
+    button.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    #status {
+      margin-top: 10px; font-size: 10px; color: var(--muted); min-height: 28px;
+    }
+    #status.error { color: #e03e3e; }
+    #status.warning { color: #c27c00; }
+    #status.success { color: #1a7f37; }
+    .preset-row { margin-bottom: 12px; }
+  </style>
+</head>
+<body>
+  <h1>Letter Pattern Generator</h1>
+
+  <div class="preset-row field">
+    <label for="preset">Preset</label>
+    <select id="preset">
+      <option value="">Custom</option>
+      <option value="originCafe">Origin Café</option>
+      <option value="ginoriWeave">Ginori Weave</option>
+      <option value="portfolioDark">Portfolio Dark</option>
+    </select>
+  </div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="scatter">Scatter</button>
+    <button class="tab" data-tab="weave">Weave</button>
+  </div>
+
+  <div class="shared">
+    <div class="field">
+      <label for="name">Pattern name</label>
+      <input id="name" type="text" value="My Pattern" />
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="width">Width</label>
+        <input id="width" type="number" value="1440" min="100" />
+      </div>
+      <div class="field">
+        <label for="height">Height</label>
+        <input id="height" type="number" value="900" min="100" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="bgColor">Background</label>
+        <input id="bgColor" type="text" value="#F29696" />
+      </div>
+      <div class="field">
+        <label for="textColor">Text color</label>
+        <input id="textColor" type="text" value="#3B1E30" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="fontFamily">Font family</label>
+        <select id="fontFamily"></select>
+      </div>
+      <div class="field">
+        <label for="fontStyle">Font style</label>
+        <select id="fontStyle"></select>
+      </div>
+    </div>
+  </div>
+
+  <div id="scatter-panel" class="panel active">
+    <div class="field">
+      <label for="primaryText">Primary letters</label>
+      <input id="primaryText" type="text" value="ORIGIN" />
+    </div>
+    <div class="field">
+      <label for="insetText">Inset text (inside O, D, Q…)</label>
+      <input id="insetText" type="text" value="CAFÉ" />
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="primaryFontSize">Primary size</label>
+        <input id="primaryFontSize" type="number" value="180" min="12" />
+      </div>
+      <div class="field">
+        <label for="insetRatio">Inset ratio</label>
+        <input id="insetRatio" type="number" value="0.14" min="0.05" max="0.4" step="0.01" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="density">Density</label>
+        <input id="density" type="number" value="0.55" min="0.2" max="1" step="0.05" />
+      </div>
+      <div class="field">
+        <label for="overlap">Overlap</label>
+        <input id="overlap" type="number" value="0.35" min="0" max="0.8" step="0.05" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="rotMin">Rotation min °</label>
+        <input id="rotMin" type="number" value="-60" />
+      </div>
+      <div class="field">
+        <label for="rotMax">Rotation max °</label>
+        <input id="rotMax" type="number" value="-30" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="rotJitter">Rotation jitter °</label>
+        <input id="rotJitter" type="number" value="8" min="0" />
+      </div>
+      <div class="field">
+        <label for="seed">Seed</label>
+        <input id="seed" type="number" value="42" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="insetFontFamily">Inset font family</label>
+        <select id="insetFontFamily"></select>
+      </div>
+      <div class="field">
+        <label for="insetFontStyle">Inset font style</label>
+        <select id="insetFontStyle"></select>
+      </div>
+    </div>
+  </div>
+
+  <div id="weave-panel" class="panel">
+    <div class="field">
+      <label for="stringA">String A</label>
+      <input id="stringA" type="text" value="GINORI 1735" />
+    </div>
+    <div class="field">
+      <label for="stringB">String B</label>
+      <input id="stringB" type="text" value="DOMUS 1735" />
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="weaveFontSize">Font size</label>
+        <input id="weaveFontSize" type="number" value="48" min="8" />
+      </div>
+      <div class="field">
+        <label for="rowGap">Row gap</label>
+        <input id="rowGap" type="number" value="-8" />
+      </div>
+    </div>
+    <div class="row">
+      <div class="field">
+        <label for="rowOffset">Row offset</label>
+        <input id="rowOffset" type="number" value="120" min="0" />
+      </div>
+      <div class="field">
+        <label for="letterSpacing">Letter spacing</label>
+        <input id="letterSpacing" type="number" value="24" min="0" />
+      </div>
+    </div>
+    <div class="field">
+      <label>
+        <input id="flipRows" type="checkbox" checked />
+        Flip rows (4-row mirror cycle)
+      </label>
+    </div>
+  </div>
+
+  <div class="actions">
+    <button id="generate" class="primary">Generate pattern</button>
+  </div>
+  <div id="status">Loading fonts…</div>
+
+  <script>"use strict";
+(() => {
+  // src/types.ts
+  var PRESETS = {
+    originCafe: {
+      label: "Origin Caf\xE9",
+      mode: "scatter",
+      name: "Origin Caf\xE9",
+      width: 1440,
+      height: 900,
+      backgroundColor: "#F29696",
+      textColor: "#3B1E30",
+      primaryText: "ORIGIN",
+      insetText: "CAF\xC9",
+      primaryFontSize: 180,
+      insetFontSizeRatio: 0.14,
+      density: 0.55,
+      overlap: 0.35,
+      rotationMin: -60,
+      rotationMax: -30,
+      rotationJitter: 8,
+      seed: 42
+    },
+    ginoriWeave: {
+      label: "Ginori Weave",
+      mode: "weave",
+      name: "Ginori Weave",
+      width: 1440,
+      height: 900,
+      backgroundColor: "#4A8F5C",
+      textColor: "#000000",
+      stringA: "GINORI 1735",
+      stringB: "DOMUS 1735",
+      fontSize: 48,
+      rowGap: -8,
+      rowOffset: 120,
+      letterSpacing: 24,
+      flipRows: true
+    },
+    portfolioDark: {
+      label: "Portfolio Dark",
+      mode: "scatter",
+      name: "Portfolio Dark",
+      width: 1440,
+      height: 900,
+      backgroundColor: "#0a0a0a",
+      textColor: "#f0f0f0",
+      primaryText: "FAMILY",
+      insetText: "",
+      primaryFontSize: 200,
+      insetFontSizeRatio: 0.12,
+      density: 0.5,
+      overlap: 0.3,
+      rotationMin: -45,
+      rotationMax: -15,
+      rotationJitter: 10,
+      seed: 7
+    }
+  };
+
+  // src/ui.ts
+  var fonts = [];
+  var activeTab = "scatter";
+  var $ = (id) => document.getElementById(id);
+  var val = (id) => document.getElementById(id).value;
+  var num = (id) => Number(val(id));
+  var checked = (id) => document.getElementById(id).checked;
+  function setStatus(text, kind = "") {
+    const el = $("status");
+    el.textContent = text;
+    el.className = kind;
+  }
+  function uniqueFamilies(list) {
+    return [...new Set(list.map((f) => f.family))].sort();
+  }
+  function stylesForFamily(family) {
+    return fonts.filter((f) => f.family === family).map((f) => f.style).sort();
+  }
+  function populateFontSelect(familyId, styleId, preferredFamily) {
+    const familyEl = document.getElementById(familyId);
+    const styleEl = document.getElementById(styleId);
+    const families = uniqueFamilies(fonts);
+    familyEl.innerHTML = families.map((f) => `<option value="${f}">${f}</option>`).join("");
+    const defaultFamily = preferredFamily && families.includes(preferredFamily) ? preferredFamily : families[0] ?? "";
+    familyEl.value = defaultFamily;
+    const updateStyles = () => {
+      const styles = stylesForFamily(familyEl.value);
+      styleEl.innerHTML = styles.map((s) => `<option value="${s}">${s}</option>`).join("");
+      const regular = styles.find((s) => s.toLowerCase() === "regular");
+      styleEl.value = regular ?? styles[0] ?? "";
+    };
+    familyEl.onchange = updateStyles;
+    updateStyles();
+  }
+  function getFont(familyId, styleId) {
+    return {
+      family: document.getElementById(familyId).value,
+      style: document.getElementById(styleId).value
+    };
+  }
+  function applyPreset(key) {
+    if (!key || !(key in PRESETS)) return;
+    const preset = PRESETS[key];
+    $("name").setAttribute("value", preset.name);
+    document.getElementById("name").value = preset.name;
+    document.getElementById("width").value = String(preset.width);
+    document.getElementById("height").value = String(preset.height);
+    document.getElementById("bgColor").value = preset.backgroundColor;
+    document.getElementById("textColor").value = preset.textColor;
+    if (preset.mode === "scatter") {
+      setActiveTab("scatter");
+      document.getElementById("primaryText").value = preset.primaryText;
+      document.getElementById("insetText").value = preset.insetText;
+      document.getElementById("primaryFontSize").value = String(preset.primaryFontSize);
+      document.getElementById("insetRatio").value = String(preset.insetFontSizeRatio);
+      document.getElementById("density").value = String(preset.density);
+      document.getElementById("overlap").value = String(preset.overlap);
+      document.getElementById("rotMin").value = String(preset.rotationMin);
+      document.getElementById("rotMax").value = String(preset.rotationMax);
+      document.getElementById("rotJitter").value = String(preset.rotationJitter);
+      document.getElementById("seed").value = String(preset.seed);
+      populateFontSelect("fontFamily", "fontStyle", "Times New Roman");
+      populateFontSelect("insetFontFamily", "insetFontStyle", "Inter");
+    } else {
+      setActiveTab("weave");
+      document.getElementById("stringA").value = preset.stringA;
+      document.getElementById("stringB").value = preset.stringB;
+      document.getElementById("weaveFontSize").value = String(preset.fontSize);
+      document.getElementById("rowGap").value = String(preset.rowGap);
+      document.getElementById("rowOffset").value = String(preset.rowOffset);
+      document.getElementById("letterSpacing").value = String(preset.letterSpacing);
+      document.getElementById("flipRows").checked = preset.flipRows;
+      populateFontSelect("fontFamily", "fontStyle", "Inter");
+    }
+  }
+  function setActiveTab(tab) {
+    activeTab = tab;
+    document.querySelectorAll(".tab").forEach((el) => {
+      el.classList.toggle("active", el.getAttribute("data-tab") === tab);
+    });
+    document.querySelectorAll(".panel").forEach((el) => {
+      el.classList.toggle("active", el.id === `${tab}-panel`);
+    });
+  }
+  function buildConfig() {
+    const base = {
+      name: val("name") || "Pattern",
+      width: num("width"),
+      height: num("height"),
+      backgroundColor: val("bgColor"),
+      textColor: val("textColor")
+    };
+    if (activeTab === "scatter") {
+      const config2 = {
+        ...base,
+        mode: "scatter",
+        primaryText: val("primaryText"),
+        insetText: val("insetText"),
+        primaryFont: getFont("fontFamily", "fontStyle"),
+        insetFont: getFont("insetFontFamily", "insetFontStyle"),
+        primaryFontSize: num("primaryFontSize"),
+        insetFontSizeRatio: num("insetRatio"),
+        density: num("density"),
+        overlap: num("overlap"),
+        rotationMin: num("rotMin"),
+        rotationMax: num("rotMax"),
+        rotationJitter: num("rotJitter"),
+        seed: num("seed")
+      };
+      return config2;
+    }
+    const config = {
+      ...base,
+      mode: "weave",
+      stringA: val("stringA"),
+      stringB: val("stringB"),
+      font: getFont("fontFamily", "fontStyle"),
+      fontSize: num("weaveFontSize"),
+      rowGap: num("rowGap"),
+      rowOffset: num("rowOffset"),
+      letterSpacing: num("letterSpacing"),
+      flipRows: checked("flipRows")
+    };
+    return config;
+  }
+  function init() {
+    document.querySelectorAll(".tab").forEach((tab) => {
+      tab.addEventListener("click", () => {
+        setActiveTab(tab.getAttribute("data-tab"));
+      });
+    });
+    document.getElementById("preset").onchange = (e) => {
+      applyPreset(e.target.value);
+    };
+    document.getElementById("generate").onclick = () => {
+      const btn = document.getElementById("generate");
+      btn.disabled = true;
+      setStatus("Generating\u2026");
+      parent.postMessage({ pluginMessage: { type: "generate", config: buildConfig() } }, "*");
+    };
+    window.onmessage = (event) => {
+      const msg = event.data.pluginMessage;
+      if (!msg) return;
+      if (msg.type === "fonts") {
+        fonts = msg.fonts;
+        populateFontSelect("fontFamily", "fontStyle");
+        populateFontSelect("insetFontFamily", "insetFontStyle");
+        setStatus(`${fonts.length} fonts available. Choose settings and generate.`);
+        return;
+      }
+      const btn = document.getElementById("generate");
+      btn.disabled = false;
+      if (msg.type === "done") {
+        setStatus(`Created pattern (${msg.nodeCount} layers).`, "success");
+      } else if (msg.type === "warning") {
+        setStatus(msg.message, "warning");
+      } else if (msg.type === "error") {
+        setStatus(msg.message, "error");
+      }
+    };
+    parent.postMessage({ pluginMessage: { type: "get-fonts" } }, "*");
+  }
+  init();
+})();
+</script>
+</body>
+</html>
