@@ -9,6 +9,7 @@ portfolio/sanity/node_modules/
 
 # Build Output
 dist/
+!figma-letter-pattern-plugin/dist/
 portfolio/dist/
 portfolio/sanity/dist/
 
