@@ -1,4 +1,6 @@
 ---
+import JournalCoverColumn from './JournalCoverColumn.astro';
+import type { JournalCoverApproach, JournalCoverTheme } from '../lib/journal-cover';
 
 interface Props {
   subtitle: string;
@@ -13,27 +15,32 @@ interface Props {
   linkLabel: string;
   reverse?: boolean;
   featured?: boolean;
+  theme?: JournalCoverTheme;
+  approach?: JournalCoverApproach;
 }
 
-const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, linkLabel, reverse, featured } = Astro.props;
+const {
+  subtitle,
+  title,
+  description,
+  image,
+  src,
+  srcset,
+  sizes,
+  alt,
+  linkHref,
+  linkLabel,
+  reverse,
+  featured,
+  theme = 'coral',
+  approach = 'adaptive',
+} = Astro.props;
 ---
 <a href={linkHref} class="project-row group grid-cols-1 md:grid-cols-12 gap-6 md:gap-8 items-center h-full">
   
-  <!-- Text Column -->
-  <div class:list={["md:col-span-4 space-y-8", reverse ? "md:order-2" : ""]}>
-    <div>
-      <span class="text-[0.625rem] font-bold text-muted uppercase tracking-[0.2em] block mb-6">
-        {subtitle}
-      </span>
-      <h3 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight mb-8">{title}</h3>
-      <p class="font-sans text-[0.9375rem] font-light text-muted leading-[1.75] max-w-md">{description}</p>
-    </div>
-    <div class="pt-0 md:pt-8 md:border-t border-border-color-DEFAULT mt-2 md:mt-0">
-      <div class="inline-flex items-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] group-hover:opacity-60 transition-opacity">
-        {linkLabel}
-        <span class="material-icons text-sm group-hover:translate-x-2 transition-transform">east</span>
-      </div>
-    </div>
+  <!-- Journal Cover Column -->
+  <div class:list={["md:col-span-4 journal-cover-column", reverse ? "md:order-2" : "", approach === 'bleed' ? "journal-cover-column--bleed" : ""]}>
+    <JournalCoverColumn subtitle={subtitle} title={title} theme={theme} approach={approach} />
   </div>
 
   <!-- Image Column -->
@@ -75,6 +82,25 @@ const { subtitle, title, description, image, src, srcset, sizes, alt, linkHref, 
       padding: 3rem 2.5rem; /* Reset to normal on desktop */
       margin: 0 -2.5rem;
       display: grid;
+    }
+  }
+
+  .journal-cover-column {
+    width: 100%;
+  }
+
+  .journal-cover-column--bleed {
+    overflow: visible;
+  }
+
+  @media (min-width: 768px) {
+    .journal-cover-column--bleed {
+      display: flex;
+      align-self: stretch;
+    }
+
+    .journal-cover-column--bleed :global(.journal-cover--bleed) {
+      flex: 1;
     }
   }
 </style>

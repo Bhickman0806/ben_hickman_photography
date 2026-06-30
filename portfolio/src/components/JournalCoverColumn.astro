@@ -1,0 +1,291 @@
+---
+import type { JournalCoverApproach, JournalCoverTheme } from '../lib/journal-cover';
+
+interface Props {
+  subtitle: string;
+  title: string;
+  theme: JournalCoverTheme;
+  approach?: JournalCoverApproach;
+  className?: string;
+}
+
+const { subtitle, title, theme, approach = 'adaptive', className } = Astro.props;
+
+const approachClass = {
+  scaled: 'journal-cover--scaled',
+  adaptive: 'journal-cover--adaptive',
+  bleed: 'journal-cover--bleed',
+}[approach];
+---
+
+<div
+  class:list={['journal-cover', approachClass, className]}
+  data-theme={theme}
+  aria-hidden="false"
+>
+  <div class="journal-cover__bg" aria-hidden="true"></div>
+
+  <div class="journal-cover__stripes" aria-hidden="true">
+    <span class="journal-cover__stripe journal-cover__stripe--1"></span>
+    <span class="journal-cover__stripe journal-cover__stripe--2"></span>
+    <span class="journal-cover__stripe journal-cover__stripe--3"></span>
+  </div>
+
+  <div class="journal-cover__content">
+    <p class="journal-cover__eyebrow">{subtitle}</p>
+    <h3 class="journal-cover__title">{title}</h3>
+    <p class="journal-cover__footer">
+      <span class="journal-cover__footer-text">Ben Hickman</span>
+      <svg class="journal-cover__sparkle" width="10" height="10" viewBox="0 0 10 10" fill="currentColor" aria-hidden="true">
+        <path d="M5 0L5.6 4.4L10 5L5.6 5.6L5 10L4.4 5.6L0 5L4.4 4.4L5 0Z" />
+      </svg>
+    </p>
+  </div>
+</div>
+
+<style>
+  .journal-cover {
+    --cover-text: #111;
+    --cover-footer: #111;
+    --stripe-1: #ffd700;
+    --stripe-2: #fff;
+    --stripe-3: #ffd700;
+    --stripe-width: clamp(8px, 2vw, 14px);
+
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    border-radius: var(--radius-card, 0.5rem);
+    color: var(--cover-text);
+  }
+
+  .journal-cover[data-theme='coral'] {
+    --cover-bg: #f26d5b;
+    --cover-text: #111;
+    --cover-footer: #111;
+    --stripe-1: #ffd700;
+    --stripe-2: #fff;
+    --stripe-3: #ffd700;
+  }
+
+  .journal-cover[data-theme='green'] {
+    --cover-bg: #00a651;
+    --cover-text: #111;
+    --cover-footer: #111;
+    --stripe-1: #fff;
+    --stripe-2: #ffd700;
+    --stripe-3: #fff;
+  }
+
+  .journal-cover[data-theme='gradient'] {
+    --cover-text: #fff;
+    --cover-footer: #fff;
+    --stripe-1: #fff;
+    --stripe-2: #c4a574;
+    --stripe-3: #fff;
+  }
+
+  .journal-cover[data-theme='grayscale'] {
+    --cover-text: #fff;
+    --cover-footer: #111;
+    --stripe-1: #111;
+    --stripe-2: #fff;
+    --stripe-3: #111;
+  }
+
+  /* Approach A: consistent portrait 3:4 */
+  .journal-cover--scaled {
+    aspect-ratio: 3 / 4;
+  }
+
+  /* Approach B: breakpoint-adaptive density (default) */
+  .journal-cover--adaptive {
+    aspect-ratio: 5 / 3;
+  }
+
+  @media (min-width: 768px) {
+    .journal-cover--adaptive {
+      aspect-ratio: 4 / 5;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .journal-cover--adaptive {
+      aspect-ratio: 3 / 4;
+    }
+  }
+
+  /* Approach C: full-bleed mobile, stretch on desktop */
+  .journal-cover--bleed {
+    aspect-ratio: 5 / 3;
+    border-radius: 0;
+    width: calc(100% + 3rem);
+    margin-left: -1.5rem;
+    margin-right: -1.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .journal-cover--bleed {
+      aspect-ratio: auto;
+      min-height: 100%;
+      border-radius: var(--radius-card, 0.5rem);
+      width: 100%;
+      margin-left: 0;
+      margin-right: 0;
+    }
+  }
+
+  .journal-cover__bg {
+    position: absolute;
+    inset: 0;
+    background: var(--cover-bg, #f26d5b);
+    z-index: 0;
+  }
+
+  .journal-cover[data-theme='gradient'] .journal-cover__bg {
+    background: linear-gradient(135deg, #8b6914 0%, #3d7a2e 55%, #1a5c28 100%);
+  }
+
+  .journal-cover[data-theme='grayscale'] .journal-cover__bg {
+    background: radial-gradient(ellipse 80% 70% at 65% 45%, #d4d4d4 0%, #8a8a8a 40%, #2a2a2a 100%);
+  }
+
+  .journal-cover__stripes {
+    position: absolute;
+    inset: -50%;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .journal-cover__stripe {
+    position: absolute;
+    height: var(--stripe-width);
+    transform: rotate(-45deg);
+    transform-origin: center;
+    border-radius: 0;
+  }
+
+  .journal-cover__stripe--1 {
+    width: 140%;
+    left: -10%;
+    top: 38%;
+    background: var(--stripe-1);
+  }
+
+  .journal-cover__stripe--2 {
+    width: 70%;
+    left: 25%;
+    top: 48%;
+    background: var(--stripe-2);
+  }
+
+  .journal-cover__stripe--3 {
+    width: 120%;
+    left: 5%;
+    top: 58%;
+    background: var(--stripe-3);
+  }
+
+  /* Adaptive: hide third stripe and footer on mobile */
+  .journal-cover--adaptive .journal-cover__stripe--3,
+  .journal-cover--adaptive .journal-cover__footer {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .journal-cover--adaptive .journal-cover__stripe--3,
+    .journal-cover--adaptive .journal-cover__footer {
+      display: flex;
+    }
+  }
+
+  .journal-cover--bleed .journal-cover__stripe--3 {
+    display: none;
+  }
+
+  @media (min-width: 768px) {
+    .journal-cover--bleed .journal-cover__stripe--3 {
+      display: block;
+    }
+  }
+
+  .journal-cover__content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    min-height: inherit;
+    padding: clamp(1rem, 4vw, 1.75rem);
+  }
+
+  .journal-cover__eyebrow {
+    font-family: var(--font-sans);
+    font-size: 0.625rem;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    line-height: 1.4;
+    margin: 0;
+  }
+
+  .journal-cover__title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin: auto 0;
+    padding: 0.5rem 0;
+  }
+
+  .journal-cover--scaled .journal-cover__title {
+    font-size: clamp(1.75rem, 6vw, 2.75rem);
+  }
+
+  .journal-cover--adaptive .journal-cover__title {
+    font-size: clamp(1.75rem, 8vw, 2.5rem);
+  }
+
+  @media (min-width: 768px) {
+    .journal-cover--adaptive .journal-cover__title {
+      font-size: clamp(2.5rem, 5vw, 3.75rem);
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .journal-cover--adaptive .journal-cover__title {
+      font-size: clamp(3rem, 4vw, 4.5rem);
+    }
+  }
+
+  .journal-cover--bleed .journal-cover__title {
+    font-size: clamp(1.75rem, 8vw, 2.75rem);
+  }
+
+  @media (min-width: 768px) {
+    .journal-cover--bleed .journal-cover__title {
+      font-size: clamp(2.25rem, 4vw, 3.5rem);
+    }
+  }
+
+  .journal-cover__footer {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    margin: 0;
+    color: var(--cover-footer);
+  }
+
+  .journal-cover__footer-text {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.75rem;
+    line-height: 1.2;
+  }
+
+  .journal-cover__sparkle {
+    flex-shrink: 0;
+    opacity: 0.9;
+  }
+</style>
