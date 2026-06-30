@@ -1,17 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { PortableText } from 'astro-portabletext';
-import { getPoemPaths, getPoemData } from '../../lib/queries';
+import { getPoemData } from '../../lib/queries';
 import PoemLineBlock from '../../components/poems/PoemLineBlock.astro';
 
 const ptComponents = {
   block: { normal: PoemLineBlock },
 };
-
-export async function getStaticPaths() {
-  const slugs: string[] = await getPoemPaths();
-  return slugs.map(slug => ({ params: { slug } }));
-}
 
 const { slug } = Astro.params;
 const poem = await getPoemData(slug);
