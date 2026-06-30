@@ -1,15 +1,10 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import { PortableText } from 'astro-portabletext';
-import { getEssayPaths, getEssayData } from '../../lib/queries';
+import { getEssayData } from '../../lib/queries';
 import { urlFor, getResponsiveProps } from '../../lib/sanity';
 import PullQuoteBlock from '../../components/essay/PullQuoteBlock.astro';
 import InlineImageBlock from '../../components/essay/InlineImageBlock.astro';
-
-export async function getStaticPaths() {
-  const slugs: string[] = await getEssayPaths();
-  return slugs.map(slug => ({ params: { slug } }));
-}
 
 const { slug } = Astro.params;
 const essay = await getEssayData(slug);

@@ -1,13 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import ArrowLink from '../../components/ArrowLink.astro';
-import { getPhotoPaths, getPhotoData } from '../../lib/queries';
+import { getPhotoData } from '../../lib/queries';
 import { urlFor, getResponsiveProps } from '../../lib/sanity';
-
-export async function getStaticPaths() {
-  const slugs = await getPhotoPaths();
-  return slugs.map((slug: string) => ({ params: { slug } }));
-}
 
 const { slug } = Astro.params;
 const photo = await getPhotoData(slug as string);

@@ -1,17 +1,12 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import Lightbox from '../../components/Lightbox.astro'; 
-import { getCollectionPaths, getCollectionData } from '../../lib/queries';
+import { getCollectionData } from '../../lib/queries';
 
 import { urlFor, getResponsiveProps } from '../../lib/sanity';
 import { PortableText } from 'astro-portabletext';
 import PullQuoteBlock from '../../components/essays/PullQuoteBlock.astro';
 import InlineImageBlock from '../../components/essays/InlineImageBlock.astro';
-
-export async function getStaticPaths() {
-  const slugs = await getCollectionPaths();
-  return slugs.map((slug: string) => ({ params: { slug } }));
-}
 
 const { slug } = Astro.params;
 const collection = await getCollectionData(slug as string);
