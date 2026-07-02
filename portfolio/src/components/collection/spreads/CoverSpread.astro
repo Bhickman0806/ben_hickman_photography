@@ -1,0 +1,24 @@
+---
+import BookPhotoImage from '../BookPhotoImage.astro';
+import type { BookSpread } from '../../lib/collectionBook';
+
+interface Props {
+  spread: BookSpread;
+  collectionTitle: string;
+}
+
+const { spread, collectionTitle } = Astro.props;
+const title = spread.overlayTitle || collectionTitle;
+---
+
+<section class="spread spread-cover relative w-full h-full overflow-hidden bg-black">
+  <div class="absolute inset-0">
+    <BookPhotoImage photo={spread.photo} width={2000} sizes="100vw" priority />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-black/30" />
+  </div>
+  <div class="relative z-10 h-full flex flex-col justify-end p-8 md:p-16 max-w-5xl">
+    <h1 class="font-display text-5xl md:text-7xl lg:text-8xl leading-[1.02] tracking-tight text-white">
+      {title}
+    </h1>
+  </div>
+</section>

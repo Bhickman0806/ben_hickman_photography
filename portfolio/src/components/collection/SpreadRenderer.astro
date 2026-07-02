@@ -1,0 +1,26 @@
+---
+import CoverSpread from './spreads/CoverSpread.astro';
+import TitleTextSpread from './spreads/TitleTextSpread.astro';
+import FullBleedSpread from './spreads/FullBleedSpread.astro';
+import DiptychSpread from './spreads/DiptychSpread.astro';
+import TextImageSpread from './spreads/TextImageSpread.astro';
+import ClosingSpread from './spreads/ClosingSpread.astro';
+import type { BookSpread } from '../../lib/collectionBook';
+
+interface Props {
+  spread: BookSpread;
+  collectionTitle: string;
+  index: number;
+}
+
+const { spread, collectionTitle, index } = Astro.props;
+---
+
+<div class="book-spread min-h-[100dvh] snap-start snap-always flex flex-col" data-spread-index={index}>
+  {spread._type === 'coverSpread' && <CoverSpread spread={spread} collectionTitle={collectionTitle} />}
+  {spread._type === 'titleTextSpread' && <TitleTextSpread spread={spread} />}
+  {spread._type === 'fullBleedSpread' && <FullBleedSpread spread={spread} />}
+  {spread._type === 'diptychSpread' && <DiptychSpread spread={spread} />}
+  {spread._type === 'textImageSpread' && <TextImageSpread spread={spread} />}
+  {spread._type === 'closingSpread' && <ClosingSpread spread={spread} />}
+</div>

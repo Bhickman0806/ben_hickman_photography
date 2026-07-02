@@ -1,4 +1,5 @@
 import { client } from './sanity';
+import { resolveCollectionSpreads, spreadProjection, type CollectionBookData } from './collectionBook';
 
 export async function getSiteSettings() {
   const query = `*[_type == "siteSettings"][0]{
@@ -31,7 +32,7 @@ export async function getCollectionPaths() {
   return await client.fetch(query);
 }
 
-// Get data for a specific collection
+// Get data for a specific collection (legacy shape)
 export async function getCollectionData(slug: string) {
   const query = `*[_type == "collection" && slug.current == $slug && isHidden != true][0]{
     title,
@@ -39,16 +40,41 @@ export async function getCollectionData(slug: string) {
     description,
     writeup,
     "slug": slug.current,
+    "coverPhoto": coverPhoto->{
+      title,
+      "image": image,
+      "alt": image.alt,
+      "slug": slug.current,
+      dateTaken,
+      location
+    },
     "photos": photos[]->{
       title,
       "image": image,
       "alt": image.alt,
-      "slug": slug.current, // For linking to individual photo page later
+      "slug": slug.current,
       dateTaken,
       location
+    },
+    "spreads": spreads[]{
+      ${spreadProjection}
     }
   }`;
   return await client.fetch(query, { slug });
+}
+
+// Get collection data shaped for the photo book view
+export async function getCollectionBookData(slug: string): Promise<CollectionBookData | null> {
+  const collection = await getCollectionData(slug);
+  if (!collection) return null;
+
+  return {
+    title: collection.title,
+    subtitle: collection.subtitle,
+    description: collection.description,
+    slug: collection.slug,
+    spreads: resolveCollectionSpreads(collection),
+  };
 }
 // Get all photo slugs for static paths
 export async function getPhotoPaths() {

@@ -1,9 +1,21 @@
 import { createClient } from "@sanity/client";
 import createImageUrlBuilder from "@sanity/image-url";
 
+function resolveDataset() {
+    if (import.meta.env.PUBLIC_SANITY_DATASET) {
+        return import.meta.env.PUBLIC_SANITY_DATASET;
+    }
+    const vercelEnv = import.meta.env.VERCEL_ENV;
+    const gitBranch = import.meta.env.VERCEL_GIT_COMMIT_REF;
+    if (vercelEnv === 'preview' || gitBranch === 'staging' || gitBranch?.startsWith('cursor/')) {
+        return 'staging';
+    }
+    return 'production';
+}
+
 export const client = createClient({
     projectId: import.meta.env.PUBLIC_SANITY_PROJECT_ID || "6xolgh7z",
-    dataset: import.meta.env.PUBLIC_SANITY_DATASET || "production",
+    dataset: resolveDataset(),
     useCdn: true,
     apiVersion: "2024-03-20",
 });

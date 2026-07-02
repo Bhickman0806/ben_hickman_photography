@@ -4,5 +4,6 @@ import { page } from './page'
 import { siteSettings } from './siteSettings'
 import { essay } from './essay'
 import { poem } from './poem'
+import { spreadLayoutTypes } from './spreadLayouts'
 
-export const schemaTypes = [photo, collection, page, siteSettings, essay, poem]
+export const schemaTypes = [photo, collection, ...spreadLayoutTypes, page, siteSettings, essay, poem]

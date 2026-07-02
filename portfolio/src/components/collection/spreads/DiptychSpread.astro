@@ -1,0 +1,22 @@
+---
+import BookPhotoImage from '../BookPhotoImage.astro';
+import type { BookSpread } from '../../../lib/collectionBook';
+
+interface Props {
+  spread: BookSpread;
+}
+
+const { spread } = Astro.props;
+const gapClass = spread.gap === 'none' ? 'gap-0' : spread.gap === 'medium' ? 'gap-4 md:gap-8' : 'gap-2 md:gap-4';
+const photos = spread.photos || [];
+---
+
+<section class="spread spread-diptych w-full h-full flex items-center justify-center p-4 md:p-8 bg-[var(--color-surface)]">
+  <div class:list={['grid grid-cols-2 w-full h-full max-h-[85dvh]', gapClass]}>
+    {photos.map((photo) => (
+      <div class="relative overflow-hidden rounded-sm bg-[var(--color-border)] min-h-0">
+        <BookPhotoImage photo={photo} width={1200} sizes="50vw" />
+      </div>
+    ))}
+  </div>
+</section>

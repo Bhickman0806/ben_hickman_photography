@@ -1,0 +1,21 @@
+---
+import BookPhotoImage from '../BookPhotoImage.astro';
+import type { BookSpread } from '../../../lib/collectionBook';
+
+interface Props {
+  spread: BookSpread;
+}
+
+const { spread } = Astro.props;
+---
+
+<section class="spread spread-full-bleed relative w-full h-full bg-black overflow-hidden">
+  <div class="absolute inset-0">
+    <BookPhotoImage photo={spread.photo} width={2400} sizes="100vw" objectFit="contain" />
+  </div>
+  {spread.caption && (
+    <div class="absolute bottom-0 left-0 right-0 p-6 md:p-10 bg-gradient-to-t from-black/80 to-transparent">
+      <p class="text-white/80 text-sm md:text-base font-light max-w-2xl">{spread.caption}</p>
+    </div>
+  )}
+</section>

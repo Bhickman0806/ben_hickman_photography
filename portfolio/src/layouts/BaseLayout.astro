@@ -9,12 +9,14 @@ interface Props {
   description?: string;
   image?: string;
   canonicalURL?: string | URL;
+  bookMode?: boolean;
 }
 
 const { 
   title = "Ben Hickman Photography",
   description = "Cinematic, architectural and unapologetically bold photography.",
-  image = "/og-image.jpg"
+  image = "/og-image.jpg",
+  bookMode = false,
 } = Astro.props;
 
 const canonicalURL = Astro.props.canonicalURL || new URL(Astro.url.pathname, Astro.site);
@@ -105,19 +107,19 @@ const umamiScriptUrl = import.meta.env.PUBLIC_UMAMI_SCRIPT_URL || "https://cloud
       }
     </style>
   </head>
-  <body class="bg-surface text-primary transition-colors duration-500 font-sans antialiased">
+  <body class:list={["bg-surface text-primary transition-colors duration-500 font-sans antialiased", bookMode && "book-mode"]}>
     <Nav />
     
-    <main>
+    <main class:list={[bookMode && "book-main"]}>
       <slot />
     </main>
 
-    <Footer />
+    {!bookMode && <Footer />}
     
     <!-- Optional: Global scripts/islands -->
   
     <!-- Global Chat Button -->
-    <ChatAgent />
+    {!bookMode && <ChatAgent />}
 
     <!-- Page transition script -->
     <script>

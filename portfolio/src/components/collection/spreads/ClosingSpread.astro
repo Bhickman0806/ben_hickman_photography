@@ -1,0 +1,32 @@
+---
+import BookPhotoImage from '../BookPhotoImage.astro';
+import type { BookSpread } from '../../../lib/collectionBook';
+
+interface Props {
+  spread: BookSpread;
+}
+
+const { spread } = Astro.props;
+const hasPhoto = Boolean(spread.photo?.image?.asset?._ref?.startsWith?.('image-'));
+---
+
+<section class="spread spread-closing w-full h-full flex flex-col items-center justify-center px-6 md:px-16 py-24 text-center">
+  {hasPhoto && (
+    <div class="w-full max-w-md aspect-[4/5] overflow-hidden rounded-sm bg-[var(--color-border)] mb-10">
+      <BookPhotoImage photo={spread.photo} width={800} aspectRatio={4/5} sizes="80vw" />
+    </div>
+  )}
+  {spread.body && (
+    <p class="font-sans text-sm md:text-base font-light text-muted leading-[1.75] max-w-md mb-10">
+      {spread.body}
+    </p>
+  )}
+  <a
+    href="/"
+    class="inline-flex items-center gap-3 text-[10px] font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity"
+    data-home-link
+  >
+    Back to collections
+    <span class="material-icons text-sm">north</span>
+  </a>
+</section>

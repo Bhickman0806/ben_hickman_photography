@@ -1,0 +1,40 @@
+---
+interface Props {
+  title: string;
+  totalPages: number;
+}
+
+const { title, totalPages } = Astro.props;
+---
+
+<nav
+  id="book-nav"
+  class="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 md:px-8 py-4 pointer-events-none"
+  aria-label="Collection navigation"
+>
+  <a
+    href="/"
+    class="pointer-events-auto inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] bg-surface/80 backdrop-blur-sm px-4 py-2 rounded-full border border-border-color-DEFAULT hover:opacity-70 transition-opacity"
+    data-home-link
+  >
+    <span class="material-icons text-sm">close</span>
+    Close
+  </a>
+
+  <div class="pointer-events-none absolute left-1/2 -translate-x-1/2 text-center max-w-[50vw]">
+    <p class="text-[10px] font-bold uppercase tracking-[0.2em] text-muted truncate">{title}</p>
+    <p id="book-page-counter" class="text-[10px] font-bold uppercase tracking-[0.2em] mt-1">
+      1 / {totalPages}
+    </p>
+  </div>
+
+  <div class="w-20" aria-hidden="true"></div>
+</nav>
+
+<div
+  id="book-indicator-down"
+  class="fixed bottom-8 left-1/2 -translate-x-1/2 text-muted transition-opacity duration-500 pointer-events-none z-40 flex flex-col items-center opacity-0"
+  aria-hidden="true"
+>
+  <span class="material-icons text-xl animate-bounce">south</span>
+</div>
