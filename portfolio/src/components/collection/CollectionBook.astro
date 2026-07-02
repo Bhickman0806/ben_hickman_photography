@@ -1,0 +1,123 @@
+---
+import BookNav from './BookNav.astro';
+import SpreadRenderer from './SpreadRenderer.astro';
+import type { BookSpread } from '../../lib/collectionBook';
+
+interface Props {
+  title: string;
+  spreads: BookSpread[];
+}
+
+const { title, spreads } = Astro.props;
+const totalPages = spreads.length;
+---
+
+<div id="collection-book" class="collection-book relative" data-total-pages={totalPages}>
+  <BookNav title={title} totalPages={totalPages} />
+
+  <div id="book-scroll-container" class="book-scroll-container h-[100dvh] overflow-y-auto snap-y snap-mandatory overscroll-y-contain">
+    {spreads.map((spread, index) => (
+      <SpreadRenderer spread={spread} collectionTitle={title} index={index} />
+    ))}
+  </div>
+</div>
+
+<style>
+  .book-scroll-container {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+  .book-scroll-container::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  const scrollContainer = document.getElementById('book-scroll-container') as HTMLElement | null;
+  const pageCounter = document.getElementById('book-page-counter');
+  const indicatorDown = document.getElementById('book-indicator-down');
+  const bookRoot = document.getElementById('collection-book');
+  const totalPages = Number(bookRoot?.dataset.totalPages || 0);
+
+  let scrollTimeout: number;
+
+  function getCurrentPageIndex() {
+    if (!scrollContainer) return 0;
+    return Math.round(scrollContainer.scrollTop / scrollContainer.clientHeight);
+  }
+
+  function updateUI() {
+    if (!scrollContainer || totalPages === 0) return;
+    const currentIndex = getCurrentPageIndex();
+
+    if (pageCounter) {
+      pageCounter.textContent = `${currentIndex + 1} / ${totalPages}`;
+    }
+
+    if (indicatorDown) {
+      if (currentIndex < totalPages - 1) {
+        indicatorDown.classList.remove('opacity-0');
+        indicatorDown.classList.add('opacity-60');
+      } else {
+        indicatorDown.classList.add('opacity-0');
+        indicatorDown.classList.remove('opacity-60');
+      }
+    }
+  }
+
+  function onScroll() {
+    if (indicatorDown) {
+      indicatorDown.classList.add('opacity-0');
+      indicatorDown.classList.remove('opacity-60');
+    }
+    clearTimeout(scrollTimeout);
+    scrollTimeout = window.setTimeout(updateUI, 400);
+  }
+
+  function initBookSnap() {
+    document.documentElement.classList.add('book-snap');
+    document.documentElement.style.scrollSnapType = '';
+  }
+
+  function teardownBookSnap() {
+    document.documentElement.classList.remove('book-snap');
+  }
+
+  function bindBookNav() {
+    if (!scrollContainer) return;
+
+    scrollContainer.addEventListener('scroll', onScroll, { passive: true });
+
+    document.addEventListener('keydown', (e) => {
+      if (!scrollContainer || !document.getElementById('collection-book')) return;
+
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        scrollContainer.scrollBy({ top: scrollContainer.clientHeight, behavior: 'smooth' });
+      }
+      if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        scrollContainer.scrollBy({ top: -scrollContainer.clientHeight, behavior: 'smooth' });
+      }
+      if (e.key === 'Escape') {
+        window.location.href = '/';
+      }
+    });
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    if (!document.getElementById('collection-book')) {
+      teardownBookSnap();
+      return;
+    }
+    initBookSnap();
+    bindBookNav();
+    setTimeout(updateUI, 1200);
+  });
+
+  if (document.getElementById('collection-book')) {
+    initBookSnap();
+    bindBookNav();
+    setTimeout(updateUI, 1200);
+  }
+</script>

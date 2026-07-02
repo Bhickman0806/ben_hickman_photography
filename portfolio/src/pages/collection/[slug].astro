@@ -1,12 +1,8 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
-import Lightbox from '../../components/Lightbox.astro'; 
-import { getCollectionPaths, getCollectionData } from '../../lib/queries';
-
-import { urlFor, getResponsiveProps } from '../../lib/sanity';
-import { PortableText } from 'astro-portabletext';
-import PullQuoteBlock from '../../components/essays/PullQuoteBlock.astro';
-import InlineImageBlock from '../../components/essays/InlineImageBlock.astro';
+import CollectionBook from '../../components/collection/CollectionBook.astro';
+import { getCollectionPaths, getCollectionBookData } from '../../lib/queries';
+import { urlFor } from '../../lib/sanity';
 
 export async function getStaticPaths() {
   const slugs = await getCollectionPaths();
@@ -14,7 +10,7 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-const collection = await getCollectionData(slug as string);
+const collection = await getCollectionBookData(slug as string);
 
 if (!collection) {
   return new Response(null, {
@@ -23,14 +19,19 @@ if (!collection) {
   });
 }
 
-const ptComponents = {
-  type: {
-    pullQuote: PullQuoteBlock,
-    inlineImage: InlineImageBlock,
-  },
-};
-
 const schemaUrl = Astro.site ? new URL(Astro.url.pathname, Astro.site).toString() : `https://benhickmanphotography.com${Astro.url.pathname}`;
+const galleryImages = collection.spreads
+  .flatMap((spread) => {
+    if (spread.photo?.image?.asset) return [urlFor(spread.photo.image).width(1600).url()];
+    if (spread.photos?.length) {
+      return spread.photos
+        .filter((photo) => photo?.image?.asset)
+        .map((photo) => urlFor(photo.image).width(1600).url());
+    }
+    return [];
+  })
+  .filter(Boolean);
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "ImageGallery",
@@ -40,140 +41,41 @@ const jsonLd = {
     "@type": "Person",
     "name": "Ben Hickman"
   },
-  "image": collection.photos?.map((photo: any) => photo.image && photo.image.asset ? urlFor(photo.image).width(1600).url() : null).filter(Boolean) || []
+  "image": galleryImages
 };
 ---
 
-<BaseLayout title={`${collection.title} | Ben Hickman Photography Portfolio`}>
+<BaseLayout
+  title={`${collection.title} | Ben Hickman Photography Portfolio`}
+  description={collection.description}
+  bookMode={true}
+>
   <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-  <div class="pt-32 pb-20 px-4 md:px-8 max-w-7xl mx-auto">
-    
-    <!-- Collection Header -->
-    <header class="mb-10 md:mb-20 text-center max-w-3xl mx-auto">
-      <h1 class="font-display text-5xl md:text-6xl lg:text-7xl leading-[1.05] tracking-tight mb-8">{collection.title}</h1>
-    </header>
 
-    {collection.writeup && (
-      <div class="max-w-5xl mx-auto mb-32 flex flex-col items-center">
-        <a href="#photos" class="md:hidden inline-flex items-center justify-center gap-4 text-[10px] font-bold uppercase tracking-[0.2em] hover:opacity-60 transition-opacity mb-8">
-          Images
-          <span class="material-icons text-sm">south</span>
-        </a>
-        <div class="essay-body essay-columns w-full text-left">
-          <PortableText value={collection.writeup} components={ptComponents} />
-        </div>
-      </div>
-    )}
-
-    <!-- Photo Grid -->
-    <div id="photos" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 scroll-mt-32">
-      {collection.photos?.map((photo: any) => {
-        const responsive = getResponsiveProps(photo.image, { 
-          width: 600, 
-          aspectRatio: 4/5, 
-          sizes: '(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw' 
-        });
-        const fullSrc = photo.image && photo.image.asset ? urlFor(photo.image).width(1600).url() : "";
-          
-        return (
-        <div 
-          class={`photo-item cursor-pointer overflow-hidden rounded relative bg-[var(--color-border)]`}
-          data-full-src={fullSrc}
-          data-lightbox
-        >
-          <img 
-            src={responsive.src}
-            srcset={responsive.srcset}
-            sizes={responsive.sizes} 
-            alt={photo.alt || photo.title}
-            class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            loading="lazy"
-            decoding="async"
-          />
-
-        </div>
-      )})}
+  {collection.spreads.length > 0 ? (
+    <CollectionBook title={collection.title} spreads={collection.spreads} />
+  ) : (
+    <div class="min-h-[100dvh] flex items-center justify-center px-6">
+      <p class="text-center opacity-50">No spreads in this collection yet.</p>
     </div>
-
-    {!collection.photos && (
-      <p class="text-center opacity-50 py-20">No photos in this collection yet.</p>
-    )}
-
-  </div>
-
-  <Lightbox />
+  )}
 </BaseLayout>
 
 <style is:global>
-  html {
+  html.book-snap {
     scroll-behavior: smooth;
+    overflow: hidden;
   }
-</style>
-
-<style>
-  /* ── Essay body typography ── */
-  .essay-body {
-    font-family: "Inter", sans-serif;
-    line-height: 1.75;
-    color: var(--color-text-muted);
-    font-weight: 300;
+  body.book-mode {
+    overflow: hidden;
   }
-  .essay-body :global(p) {
-    font-size: 1.10rem;
-    margin-bottom: 1.00em;
+  body.book-mode main.book-main {
+    padding: 0;
+    margin: 0;
   }
-  .essay-body :global(h2) {
-    font-family: "Instrument Serif", serif;
-    font-size: 1.6rem;
-    line-height: 1.25;
-    color: var(--color-text-primary);
-    font-weight: 400;
-    margin-top: 2.5em;
-    margin-bottom: 0.75em;
-  }
-  .essay-body :global(h2) {
-    break-inside: avoid;
-  }
-
-  /* ── Two-column layout at lg+ ── */
-  @media (min-width: 1024px) {
-    .essay-columns {
-      column-count: 2;
-      column-gap: 4rem;
-      column-rule: 1px solid var(--color-border);
-    }
-  }
-
-  /* ── Pull quote ── */
-  :global(.pull-quote) {
-    column-span: all;
-    margin: 3rem 0;
-    padding: 3rem 0;
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
-    text-align: center;
-  }
-  :global(.pull-quote p) {
-    font-family: "Instrument Serif", serif;
-    font-style: italic;
-    font-size: clamp(1.4rem, 2.5vw, 2rem);
-    line-height: 1.4;
-    color: var(--color-text-primary);
-    max-width: 34em;
-    margin: 0 auto 0.75em;
-  }
-  :global(.pull-quote cite) {
-    font-family: "Inter", sans-serif;
-    font-size: 0.625rem;
-    font-style: normal;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--color-text-muted);
-  }
-
-  /* ── Inline image ── */
-  :global(.essay-inline-img) {
-    break-inside: avoid;
-    margin: 2em 0;
+  body.book-mode nav:not(#book-nav) {
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
   }
 </style>

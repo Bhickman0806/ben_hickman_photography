@@ -117,7 +117,21 @@ export const collection = defineType({
             title: 'Photos',
             type: 'array',
             of: [{ type: 'reference', to: [{ type: 'photo' }] }],
-            description: 'Photos assigned to this collection. You can drag to reorder them.',
+            description: 'Legacy photo list. Used as fallback when spreads is empty. Prefer building the collection in spreads.',
+        }),
+        defineField({
+            name: 'spreads',
+            title: 'Book Spreads',
+            type: 'array',
+            description: 'Ordered sequence of pages for the photo book view. Drag to reorder.',
+            of: [
+                { type: 'coverSpread' },
+                { type: 'titleTextSpread' },
+                { type: 'fullBleedSpread' },
+                { type: 'diptychSpread' },
+                { type: 'textImageSpread' },
+                { type: 'closingSpread' },
+            ],
         }),
 
         defineField({

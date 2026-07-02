@@ -1,0 +1,43 @@
+---
+import { urlFor, getResponsiveProps } from '../../lib/sanity';
+import type { BookPhoto } from '../../lib/collectionBook';
+
+interface Props {
+  photo?: BookPhoto;
+  class?: string;
+  sizes?: string;
+  width?: number;
+  aspectRatio?: number;
+  objectFit?: 'cover' | 'contain';
+  priority?: boolean;
+}
+
+const {
+  photo,
+  class: className = '',
+  sizes = '100vw',
+  width = 1600,
+  aspectRatio,
+  objectFit = 'cover',
+  priority = false,
+} = Astro.props;
+
+const hasImage = photo?.image?.asset?._ref?.startsWith?.('image-');
+const responsive = hasImage
+  ? getResponsiveProps(photo.image, { width, aspectRatio, sizes })
+  : { src: '', srcset: '', sizes: '' };
+---
+
+{hasImage ? (
+  <img
+    src={responsive.src}
+    srcset={responsive.srcset}
+    sizes={responsive.sizes || sizes}
+    alt={photo?.alt || photo?.title || ''}
+    class:list={['w-full h-full', objectFit === 'contain' ? 'object-contain' : 'object-cover', className]}
+    loading={priority ? 'eager' : 'lazy'}
+    decoding="async"
+  />
+) : (
+  <div class:list={['w-full h-full bg-[var(--color-border)]', className]} />
+)}
