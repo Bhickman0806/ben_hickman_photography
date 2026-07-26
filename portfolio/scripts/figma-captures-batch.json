@@ -1,0 +1,10 @@
+[
+  { "label": "Home — Mobile", "captureId": "ee8a9797-12df-4a23-9c1c-b8ddac037f80", "url": "http://localhost:4321/", "width": 390, "height": 844 },
+  { "label": "Home — Tablet", "captureId": "8a903570-cc76-4f7a-a907-e0bd9d364da3", "url": "http://localhost:4321/", "width": 768, "height": 1024 },
+  { "label": "Home — Desktop", "captureId": "a0a124ae-acd1-4f7a-b6e4-37eb57c4bf48", "url": "http://localhost:4321/", "width": 1440, "height": 900 },
+  { "label": "Contact — Mobile", "captureId": "686fb67d-808d-4b15-84f4-adf8a68f3067", "url": "http://localhost:4321/contact/", "width": 390, "height": 844 },
+  { "label": "Contact — Tablet", "captureId": "e37c9169-4068-444e-8cf0-df8666334c9b", "url": "http://localhost:4321/contact/", "width": 768, "height": 1024 },
+  { "label": "Contact — Desktop", "captureId": "bdd6242b-e443-4f40-97c8-8f313043fd51", "url": "http://localhost:4321/contact/", "width": 1440, "height": 900 },
+  { "label": "Writing — Mobile", "captureId": "c679b266-1ee5-4dc4-80ff-97e78c35f9c4", "url": "http://localhost:4321/writing/", "width": 390, "height": 844 },
+  { "label": "Writing — Tablet", "captureId": "e7041988-0fac-4d49-af34-8e5f1f57c87d", "url": "http://localhost:4321/writing/", "width": 768, "height": 1024 }
+]

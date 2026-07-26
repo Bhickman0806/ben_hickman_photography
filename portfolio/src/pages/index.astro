@@ -8,9 +8,11 @@ import Lightbox from '../components/Lightbox.astro';
 
 const homeData = await getHomePage();
 
+const coverThemes = ['coral', 'green', 'gradient', 'grayscale'] as const;
+
 const projects = (homeData?.featuredCollections || [])
   .filter(Boolean)
-  .map((collection: any) => ({
+  .map((collection: any, i: number) => ({
   subtitle: collection.subtitle || "Collection",
   title: collection.title,
   description: collection.description,
@@ -19,7 +21,8 @@ const projects = (homeData?.featuredCollections || [])
   alt: collection.alt || collection.title,
   linkHref: `/collection/${collection.slug}`,
   linkLabel: "Explore",
-  reverse: false 
+  reverse: false,
+  theme: coverThemes[i % coverThemes.length],
 })) || [];
 ---
 
