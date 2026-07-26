@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
+import { flatListTypes, validateNoNestedLists } from './portableText'
 
 export const poem = defineType({
     name: 'poem',
@@ -101,12 +102,13 @@ export const poem = defineType({
                             name: 'lines',
                             title: 'Lines',
                             type: 'array',
-                            description: 'Each paragraph is one poetic line. Press Enter to start a new line. Select text to apply Italic or Underline.',
+                            description:
+                                'Each paragraph is one poetic line. Press Enter to start a new line. Select text to apply Italic or Underline, or use Numbered / Bullet lists. Nested (indented) lists are not supported.',
                             of: [
                                 defineArrayMember({
                                     type: 'block',
                                     styles: [{ title: 'Normal', value: 'normal' }],
-                                    lists: [],
+                                    lists: [...flatListTypes],
                                     marks: {
                                         decorators: [
                                             { title: 'Italic', value: 'em' },
@@ -116,7 +118,8 @@ export const poem = defineType({
                                     },
                                 }),
                             ],
-                            validation: (Rule) => Rule.required(),
+                            validation: (Rule) =>
+                                Rule.required().custom(validateNoNestedLists),
                         }),
                     ],
                     preview: {

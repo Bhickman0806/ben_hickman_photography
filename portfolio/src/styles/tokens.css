@@ -30,6 +30,12 @@
   /* ── Layout Tokens ── */
   --content-max-width: 90%;
   --radius-card: 0.5rem;
+
+  /* ── Portable Text list spacing (tune per breakpoint in global.css) ── */
+  --list-indent: 1.25em;
+  --list-gap: 0.35em;
+  --list-margin-block: 1.15em;
+  --list-marker-gap: 0.45em;
 }
 
 /* ── Dark Mode Overrides ── */
