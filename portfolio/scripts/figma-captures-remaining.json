@@ -1,0 +1,23 @@
+[
+  { "label": "Contact — Mobile", "captureId": "686fb67d-808d-4b15-84f4-adf8a68f3067", "url": "http://localhost:4321/contact/", "width": 390, "height": 844 },
+  { "label": "Contact — Tablet", "captureId": "e37c9169-4068-444e-8cf0-df8666334c9b", "url": "http://localhost:4321/contact/", "width": 768, "height": 1024 },
+  { "label": "Contact — Desktop", "captureId": "bdd6242b-e443-4f40-97c8-8f313043fd51", "url": "http://localhost:4321/contact/", "width": 1440, "height": 900 },
+  { "label": "Writing — Mobile", "captureId": "c679b266-1ee5-4dc4-80ff-97e78c35f9c4", "url": "http://localhost:4321/writing/", "width": 390, "height": 844 },
+  { "label": "Writing — Tablet", "captureId": "e7041988-0fac-4d49-af34-8e5f1f57c87d", "url": "http://localhost:4321/writing/", "width": 768, "height": 1024 },
+  { "label": "Writing — Desktop", "captureId": "c3ffb273-150f-4791-a22e-d410683fd1f8", "url": "http://localhost:4321/writing/", "width": 1440, "height": 900 },
+  { "label": "Archive — Mobile", "captureId": "0bdecd16-04ba-4ff7-8207-ad907c8dca75", "url": "http://localhost:4321/archive/", "width": 390, "height": 844 },
+  { "label": "Archive — Tablet", "captureId": "255be8d3-4d3f-43a9-ab61-c06896858724", "url": "http://localhost:4321/archive/", "width": 768, "height": 1024 },
+  { "label": "Archive — Desktop", "captureId": "4422057a-5f09-4821-bd0b-ce171fe55484", "url": "http://localhost:4321/archive/", "width": 1440, "height": 900 },
+  { "label": "Collection — Mobile", "captureId": "7a4535d8-e4cd-4739-9679-cd6ab1d4dcfa", "url": "http://localhost:4321/collection/family-life/", "width": 390, "height": 844 },
+  { "label": "Collection — Tablet", "captureId": "1ce17003-5963-427c-9146-d0aca88502ea", "url": "http://localhost:4321/collection/family-life/", "width": 768, "height": 1024 },
+  { "label": "Collection — Desktop", "captureId": "b155b517-ca41-41e5-a7d3-d6cf7c9305cd", "url": "http://localhost:4321/collection/family-life/", "width": 1440, "height": 900 },
+  { "label": "Photo — Mobile", "captureId": "39d6676a-beb4-43cb-8bf4-50437c9dc650", "url": "http://localhost:4321/photo/misty-valley/", "width": 390, "height": 844 },
+  { "label": "Photo — Tablet", "captureId": "17a3d24f-5225-4374-9d8c-55ee0d3ea190", "url": "http://localhost:4321/photo/misty-valley/", "width": 768, "height": 1024 },
+  { "label": "Photo — Desktop", "captureId": "88833f7e-64ee-4364-883b-e095b32c1df2", "url": "http://localhost:4321/photo/misty-valley/", "width": 1440, "height": 900 },
+  { "label": "Essay — Mobile", "captureId": "6865ab01-477f-4ecf-b02c-d87749eb867e", "url": "http://localhost:4321/essay/mario-and-the-coyotes/", "width": 390, "height": 844 },
+  { "label": "Essay — Tablet", "captureId": "5edf9ab6-daec-44e9-9b0c-d8364c3fbe5a", "url": "http://localhost:4321/essay/mario-and-the-coyotes/", "width": 768, "height": 1024 },
+  { "label": "Essay — Desktop", "captureId": "4bb9375e-25ce-4939-94d1-5862e30e169d", "url": "http://localhost:4321/essay/mario-and-the-coyotes/", "width": 1440, "height": 900 },
+  { "label": "Poem — Mobile", "captureId": "f4525a10-86d6-40cf-bb72-683a9e4aff8a", "url": "http://localhost:4321/poem/when-we-met/", "width": 390, "height": 844 },
+  { "label": "Poem — Tablet", "captureId": "a1373a8f-2914-417b-9ba3-17f5b9a629de", "url": "http://localhost:4321/poem/when-we-met/", "width": 768, "height": 1024 },
+  { "label": "Poem — Desktop", "captureId": "e0168480-e407-4b97-a4e3-9cc71d3e9aa4", "url": "http://localhost:4321/poem/when-we-met/", "width": 1440, "height": 900 }
+]

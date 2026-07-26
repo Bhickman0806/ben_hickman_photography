@@ -1,0 +1,88 @@
+
+=== Capturing: Home — Desktop (1440x900) ===
+FAIL: Home — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Contact — Mobile (390x844) ===
+FAIL: Contact — Mobile Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Contact — Tablet (768x1024) ===
+FAIL: Contact — Tablet Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Contact — Desktop (1440x900) ===
+FAIL: Contact — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Writing — Mobile (390x844) ===
+FAIL: Writing — Mobile Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Writing — Tablet (768x1024) ===
+FAIL: Writing — Tablet Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Writing — Desktop (1440x900) ===
+FAIL: Writing — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Archive — Mobile (390x844) ===
+FAIL: Archive — Mobile Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Archive — Tablet (768x1024) ===
+FAIL: Archive — Tablet Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Archive — Desktop (1440x900) ===
+FAIL: Archive — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Collection — Mobile (390x844) ===
+FAIL: Collection — Mobile Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Collection — Tablet (768x1024) ===
+FAIL: Collection — Tablet Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Collection — Desktop (1440x900) ===
+FAIL: Collection — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Photo — Mobile (390x844) ===
+FAIL: Photo — Mobile Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Photo — Tablet (768x1024) ===
+FAIL: Photo — Tablet Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Photo — Desktop (1440x900) ===
+FAIL: Photo — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Essay — Mobile (390x844) ===
+FAIL: Essay — Mobile Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Essay — Tablet (768x1024) ===
+FAIL: Essay — Tablet Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Essay — Desktop (1440x900) ===
+FAIL: Essay — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Poem — Mobile (390x844) ===
+FAIL: Poem — Mobile Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Poem — Tablet (768x1024) ===
+FAIL: Poem — Tablet Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
+
+=== Capturing: Poem — Desktop (1440x900) ===
+FAIL: Poem — Desktop Error: page.evaluate: Error: captureForDesign timed out after 120s
+    at eval (eval at evaluate (:303:30), <anonymous>:3:35)
