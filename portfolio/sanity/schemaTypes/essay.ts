@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from 'sanity'
+import { flatListTypes, validateNoNestedLists } from './portableText'
 
 export const essay = defineType({
     name: 'essay',
@@ -72,7 +73,7 @@ export const essay = defineType({
         }),
 
         // ── Body ───────────────────────────────────────────────────────────────
-        // Portable Text with paragraphs, section headings, pull quotes, and inline images.
+        // Portable Text with paragraphs, section headings, lists, pull quotes, and inline images.
         defineField({
             name: 'body',
             title: 'Body',
@@ -85,6 +86,7 @@ export const essay = defineType({
                         { title: 'Paragraph', value: 'normal' },
                         { title: 'Section Heading', value: 'h2' },
                     ],
+                    lists: [...flatListTypes],
                     marks: {
                         decorators: [
                             { title: 'Bold', value: 'strong' },
@@ -140,6 +142,7 @@ export const essay = defineType({
                     ],
                 }),
             ],
+            validation: (Rule) => Rule.custom(validateNoNestedLists),
         }),
 
         // ── Related essays ─────────────────────────────────────────────────────

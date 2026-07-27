@@ -93,3 +93,84 @@
         @apply text-sm leading-relaxed text-muted;
     }
 }
+
+/* ── Portable Text lists (essay body + poem stanzas) ── */
+/* Variables live on :root (tokens.css) and are overridden at breakpoints below. */
+.essay-body,
+.poem-text {
+    --list-indent: 1.2em;
+    --list-gap: 0.3em;
+    --list-margin-block: 1.1em;
+    --list-marker-gap: 0.4em;
+}
+
+.essay-body ul,
+.essay-body ol,
+.poem-text ul,
+.poem-text ol {
+    margin-block: var(--list-margin-block);
+    padding-inline-start: var(--list-indent);
+    list-style-position: outside;
+}
+
+.essay-body ul,
+.poem-text ul {
+    list-style-type: disc;
+}
+
+.essay-body ol,
+.poem-text ol {
+    list-style-type: decimal;
+}
+
+.essay-body li,
+.poem-text li {
+    margin-block: var(--list-gap);
+    padding-inline-start: var(--list-marker-gap);
+    break-inside: avoid;
+}
+
+.essay-body ul,
+.essay-body ol {
+    break-inside: avoid;
+}
+
+/* Poem lists sit among line spans — keep rhythm close to stanza lines */
+.poem-text ul,
+.poem-text ol {
+    margin-block: 0.65em;
+}
+
+.poem-text li {
+    margin-block: 0.15em;
+}
+
+@media (min-width: 768px) {
+    .essay-body,
+    .poem-text {
+        --list-indent: 1.4em;
+        --list-gap: 0.35em;
+        --list-margin-block: 1.2em;
+        --list-marker-gap: 0.45em;
+    }
+}
+
+@media (min-width: 1024px) {
+    .essay-body,
+    .poem-text {
+        --list-indent: 1.55em;
+        --list-gap: 0.4em;
+        --list-margin-block: 1.25em;
+        --list-marker-gap: 0.5em;
+    }
+}
+
+@media (min-width: 1440px) {
+    .essay-body,
+    .poem-text {
+        --list-indent: 1.65em;
+        --list-gap: 0.45em;
+        --list-margin-block: 1.35em;
+        --list-marker-gap: 0.55em;
+    }
+}
